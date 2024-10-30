@@ -1,0 +1,162 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Sixtyfour+Convergence&display=swap");
+
+body {
+  background-color: rgb(245, 245, 245);
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  margin: 10%;
+}
+
+body h1 {
+  text-align: center;
+}
+
+input::placeholder {
+  color: #333333;
+  opacity: 0.5;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+:root {
+  --transition: 0.2s;
+  --bg-one: hsl(0, 0%, 100%);
+  --border-color: rgb(255, 196, 0);
+  --border-radius: 12px;
+}
+
+#input-daddy {
+  display: flex;
+  flex-direction: column;
+}
+
+#input-daddy label {
+  text-align: center;
+  width: 100%;
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 12px;
+}
+
+#note-input {
+  padding: 12px 20px;
+  font-size: 1rem;
+  width: 100%;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: border-color var(--transition) ease;
+  background: var(--bg-one);
+  outline: none;
+}
+
+#note-input:focus {
+  border-color: hsla(10, 100%, 50%, 0.5);
+}
+
+#notes {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px; /* Adds a small gap between cards */
+  }
+  
+  .note {
+    flex: 1 1 calc(25%);
+    max-width: calc(25%);
+    border-radius: 12px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(100, 100, 111, 0.1) 0px 3px 15px 0px;
+    padding: 20px;
+    font-size: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+
+.note:hover {
+  transform: scale(1.05);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.note-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+
+  /* justify-content: flex-start; Align items to start */
+  align-items: center;
+}
+
+.note-heading {
+  margin: 0;
+  margin-bottom: 12px;
+  color: #333333;
+  font-size: medium;
+}
+
+.note-text {
+  overflow-wrap: break-word;
+  font-size: 16px;
+  color: #333333;
+}
+
+.note-date {
+  color: #a0a0a0;
+  font-size: small;
+  width: 100%;
+}
+
+.copy-btn {
+  display: flex;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.copy-btn.active {
+  background-color: #00ac28;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transform: 0.3s;
+}
+
+.copy-btn.active i {
+  stroke: white;
+}
+
+.delete-btn {
+  display: flex;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  background: #990d0d;
+  cursor: pointer;
+  color: white;
+}
+
+
+@media screen and (min-width: 40em) {
+    .notes {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+ 
+    .note {
+        flex: 0 1 calc(25% - 1em);
+    }
+}
