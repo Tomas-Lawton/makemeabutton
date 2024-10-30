@@ -13,7 +13,7 @@ function createNote({ noteText, formattedDate, noteCounter }) {
   note.classList.add("note");
 
   const noteHeading = document.createElement("h3");
-  noteHeading.textContent = `Note ${noteCounter + 1}`; // Display note index + 1 for user-friendly numbering
+  noteHeading.textContent = `📝 Note ${noteCounter + 1}`; // Display note index + 1 for user-friendly numbering
   noteHeading.classList.add("note-heading");
 
   const noteTextDiv = document.createElement("div");
