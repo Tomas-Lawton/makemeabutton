@@ -76,4 +76,23 @@ input.addEventListener("keydown", (event) => {
   }
 });
 
+function loadShapePositions() {
+  const shapes = document.querySelectorAll('.background-svg');
+  shapes.forEach(shape => {
+    let x = Math.floor(Math.random() * 100);
+    let y = Math.floor(Math.random() * 100);
+    let width = Math.floor(Math.random() * 150) + 150; 
+
+    shape.style.top = `${y}%`;
+    shape.style.left = `${x}%`;
+    console.log(width)
+    shape.style.width = `${width}px`;
+  });
+}
+
+
 loadLocalNotes();
+loadShapePositions();
+
+
+
