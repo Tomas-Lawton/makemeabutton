@@ -296,7 +296,7 @@ input[type="text"]
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  align-items: center;
+  align-items: end;
 }
 
 .note-heading {
@@ -434,7 +434,7 @@ input[type="text"]
 
 
 
-@media (max-width: 641px) {  /* For small screens */
+@media (max-width: 1000px) {  /* For small screens */
   .note {
     flex: 0 1 100%; 
   }
