@@ -152,7 +152,7 @@ input::placeholder {
 .note-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 8px;
 
   /* justify-content: flex-start; Align items to start */
   align-items: center;
@@ -216,6 +216,7 @@ input::placeholder {
   box-shadow: 0.2rem 0.2rem #05060f;
   background-color: #4fe803;
   cursor: pointer;
+   transform: scale(1.05);
 }
 
 
@@ -235,6 +236,7 @@ input::placeholder {
   background: #d73605;
   box-shadow: 0.2rem 0.2rem #05060f;
   cursor: pointer;
+   transform: scale(1.05);
 }
 
 #footer {
