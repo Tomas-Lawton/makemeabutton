@@ -49,8 +49,8 @@ function createNote({ noteText, date, noteIndex }) {
   copyBtn.appendChild(document.createTextNode("Copy"));
   copyBtn.addEventListener("click", () => {
     navigator.clipboard
-      .writeText(noteText.textContent)
-      .then(() => alert("Note copied to clipboard!"))
+      .writeText(noteText)
+      // .then(() => alert("Note copied to clipboard!"))
       .catch((err) => console.error("Failed to copy text: ", err));
   });
 
