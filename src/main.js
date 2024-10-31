@@ -1,15 +1,17 @@
-import { createNote } from "./note.js"
+import { createNote } from "./note.js";
 
 const input = document.getElementById("note-input");
+const pasteButton = document.getElementById("instant-paste");
+
 let noteCounter = 0;
 
 function saveLocalNote(data) {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  const key = (noteCounter).toString()
-  console.log("Saving note ", key)
+  const key = noteCounter.toString();
+  console.log("Saving note ", key);
   savedNotes[key] = data; // set key (index) to current count
   localStorage.setItem("notes", JSON.stringify(savedNotes));
-  noteCounter++;  // increment the count
+  noteCounter++; // increment the count
   localStorage.setItem("noteCounter", noteCounter);
 }
 
@@ -18,10 +20,10 @@ function loadLocalNotes() {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {}; // init empty
 
   Object.entries(savedNotes)
-  .sort(([, a], [, b]) => a.noteIndex - b.noteIndex) 
-  .forEach(([, data]) => {
-    createNote(data);
-  });
+    .sort(([, a], [, b]) => a.noteIndex - b.noteIndex)
+    .forEach(([, data]) => {
+      createNote(data);
+    });
 }
 
 function getDate() {
@@ -35,32 +37,43 @@ function getDate() {
   return date;
 }
 
+
+function makeNote(noteText) {
+  const date = getDate();
+  const data = { noteText, date, noteIndex: noteCounter };
+  createNote(data);
+  saveLocalNote(data);
+
+  const audio = new Audio('./public/audio/pop.mp3');
+  audio.play();
+}
+
+
+
+pasteButton.addEventListener("click", async () => {
+  try {
+    const noteText = await navigator.clipboard.readText(); // Read text from the clipboard
+    makeNote(noteText); // Create the note with the pasted text
+    input.value = ""; // Clear input after use
+  } catch (err) {
+    console.error("Failed to read clipboard contents: ", err);
+  }
+});
+
 input.addEventListener("paste", (event) => {
   const noteText = (event.clipboardData || window.clipboardData).getData(
     "text"
   );
   event.preventDefault();
-  const date = getDate();
-
-  const data = { noteText, date, noteIndex: noteCounter };
-  createNote(data);
-  saveLocalNote(data);
+  makeNote(noteText)
   input.value = "";
 });
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && input.value.trim() !== "") {
-    const noteText = input.value.trim();
-    const date = getDate();
-
-    const data = { noteText, date, noteIndex: noteCounter };
-    createNote(data);
-    saveLocalNote(data);
+    makeNote(input.value.trim())
     input.value = "";
   }
 });
 
 loadLocalNotes();
-
-
-

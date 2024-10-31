@@ -10,6 +10,9 @@ const notes = document.getElementById("notes");
     delete savedNotes[index];
     console.log(savedNotes)
     localStorage.setItem("notes", JSON.stringify(savedNotes));
+
+    const audio = new Audio('./public/audio/swish.mp3');
+    audio.play();
   }
   
 

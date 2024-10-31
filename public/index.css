@@ -1,92 +1,98 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Sixtyfour+Convergence&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Sixtyfour+Convergence&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Reenie+Beanie&family=Sixtyfour+Convergence&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Sixtyfour+Convergence&display=swap');
+p {
+  margin: 0;
+}
 
-p { 
-    margin: 0;
+a {
+  color: black;
+  text-decoration: none;
 }
 
 body {
-  /* background-color: rgb(245, 245, 245);
-  font-family: "Inter", sans-serif; */
-
   font-family: "Lexend Mega", sans-serif;
   font-optical-sizing: auto;
-
   font-style: normal;
 
-  /* background-color: #FFDB58; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
 
+  margin: 0;
 
-  background-color: #FFCE00;
+  background-color: #ffce00;
   --color: #f6c205;
-  background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent),
-      linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent);
-
-      background-size: 85px 85px;
-      
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 85px 85px;
 }
 
 header {
-  /* position: fixed; */
-  /* top: 0; */
-  /* left: 0; */
   margin: 30px;
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 60px); /* Account for the horizontal margin */
-  align-items:center;
-  z-index: -1000;
+  width: calc(100% - 60px); 
+  align-items: center;
 }
 
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 30px;
+  align-items: baseline;
+
+
+
+  margin: 0 30px 30px 30px;
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 60px); /* Account for the horizontal margin */
-  align-items: baseline;
-  z-index: -1000;
+  width: calc(100% - 60px);
+  align-items: center;
 }
 .wrapper {
   width: 50%;
 }
 
 h1 {
-  display: inline-block; 
-  width: 0; 
+  display: inline-block;
+  width: 0;
   border-right: 4px solid black;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
-  animation: typing 3s steps(27, end), blink-caret 0.5s step-end infinite alternate;
+  animation: typing 3s steps(27, end),
+    blink-caret 0.5s step-end infinite alternate;
   width: 18ch;
 }
 
-   /* Additional style to handle second line */
-   .line-break {
-    display: inline-block; /* Ensures the animation works for each line */
-    overflow: hidden; /* Hides overflow */
-    white-space: nowrap; /* Prevents line wrap */
+/* Additional style to handle second line */
+.line-break {
+  display: inline-block; /* Ensures the animation works for each line */
+  overflow: hidden; /* Hides overflow */
+  white-space: nowrap; /* Prevents line wrap */
 }
 
-@keyframes typing {
-  from {
-      width: 0;
-  }
-  to {
-      width: 18ch; /* Match this to the width set above */
-  }
-}
-
-@keyframes blink-caret {
-  50% {
-      border-color: transparent;
-  }
-}
 
 #background-svg-2 {
   width: 140px;
@@ -95,7 +101,8 @@ h1 {
   animation-name: spin;
   animation-duration: 5000ms;
   animation-iteration-count: infinite;
-  animation-timing-function: linear; 
+  animation-timing-function: linear;
+  z-index: -100;
 }
 
 #background-svg-1 {
@@ -139,14 +146,14 @@ h1 {
 }
 
 button {
-    font-family: "Lexend Mega", sans-serif;
-    text-transform: uppercase;
-    letter-spacing: -1.5px;
+  font-family: "Lexend Mega", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -1.5px;
 }
 section {
-  margin: 0 10% 12% 10%;
+  margin: 0 10%;
+  flex: 1;
 }
-
 
 input::placeholder {
   color: #333333;
@@ -159,23 +166,20 @@ input::placeholder {
   box-sizing: border-box;
 }
 
-
 #input-zone {
-  display: flex;
-  flex-direction: column;
-
-  border: 6px black solid;
-
+  /* border: 6px black solid; */
+  border: 4px solid #05060f;
   padding: 30px;
   border-radius: 30px;
-
-  background-color: #1BEDCA;
+  background-color: #1bedca;
   margin-bottom: 30px;
-
   transition: 0.3s ease;
+}
 
-  
-
+#input-zone div {
+  display: flex;
+  align-items: center;
+  /* gap: 1rem; */
 }
 
 #input-zone:hover {
@@ -191,9 +195,46 @@ input::placeholder {
   margin: 12px;
 }
 
+#input-zone button {
+  display: flex;
+  padding: 8px 16px;
+  cursor: pointer;
+  background: white;
+  /* border: 2px solid black; */
+
+  border: 4px solid black;
+  box-shadow: 0.1rem 0.1rem #05060f;
+  transition: 0.3s ease;
+  border-radius: 8px;
+  align-items: center;
+}
+
+#input-zone:hover button{
+  background-color: #ffce00;
+  transform: scale(1.05);
+}
+
+#input-zone:hover button:hover{
+  box-shadow: 0.2rem 0.2rem #05060f;
+  background-color: #4fe803;
+  cursor: pointer;
+}
+
+#inputs {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+#note-input, #instant-paste {
+  height: 100%;
+  text-wrap: nowrap;
+  margin-left: .5rem;
+}
+
+
+
 #note-input {
   padding: 12px 20px;
-  font-size: 1rem;
   width: 100%;
   border: 4px solid black;
   border-radius: 12px;
@@ -202,9 +243,8 @@ input::placeholder {
   outline: none;
 }
 
-
-#input-zone:hover #note-input{
-  border-color: #FFCE00;
+#input-zone:hover #note-input {
+  border-color: #ffce00;
 }
 
 #input-zone:hover #note-input:focus {
@@ -213,41 +253,32 @@ input::placeholder {
 
 
 
-
-
 #notes {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-
-    display: flex;
-    flex-wrap: wrap;
-    /* justify-content: space-between;  */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .note {
-  display: flex;               /* Make .item a flex container */
-  flex-direction: column;      /* Arrange items in a column */
-  justify-content: space-between; /* Space elements inside each .item */
-  flex: 0 1 calc(48%);
-  max-width: calc(48%);
+  display: flex;
+  justify-content: space-between;
   border-radius: 1rem;
   background: white;
   padding: 1rem;
-  border: 0.5vmin solid #05060f;
+  border: 4px solid #05060f;
   overflow: hidden;
   font-size: 30px;
-  gap: 1rem; /* Optional: Space between internal items */
+  gap: 1rem;
   min-height: 300px;
+  flex-direction: column; 
+  flex: 0 1 calc(48%); 
+  margin-bottom: 4%;
 }
-
-
 
 .note:hover {
   transform: scale(1.05);
   transition: 0.3s ease;
   cursor: pointer;
-
   box-shadow: 0.4rem 0.4rem #05060f;
   color: black;
 }
@@ -262,8 +293,6 @@ input::placeholder {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-
-  /* justify-content: flex-start; Align items to start */
   align-items: center;
 }
 
@@ -271,22 +300,25 @@ input::placeholder {
   margin: 0;
   margin-bottom: 12px;
   color: #333333;
-  font-size: .8em;
+  font-size: 0.8em;
 }
 
 .note-text {
+  font-family: "Reenie Beanie", cursive;
+  font-weight: 400;
+  font-style: normal;
   overflow-wrap: break-word;
-  font-size: .5em;
+  font-size: 1em;
   color: #333333;
 }
 
 .footer-text {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 .note-date {
   color: #a0a0a0;
-  font-size: .5em;
+  font-size: 0.5em;
   width: 100%;
 }
 
@@ -297,17 +329,16 @@ input::placeholder {
   padding: 8px 16px;
   cursor: pointer;
 
-  color: white;
+  /* color: white; */
   background: #48dc00;
-  stroke: white;
+  /* stroke: white; */
 
   border: 2px solid black;
   box-shadow: 0.1rem 0.1rem #05060f;
-  transition: .3s ease;
-
+  transition: 0.3s ease;
 }
 .copy-btn div svg {
-  stroke: white;
+  /* stroke: white; */
 }
 
 /* .copy-btn.active {
@@ -321,39 +352,36 @@ input::placeholder {
   stroke: white;
 } */
 
-.copy-btn:hover{
+.copy-btn:hover {
   box-shadow: 0.2rem 0.2rem #05060f;
   background-color: #4fe803;
   cursor: pointer;
-   transform: scale(1.05);
+  transform: scale(1.05);
 }
-
 
 .delete-btn {
   display: flex;
   border-radius: 8px;
   padding: 8px 16px;
-  background: #FF4910;
+  background: #ff4910;
   cursor: pointer;
-  color: white;
+  /* color: white; */
   border: 2px solid black;
   box-shadow: 0.1rem 0.1rem #05060f;
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .delete-btn:hover {
   background: #d73605;
   box-shadow: 0.2rem 0.2rem #05060f;
   cursor: pointer;
-   transform: scale(1.05);
+  transform: scale(1.05);
 }
-
-
 
 #coffee {
   height: 60px !important;
   width: 217px !important;
-  
+
   /* border: 0.5vmin solid #05060f;
   box-shadow: 0.4rem 0.4rem #05060f;
   overflow: hidden;
@@ -368,27 +396,44 @@ input::placeholder {
   color: black; */
   font-size: 30px;
   transition: 0.3s ease;
-
 }
 
-#coffee:hover{
+#coffee:hover {
   box-shadow: 0.4rem 0.4rem #05060f;
   color: black;
 }
 
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 18ch; /* Match this to the width set above */
+  }
+}
 
-
-
-
-
-
-
+@keyframes blink-caret {
+  50% {
+    border-color: transparent;
+  }
+}
 
 @keyframes spin {
   from {
-      transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-      transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
+
+
+
+
+
+@media (max-width: 641px) {  /* For small screens */
+  .note {
+    flex: 0 1 100%; 
+  }
+}
+
