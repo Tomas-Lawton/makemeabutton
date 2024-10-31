@@ -50,7 +50,6 @@ function createNote({ noteText, date, noteIndex }) {
   copyBtn.addEventListener("click", () => {
     navigator.clipboard
       .writeText(noteText)
-      // .then(() => alert("Note copied to clipboard!"))
       .catch((err) => console.error("Failed to copy text: ", err));
   });
 
@@ -73,15 +72,15 @@ function createNote({ noteText, date, noteIndex }) {
   note.appendChild(noteContent);
   note.appendChild(actionContainer);
 
-  note.addEventListener("mouseenter", () => {
-    copyBtn.classList.add("active");
-    icon.querySelector("svg").style.stroke = "white";
-  });
+  // note.addEventListener("mouseenter", () => {
+  //   copyBtn.classList.add("active");
+  //   icon.querySelector("svg").style.stroke = "white";
+  // });
 
-  note.addEventListener("mouseleave", () => {
-    copyBtn.classList.remove("active");
-    icon.querySelector("svg").style.stroke = "green";
-  });
+  // note.addEventListener("mouseleave", () => {
+  //   copyBtn.classList.remove("active");
+  //   icon.querySelector("svg").style.stroke = "green";
+  // });
 
   notes.prepend(note); // switch with append
 }

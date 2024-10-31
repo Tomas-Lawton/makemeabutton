@@ -18,8 +18,8 @@ body {
   /* background-color: #FFDB58; */
 
 
-  background-color: #FFDC00;
-  --color: #f9ce35;
+  background-color: #FFCE00;
+  --color: #f6c205;
   background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent),
       linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent);
 
@@ -53,7 +53,7 @@ input::placeholder {
 }
 
 
-#input-daddy {
+#input-zone {
   display: flex;
   flex-direction: column;
 
@@ -62,19 +62,19 @@ input::placeholder {
   padding: 30px;
   border-radius: 30px;
 
-  background-color: #DAF5F0;
+  background-color: #BEA2F9;
   margin-bottom: 30px;
 
-  transition: 0.3s;
+  transition: 0.3s ease;
 
 }
 
-#input-daddy:hover {
+#input-zone:hover {
   box-shadow: 0.4rem 0.4rem #05060f;
   color: black;
 }
 
-#input-daddy label {
+#input-zone label {
   text-align: center;
   width: 100%;
   font-size: 3rem;
@@ -88,38 +88,55 @@ input::placeholder {
   width: 100%;
   border: 4px solid black;
   border-radius: 12px;
-  transition: border-color 0.3s ease;
+  transition: 0.3s ease;
   background: white;
   outline: none;
 }
 
-#note-input:focus {
-  border-color: #90EE90;
+
+#input-zone:hover #note-input{
+  border-color: #FFCE00;
 }
+
+#input-zone:hover #note-input:focus {
+  border-color: #1BEDCA;
+}
+
+
+
 
 
 #notes {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     flex-wrap: wrap;
+
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between;  */
 }
 
 .note {
-    flex: 0 1 calc(33%);
-    max-width: calc(33%);
-    border-radius: 1rem;
-    background: white;
-    padding: 1rem;
-    border: 0.5vmin solid #05060f;
-    overflow: hidden;
-    font-size: 30px;
+  display: flex;               /* Make .item a flex container */
+  flex-direction: column;      /* Arrange items in a column */
+  justify-content: space-between; /* Space elements inside each .item */
+  flex: 0 1 calc(48%);
+  max-width: calc(48%);
+  border-radius: 1rem;
+  background: white;
+  padding: 1rem;
+  border: 0.5vmin solid #05060f;
+  overflow: hidden;
+  font-size: 30px;
+  gap: 1rem; /* Optional: Space between internal items */
+  min-height: 300px;
 }
 
 
 
 .note:hover {
   transform: scale(1.05);
-  transition: 0.3s;
+  transition: 0.3s ease;
   cursor: pointer;
 
   box-shadow: 0.4rem 0.4rem #05060f;
@@ -166,36 +183,59 @@ input::placeholder {
 
 .copy-btn {
   display: flex;
-  border: none;
+  /* border: none; */
   border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
 
-  background: #00ffa0;
+  color: white;
+  background: #48dc00;
+  stroke: white;
+
+  border: 2px solid black;
+  box-shadow: 0.1rem 0.1rem #05060f;
+  transition: .3s ease;
+
+}
+.copy-btn div svg {
+  stroke: white;
 }
 
-.copy-btn.active {
-  background-color: #00ac28;
+/* .copy-btn.active {
+  background-color: #4fe803;
   color: white;
-  border: none;
   cursor: pointer;
   transform: 0.3s;
 }
 
 .copy-btn.active i {
   stroke: white;
+} */
+
+.copy-btn:hover{
+  box-shadow: 0.2rem 0.2rem #05060f;
+  background-color: #4fe803;
+  cursor: pointer;
 }
+
 
 .delete-btn {
   display: flex;
-  border: none;
   border-radius: 8px;
   padding: 8px 16px;
-  background: #990d0d;
+  background: #FF4910;
   cursor: pointer;
   color: white;
+  border: 2px solid black;
+  box-shadow: 0.1rem 0.1rem #05060f;
+  transition: .3s ease;
 }
 
+.delete-btn:hover {
+  background: #d73605;
+  box-shadow: 0.2rem 0.2rem #05060f;
+  cursor: pointer;
+}
 
 #footer {
     position: fixed;
@@ -226,7 +266,7 @@ input::placeholder {
   /* box-shadow: 0.4rem 0.4rem #05060f;
   color: black; */
   font-size: 30px;
-  transition: 0.3s;
+  transition: 0.3s ease;
 
 }
 
@@ -234,19 +274,6 @@ input::placeholder {
   box-shadow: 0.4rem 0.4rem #05060f;
   color: black;
 }
-
-@media screen and (min-width: 40em) {
-    .notes {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
- 
-    .note {
-        flex: 0 1 calc(33% - 1em);
-    }
-}
-
 
 
 
