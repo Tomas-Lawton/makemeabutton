@@ -1,4 +1,6 @@
 import { createNote } from "./note.js";
+import { updateDragDropListeners } from "./drag.js";
+import { playPop } from "./sounds.js";
 
 const input = document.getElementById("note-input");
 const pasteButton = document.getElementById("instant-paste");
@@ -24,6 +26,8 @@ function loadLocalNotes() {
     .forEach(([, data]) => {
       createNote(data);
     });
+
+  updateDragDropListeners();
 }
 
 function getDate() {
@@ -37,18 +41,16 @@ function getDate() {
   return date;
 }
 
-
 function makeNote(noteText) {
   const date = getDate();
   const data = { noteText, date, noteIndex: noteCounter };
   createNote(data);
   saveLocalNote(data);
 
-  const audio = new Audio('./public/audio/pop.mp3');
-  audio.play();
+  playPop();
+
+  updateDragDropListeners();
 }
-
-
 
 pasteButton.addEventListener("click", async () => {
   try {
@@ -65,36 +67,31 @@ input.addEventListener("paste", (event) => {
     "text"
   );
   event.preventDefault();
-  makeNote(noteText)
+  makeNote(noteText);
   input.value = "";
 });
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && input.value.trim() !== "") {
-    makeNote(input.value.trim())
+    makeNote(input.value.trim());
     input.value = "";
   }
 });
 
 function loadShapePositions() {
-  const shapes = document.querySelectorAll('.background-svg');
-  shapes.forEach(shape => {
+  const shapes = document.querySelectorAll(".background-svg");
+  shapes.forEach((shape) => {
     let x = Math.floor(Math.random() * 100);
     let y = Math.floor(Math.random() * 100);
-    let width = Math.floor(Math.random() * 150) + 150; 
+    let width = Math.floor(Math.random() * 150) + 150;
 
     shape.style.top = `${y}%`;
     shape.style.left = `${x}%`;
-    console.log(width)
+    console.log(width);
     shape.style.width = `${width}px`;
     shape.style.display = "block";
   });
 }
 
-
 loadLocalNotes();
 loadShapePositions();
-
-
-
-
