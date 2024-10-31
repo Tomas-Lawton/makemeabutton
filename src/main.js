@@ -13,14 +13,6 @@ function saveLocalNote(data) {
   localStorage.setItem("noteCounter", noteCounter);
 }
 
-function deleteLocalNote(index) {
-  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  console.log("delete, ", index)
-  delete savedNotes[index];
-  console.log(savedNotes)
-  localStorage.setItem("notes", JSON.stringify(savedNotes));
-}
-
 function loadLocalNotes() {
   noteCounter = JSON.parse(localStorage.getItem("noteCounter")) || 0; // init 0
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {}; // init empty
@@ -43,8 +35,6 @@ function getDate() {
   return date;
 }
 
-
-// Create a note
 input.addEventListener("paste", (event) => {
   const noteText = (event.clipboardData || window.clipboardData).getData(
     "text"
@@ -71,3 +61,6 @@ input.addEventListener("keydown", (event) => {
 });
 
 loadLocalNotes();
+
+
+

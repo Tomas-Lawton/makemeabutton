@@ -1,5 +1,19 @@
 const notes = document.getElementById("notes");
 
+
+
+
+  
+  function deleteLocalNote(index) {
+    const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+    console.log("delete, ", index)
+    delete savedNotes[index];
+    console.log(savedNotes)
+    localStorage.setItem("notes", JSON.stringify(savedNotes));
+  }
+  
+
+
 export function createNote({ noteText, date, noteIndex }) {
 
     console.log("Creating note: ", noteText, date, noteIndex);
