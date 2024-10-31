@@ -156,8 +156,16 @@ section {
 }
 
 input::placeholder {
+  font-family: "Lexend Mega", sans-serif;
+
   color: #333333;
   opacity: 0.5;
+}
+
+input[type="text"]
+{
+  font-family: "Lexend Mega", sans-serif;
+
 }
 
 *,
@@ -179,7 +187,7 @@ input::placeholder {
 #input-zone div {
   display: flex;
   align-items: center;
-  /* gap: 1rem; */
+  margin-top: 10px;
 }
 
 #input-zone:hover {
@@ -190,9 +198,10 @@ input::placeholder {
 #input-zone label {
   text-align: center;
   width: 100%;
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 700;
   margin: 12px;
+  margin: 0;
 }
 
 #input-zone button {
@@ -241,6 +250,7 @@ input::placeholder {
   transition: 0.3s ease;
   background: white;
   outline: none;
+  margin: 0;
 }
 
 #input-zone:hover #note-input {
