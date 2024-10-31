@@ -39,7 +39,6 @@ section {
 
 h1 {
   text-align: center;
-  animation: type 1.5s steps(90) 1.5s 1 normal both, cursor 1s step-end infinite;
 }
 
 input::placeholder {
@@ -52,33 +51,6 @@ input::placeholder {
 *:after {
   box-sizing: border-box;
 }
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-
-
-@keyframes type {
-    from {
-      width: 0;
-    }
-  
-    to {
-      width: 100%;
-    }
-  }
-  
-  @keyframes cursor {
-    50% {
-      border-color: transparent;
-    }
-  }
-  
-
 
 
 #input-daddy {

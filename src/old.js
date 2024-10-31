@@ -60,7 +60,7 @@ function createNote(text, formattedDate) {
   deleteBtn.addEventListener("click", () => {
     note.remove();
     // const data = { noteText, formattedDate }
-    // saveNotesToLocalStorage();
+    // saveLocalNote();
   });
 
   actionContainer.classList.add("note-actions");
@@ -86,7 +86,7 @@ function createNote(text, formattedDate) {
   notes.appendChild(note);
 }
 
-function saveNotesToLocalStorage(data) {
+function saveLocalNote(data) {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
   console.log(savedNotes);
   savedNotes.push(data);
@@ -94,7 +94,7 @@ function saveNotesToLocalStorage(data) {
 }
 
 // Load the notes
-function loadNotesFromLocalStorage() {
+function loadLocalNotes() {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
   console.log(savedNotes);
   savedNotes.forEach((data) => {
@@ -103,7 +103,7 @@ function loadNotesFromLocalStorage() {
   });
 }
 
-function getCurentDate() {
+function getDate() {
     const currentDate = new Date();
     const formattedDate = `${(currentDate.getMonth() + 1)
         .toString()
@@ -123,23 +123,23 @@ input.addEventListener("paste", (event) => {
   input.value = "";
 
   const noteText = pastedText;
-  const formattedDate = getCurentDate()
+  const formattedDate = getDate()
   createNote(noteText, formattedDate);
   const data = { noteText, formattedDate };
-  saveNotesToLocalStorage(data);
+  saveLocalNote(data);
 });
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && input.value.trim() !== "") {
     const noteText = input.value.trim();
-    const formattedDate = getCurentDate()
+    const formattedDate = getDate()
     createNote(noteText, formattedDate);
     const data = { noteText, formattedDate };
-    saveNotesToLocalStorage(data);
+    saveLocalNote(data);
     input.value = "";
   }
 });
 
 // Load notes on page load
-loadNotesFromLocalStorage();
+loadLocalNotes();
 

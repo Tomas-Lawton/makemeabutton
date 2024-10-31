@@ -2,8 +2,9 @@ const input = document.getElementById("note-input");
 const notes = document.getElementById("notes");
 let noteCounter = 0;
 
-function createNote({ noteText, formattedDate, noteCounter }) {
-  console.log("Creating note: ", noteCounter);
+function createNote({ noteText, date, noteIndex }) {
+
+  console.log("Creating note: ", noteText, date, noteIndex);
 
   // NOTE CONTENT
   const noteContent = document.createElement("div");
@@ -13,7 +14,7 @@ function createNote({ noteText, formattedDate, noteCounter }) {
   note.classList.add("note");
 
   const noteHeading = document.createElement("h3");
-  noteHeading.textContent = `📝 Note ${noteCounter + 1}`; // Display note index + 1 for user-friendly numbering
+  noteHeading.textContent = `📝 Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
   noteHeading.classList.add("note-heading");
 
   const noteTextDiv = document.createElement("div");
@@ -26,7 +27,7 @@ function createNote({ noteText, formattedDate, noteCounter }) {
   //   NOTE ACTIONS
   const actionContainer = document.createElement("div");
   const dateElem = document.createElement("p");
-  dateElem.textContent = formattedDate;
+  dateElem.textContent = date;
   dateElem.classList.add("note-date");
 
   const copyBtn = document.createElement("button");
@@ -58,9 +59,9 @@ function createNote({ noteText, formattedDate, noteCounter }) {
   deleteBtn.classList.add("delete-btn");
 
   deleteBtn.addEventListener("click", () => {
-    console.log("deleting note: ", noteCounter);
+    console.log("deleting note: ", noteIndex);
     note.remove();
-    deleteNoteFromLocalStorage(noteCounter); // Remove note using index
+    deleteLocalNote(noteIndex); // Remove note using index
   });
 
   actionContainer.classList.add("note-actions");
@@ -69,7 +70,6 @@ function createNote({ noteText, formattedDate, noteCounter }) {
   actionContainer.appendChild(deleteBtn);
 
   //   NOTE ELEMENTS
-
   note.appendChild(noteContent);
   note.appendChild(actionContainer);
 
@@ -86,64 +86,72 @@ function createNote({ noteText, formattedDate, noteCounter }) {
   notes.prepend(note); // switch with append
 }
 
-function saveNotesToLocalStorage(data, noteCounter) {
+
+function saveLocalNote(data) {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  savedNotes[noteCounter - 1] = data; // Set the new to latest key value
+  const key = (noteCounter).toString()
+  console.log("Saving note ", key)
+  savedNotes[key] = data; // set key (index) to current count
   localStorage.setItem("notes", JSON.stringify(savedNotes));
-  localStorage.setItem("noteCounter", noteCounter + 1); // increment here to avoid duplicated one
+  noteCounter++;  // increment the count
+  localStorage.setItem("noteCounter", noteCounter);
 }
 
-function deleteNoteFromLocalStorage(index) {
+function deleteLocalNote(index) {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+  console.log("delete, ", index)
   delete savedNotes[index];
+  console.log(savedNotes)
   localStorage.setItem("notes", JSON.stringify(savedNotes));
 }
 
-function loadNotesFromLocalStorage() {
+function loadLocalNotes() {
   noteCounter = JSON.parse(localStorage.getItem("noteCounter")) || 0; // init 0
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {}; // init empty
 
   Object.entries(savedNotes)
-  .sort(([, a], [, b]) => a.noteCounter - b.noteCounter) 
+  .sort(([, a], [, b]) => a.noteIndex - b.noteIndex) 
   .forEach(([, data]) => {
     createNote(data);
   });
 }
 
-function getCurentDate() {
+function getDate() {
   const currentDate = new Date();
-  const formattedDate = `${(currentDate.getMonth() + 1)
+  const date = `${(currentDate.getMonth() + 1)
     .toString()
     .padStart(2, "0")}/${currentDate
     .getDate()
     .toString()
     .padStart(2, "0")}/${currentDate.getFullYear()}`;
-  return formattedDate;
+  return date;
 }
 
+
+// Create a note
 input.addEventListener("paste", (event) => {
   const noteText = (event.clipboardData || window.clipboardData).getData(
     "text"
   );
   event.preventDefault();
-  const formattedDate = getCurentDate();
-  const data = { noteText, formattedDate, noteCounter };
+  const date = getDate();
+
+  const data = { noteText, date, noteIndex: noteCounter };
   createNote(data);
-  saveNotesToLocalStorage(data, noteCounter);
-  noteCounter++;
+  saveLocalNote(data);
   input.value = "";
 });
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && input.value.trim() !== "") {
     const noteText = input.value.trim();
-    const formattedDate = getCurentDate();
-    const data = { noteText, formattedDate, noteCounter };
+    const date = getDate();
+
+    const data = { noteText, date, noteIndex: noteCounter };
     createNote(data);
-    saveNotesToLocalStorage(data, noteCounter);
-    noteCounter++;
+    saveLocalNote(data);
     input.value = "";
   }
 });
 
-loadNotesFromLocalStorage();
+loadLocalNotes();
