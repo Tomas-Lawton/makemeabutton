@@ -87,12 +87,14 @@ function loadShapePositions() {
     shape.style.left = `${x}%`;
     console.log(width)
     shape.style.width = `${width}px`;
+    shape.style.display = "block";
   });
 }
 
 
 loadLocalNotes();
 loadShapePositions();
+
 
 
 

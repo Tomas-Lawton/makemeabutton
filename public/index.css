@@ -82,11 +82,23 @@ h1 {
   width: 18ch;
 }
 
-/* Additional style to handle second line */
 .line-break {
   display: inline-block; /* Ensures the animation works for each line */
   overflow: hidden; /* Hides overflow */
   white-space: nowrap; /* Prevents line wrap */
+}
+
+.draggable {
+  cursor: grab;
+
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid black;
+  width: fit-content;
+}
+
+.draggable.dragging {
+  opacity: 0.5;
 }
 
 
@@ -103,6 +115,7 @@ h1 {
   /* transition: top 0.5s ease, left 0.5s ease, width 0.5s ease; */
   z-index: -1000;
   animation: spin 8s linear infinite;
+  display: none;
 }
 
 
@@ -247,7 +260,6 @@ input[type="text"]
 .note:hover {
   transform: scale(1.05);
   transition: 0.3s ease;
-  cursor: pointer;
   box-shadow: 0.4rem 0.4rem #05060f;
   color: black;
 }
