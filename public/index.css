@@ -162,7 +162,7 @@ input[type="text"]
 #input-zone div {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin: 12px 0;
 }
 
 #input-zone:hover {
