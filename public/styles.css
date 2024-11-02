@@ -190,6 +190,38 @@ input[type="text"]
   top: -2rem;
   width: 50px;
   height: auto;
+  transition: .3s ease;
+}
+
+#input-zone:hover img {
+  transform: scale(1.2);
+}
+
+
+#input-zone:hover .gesture {
+  display: inline-block;
+  animation: gesture 4s ease-in-out infinite;
+}
+
+@keyframes gesture {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-30deg); /* First downward motion */
+  }
+  40% {
+    transform: rotate(45deg);  /* First upward peak */
+  }
+  60% {
+    transform: rotate(-20deg); /* First return downward */
+  }
+  80% {
+    transform: rotate(20deg);  /* Second upward peak */
+  }
+  100% {
+    transform: rotate(0deg);   /* Back to neutral */
+  }
 }
 
 #input-zone div {
@@ -429,8 +461,6 @@ input[type="text"]
     transform: rotate(360deg);
   }
 }
-
-
 
 
 
