@@ -35,17 +35,20 @@ export function createNote({ noteText, date, noteIndex }) {
   
   
   const editBtn = document.createElement("div");
+  editBtn.classList.add("edit")
   const editIcon = document.createElement("img");
   editIcon.src = "./public/uicons/uicons-round-medium-outline-pencil.svg"
   editBtn.appendChild(editIcon);
 
 
   const discardBtn = document.createElement("div");
+  discardBtn.classList.add("discard")
   const discardIcon = document.createElement("img")
   discardIcon.src = "./public/uicons/uicons-round-medium-outline-close.svg"
   discardBtn.appendChild(discardIcon);
 
   const acceptBtn = document.createElement("div");
+  acceptBtn.classList.add("accept")
   const acceptIcon = document.createElement("img");
   acceptIcon.src = "./public/uicons/uicons-round-medium-outline-checkmark.svg"
   acceptBtn.appendChild(acceptIcon);
