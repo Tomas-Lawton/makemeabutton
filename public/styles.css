@@ -194,7 +194,7 @@ input[type="text"]
 }
 
 #input-zone:hover img {
-  transform: scale(1.2);
+  transform: scale(1.4);
 }
 
 
@@ -233,6 +233,9 @@ input[type="text"]
 #input-zone:hover {
   box-shadow: 0.4rem 0.4rem #05060f;
   color: black;
+
+  transform: translate(1px, 1px);
+
 }
 
 #input-zone label {
