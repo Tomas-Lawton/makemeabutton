@@ -30,7 +30,7 @@ export function createNote({ noteText, date, noteIndex }) {
 
   
   const noteHeading = document.createElement("h3");
-  noteHeading.textContent = `📝 Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
+  noteHeading.textContent = `✍️ Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
   noteHeading.classList.add("note-title");
   
   

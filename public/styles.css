@@ -126,12 +126,16 @@ h1 {
 }
 
 
-/* MAIN */
 #header-shape {
   width: 160px;
   height: 160px;
+  /* z-index: -1; */
   animation: spin 8s linear infinite;
-  z-index: -1000;
+}
+
+
+#header-shape:hover {
+  animation-play-state: paused; /* Pauses animation on hover */
 }
 
 .background-svg {
@@ -288,7 +292,7 @@ input[type="text"]
 #instant-paste {
   display: inline-flex;
   align-items: center;
-  gap: 12px; 
+  gap: 6px; 
   padding: 8px 16px;
   cursor: pointer;
 }
@@ -375,6 +379,7 @@ input[type="text"]
 .edit {
   cursor: pointer;
   margin-left: 8px;
+  opacity: 60%;
 }
 
 .accept {
