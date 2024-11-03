@@ -148,6 +148,7 @@ button {
   font-family: "Lexend Mega", sans-serif;
   text-transform: uppercase;
   letter-spacing: -1.5px;
+  font-weight: 500;
 }
 section {
   margin: 0 10%;
@@ -184,7 +185,7 @@ input[type="text"]
   position: relative;
 }
 
-#input-zone img {
+#stars {
   position: absolute;
   left: -2rem;
   top: -2rem;
@@ -193,7 +194,7 @@ input[type="text"]
   transition: .3s ease;
 }
 
-#input-zone:hover img {
+#input-zone:hover #stars {
   transform: scale(1.4);
 }
 
@@ -249,13 +250,14 @@ input[type="text"]
 
 #input-zone button {
   display: flex;
-  padding: 8px 16px;
+  padding: 8px 16px 8px 8px;
   cursor: pointer;
   background-color: #ffce00;
   border: 4px solid black;
   transition: 0.3s ease;
   border-radius: 8px;
   align-items: center;
+  border-radius: 2rem;
 }
 
 #input-zone:hover button{
@@ -273,6 +275,8 @@ input[type="text"]
   height: 60px;
   display: flex;
   align-items: center;
+  background: black;
+    border-radius: 2rem;
 }
 #note-input, #instant-paste {
   height: 100%;
@@ -281,12 +285,39 @@ input[type="text"]
 }
 
 
+#instant-paste {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px; 
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+#instant-paste .icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #05060f;
+  border-radius: 50%;
+}
+
+.icon-circle img {
+  filter: brightness(0) invert(1); /* Makes icon white */
+}
+
+#instant-paste img {
+  width: 20px;
+  height: 20px;
+}
+
 
 #note-input {
   padding: 12px 20px;
   width: 100%;
   border: 4px solid black;
-  border-radius: 12px;
+  border-radius: 2rem;
   transition: 0.3s ease;
   background: white;
   outline: none;

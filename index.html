@@ -30,7 +30,7 @@
 
     <section>
       <div id="input-zone">
-        <img src="./public/svg/stars.svg" />
+        <img id="stars" src="./public/svg/stars.svg" />
         <label for="Paste Zone">Paste Zone <span class="gesture">🤌</span></label>
         <div id="inputs">
           <input
@@ -39,7 +39,12 @@
             placeholder="Start by pasting or typing here..."
             type="text"
           /><br /><br />
-          <button id="instant-paste">Instant Paste</button>
+          <button id="instant-paste">
+            <div class="icon-circle">
+                <img src="./public/uicons/uicons-round-medium-outline-tray-in.svg" alt="Clipboard Icon" width="20" height="20">
+            </div>
+            <span>Paste</span>
+        </button>
         </div>
         <p>Ctrl+V, type and enter, or instant paste.</p>
       </div>
