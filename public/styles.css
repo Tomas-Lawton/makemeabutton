@@ -21,8 +21,7 @@ body {
   min-height: 100vh;
 
   margin: 0;
-
-
+  /* 
   background-color: #ffce00;
   --color: #f6c205;
   background-image: linear-gradient(
@@ -48,29 +47,42 @@ body {
       var(--color) 76%,
       transparent 77%,
       transparent
-    );
-  /* background-size: 85px 85px;
+    ); */
+  /* background-size: 220px 220px; */
 
-
-  background-color: #f8f5f2;
-  --color: #fff8f4;
-  background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%, transparent); */
-  background-size: 220px 220px;
+  /* background-color: #fff6d3; */
+  background-color: rgb(254, 254, 239);
 }
 
 header {
-  margin: 30px;
+  /* margin: 30px; */
+  /* display: flex;
+  justify-content: space-between;
+  width: calc(100% - 60px);
+  align-items: center;
+
+  margin: 30px 8rem; */
+
+  /* margin: 30px; */
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 60px); 
+  /* width: calc(100% - 60px); */
   align-items: center;
+  margin: 30px 8rem;
 }
 
 footer {
-  margin: 0 30px 30px 30px;
+  /* margin: 0 30px 30px 30px;
   display: flex;
   justify-content: space-between;
   width: calc(100% - 60px);
+  align-items: baseline; */
+
+  /* margin: 0 30px 30px 30px; */
+  margin: 30px 8rem;
+  display: flex;
+  justify-content: space-between;
+  /* width: calc(100% - 60px); */
   align-items: baseline;
 }
 .wrapper {
@@ -78,9 +90,15 @@ footer {
 }
 
 h1 {
+  /* margin: 0;
+  white-space: nowrap;
+  overflow: hidden; */
+
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .line-break {
@@ -88,13 +106,15 @@ h1 {
   overflow: hidden;
   white-space: nowrap;
   font-family: "Reenie Beanie", cursive;
-  font-size: 4rem;
+  font-size: 7rem;
   border-right: 2px solid black;
-  animation: typing 3s steps(20, end) forwards, /* Typing effect */
-             blink-caret 0.5s step-end infinite; /* Continuous blink while typing */
+  animation: typing 3s steps(10, end) forwards,
+    blink-caret 0.5s step-end infinite;
   width: 0;
   margin: 0;
-  color: #ff4910;
+  /* color: #ff4910; */
+  /* color: #3300FF; */
+  font-weight: bold;
 }
 
 @keyframes typing {
@@ -102,12 +122,13 @@ h1 {
     width: 0;
   }
   to {
-    width: 20ch;
+    width: 10ch;
   }
 }
 
 @keyframes blink-caret {
-  0%, 100% {
+  0%,
+  100% {
     border-color: black;
   }
   50% {
@@ -115,16 +136,14 @@ h1 {
   }
 }
 
-
 .draggable {
   cursor: grab;
 }
 
 .draggable.dragging {
   opacity: 0.5;
-  background: #1bedca;
+  /* background: #1bedca; */
 }
-
 
 #header-shape {
   width: 160px;
@@ -133,20 +152,17 @@ h1 {
   animation: spin 8s linear infinite;
 }
 
-
 #header-shape:hover {
   animation-play-state: paused; /* Pauses animation on hover */
 }
 
 .background-svg {
-  position:fixed;
+  position: fixed;
   /* transition: top 0.5s ease, left 0.5s ease, width 0.5s ease; */
   z-index: -1000;
   animation: spin 8s linear infinite;
   display: none;
 }
-
-
 
 button {
   font-family: "Lexend Mega", sans-serif;
@@ -155,8 +171,20 @@ button {
   font-weight: 500;
 }
 section {
-  margin: 0 10%;
+  /* margin: 0 10%; */
   flex: 1;
+
+  margin: 0 8rem;
+  /* background: #ffdd4d; */
+  padding: 4rem;
+  /* border-radius: 2rem; */
+  border: 4px solid #05060f;
+
+  background: #c9ceffed;
+}
+
+section > p {
+  text-align: center;
 }
 
 input::placeholder {
@@ -166,10 +194,8 @@ input::placeholder {
   opacity: 0.5;
 }
 
-input[type="text"]
-{
+#inputs input {
   font-family: "Lexend Mega", sans-serif;
-
 }
 
 *,
@@ -194,13 +220,12 @@ input[type="text"]
   top: -2rem;
   width: 50px;
   height: auto;
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 #input-zone:hover #stars {
   transform: scale(1.4);
 }
-
 
 #input-zone:hover .gesture {
   display: inline-block;
@@ -215,16 +240,16 @@ input[type="text"]
     transform: rotate(-30deg); /* First downward motion */
   }
   40% {
-    transform: rotate(45deg);  /* First upward peak */
+    transform: rotate(45deg); /* First upward peak */
   }
   60% {
     transform: rotate(-20deg); /* First return downward */
   }
   80% {
-    transform: rotate(20deg);  /* Second upward peak */
+    transform: rotate(20deg); /* Second upward peak */
   }
   100% {
-    transform: rotate(0deg);   /* Back to neutral */
+    transform: rotate(0deg); /* Back to neutral */
   }
 }
 
@@ -239,7 +264,6 @@ input[type="text"]
   color: black;
   border: 4px solid #000000;
   transform: translate(1px, 1px);
-
 }
 
 #input-zone label {
@@ -263,11 +287,11 @@ input[type="text"]
   border-radius: 2rem;
 }
 
-#input-zone:hover button{
+#input-zone:hover button {
   background-color: #4fe803;
 }
 
-#input-zone:hover button:hover{
+#input-zone:hover button:hover {
   transform: scale(1.05);
   box-shadow: 0.2rem 0.2rem #05060f;
   background-color: #4fe803;
@@ -279,19 +303,19 @@ input[type="text"]
   display: flex;
   align-items: center;
   /* background: black; */
-    border-radius: 2rem;
+  border-radius: 2rem;
 }
-#note-input, #instant-paste {
+#note-input,
+#instant-paste {
   height: 100%;
   text-wrap: nowrap;
-  margin-left: .5rem;
+  margin-left: 0.5rem;
 }
-
 
 #instant-paste {
   display: inline-flex;
   align-items: center;
-  gap: 6px; 
+  gap: 6px;
   padding: 8px 16px;
   cursor: pointer;
 }
@@ -315,7 +339,6 @@ input[type="text"]
   height: 20px;
 }
 
-
 #note-input {
   padding: 12px 20px;
   width: 100%;
@@ -335,12 +358,11 @@ input[type="text"]
   border-color: #48dc00;
 }
 
-
-
 #notes {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 .note {
@@ -348,15 +370,15 @@ input[type="text"]
   justify-content: space-between;
   border-radius: 2rem;
   background: white;
-  padding: 2rem;
+  /* padding: 2rem; */
   border: 4px solid #05060f;
-  overflow: hidden;
+  /* overflow: hidden; */
   font-size: 30px;
-  gap: .5rem;
+  gap: 0.5rem;
   min-height: 300px;
-  flex-direction: column; 
-  flex: 0 1 calc(49%); 
-  margin-bottom: 24px;
+  flex-direction: column;
+  flex: 0 1 calc(49%);
+  /* margin-bottom: 24px; */
 }
 
 .note:hover {
@@ -367,32 +389,95 @@ input[type="text"]
 }
 
 .note-header {
+  /* display: flex;
+  justify-content: flex-end;
+  align-items: center; */
+
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  background: #cbffdb;
+  border-radius: 1.7rem 1.7rem 0 0;
+  padding: 1rem 1rem 0.7rem 1rem;
 }
-
-/* .note-header:last-child {
-  margin-left: 8px;
-} */
 
 .edit {
   cursor: pointer;
+  display: flex;
+  padding: 8px 16px;
+  background: #d4a2ff;
+  cursor: pointer;
+  box-shadow: 0.1rem 0.1rem #05060f;
+  transition: 0.3s ease;
+  border-radius: 2rem;
+  border: 4px solid #05060f;
+  padding: 8px;
+  /* margin: 0 8px; */
   margin-left: 8px;
-  opacity: 60%;
+}
+
+.edit:hover {
+  background: #d8adfd;
+  box-shadow: 0.2rem 0.2rem #05060f;
+  cursor: pointer;
+  transform: scale(1.05);
 }
 
 .accept {
   cursor: pointer;
   margin-left: 8px;
-  display: none
+  display: none;
+  cursor: pointer;
+  display: flex;
+  padding: 8px 16px;
+  background: #d4a2ff;
+  cursor: pointer;
+  box-shadow: 0.1rem 0.1rem #05060f;
+  transition: 0.3s ease;
+  border-radius: 2rem;
+  border: 4px solid #05060f;
+  padding: 8px;
+  margin: 0;
+  margin-left: 8px;
+  display: none;
+
+  background: #48dc00;
+}
+
+.accept:hover {
+  background-color: #4fe803;
+  box-shadow: 0.2rem 0.2rem #05060f;
+  cursor: pointer;
+  transform: scale(1.05);
 }
 
 .discard {
   cursor: pointer;
   margin-left: 8px;
-  display: none
+  display: none;
+  cursor: pointer;
+  display: flex;
+  padding: 8px 16px;
+  /* background: #d4a2ff; */
+  cursor: pointer;
+  box-shadow: 0.1rem 0.1rem #05060f;
+  transition: 0.3s ease;
+  border-radius: 2rem;
+  border: 4px solid #05060f;
+  padding: 8px;
+  margin: 0;
+  margin-left: 8px;
+  display: none;
+
+  background: #ffce00;
 }
 
+.discard:hover {
+  background-color: #ffdb4b;
+  box-shadow: 0.2rem 0.2rem #05060f;
+  cursor: pointer;
+  transform: scale(1.05);
+}
 
 .note-content {
   display: flex;
@@ -406,16 +491,21 @@ input[type="text"]
   justify-content: space-between;
   gap: 8px;
   /* align-items: end; */
+  align-items: end;
+  padding: 1rem;
 }
 
 .note-title {
   margin: 0;
-  /* margin-bottom: 4px; */
-  color: #333333;
+  color: black;
   font-size: 0.8em;
   width: 100%;
-}
+  font-weight: bold;
 
+  font-family: "Lexend Mega", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
 
 .note-text {
   font-family: "Reenie Beanie", cursive;
@@ -423,15 +513,35 @@ input[type="text"]
   font-style: normal;
   font-size: 1em;
   color: #333333;
-
-  /* Flexbox for multi-line clamping */
-  display: -webkit-box;          /* Use the flexible box layout */
-  -webkit-box-orient: vertical;  /* Orient the box vertically */
-  -webkit-line-clamp: 6;         /* Set the number of lines to display */
-  overflow: hidden;               /* Hide the overflow text */
-  text-overflow: ellipsis;       /* Show ellipsis for overflow */
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1rem;
 }
 
+.note-content input,
+textarea {
+  border: none;
+  margin-left: 0 0 0 -2px;
+  outline: none;
+  padding: 0;
+  resize: none;
+
+  /* background: aliceblue; */
+  /* border-radius: 4px; */
+  background: #fffccf;
+  border-radius: 8px;
+}
+
+/* 
+input .note-text{
+  padding: 0;
+  margin: 0;
+} */
 
 .footer-text {
   font-size: 1em;
@@ -440,28 +550,29 @@ input[type="text"]
 .note-date {
   color: #a0a0a0;
   font-size: 0.5em;
-  width: 100%;
-  margin: 8px 0;
+  /* width: 100%; */
+  /* margin: 8px 0; */
 }
 
 .copy-btn {
   display: flex;
   /* border: none; */
-  border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
 
   background: #48dc00;
 
-  border: 2px solid black;
+  /* border: 2px solid black; */
   box-shadow: 0.1rem 0.1rem #05060f;
   transition: 0.3s ease;
 
   align-items: center;
   gap: 8px;
   font-size: 1rem;
-}
 
+  border-radius: 2rem;
+  border: 4px solid #05060f;
+}
 
 .copy-btn:hover {
   box-shadow: 0.2rem 0.2rem #05060f;
@@ -472,14 +583,18 @@ input[type="text"]
 
 .delete-btn {
   display: flex;
-  border-radius: 8px;
   padding: 8px 16px;
   background: #ff4910;
   cursor: pointer;
   /* color: white; */
-  border: 2px solid black;
   box-shadow: 0.1rem 0.1rem #05060f;
   transition: 0.3s ease;
+
+  border-radius: 2rem;
+  border: 4px solid #05060f;
+  padding: 8px;
+
+  margin-left: 8px;
 }
 
 .delete-btn:hover {
@@ -514,7 +629,6 @@ input[type="text"]
   color: black;
 }
 
-
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -524,11 +638,9 @@ input[type="text"]
   }
 }
 
-
-
-@media (max-width: 1000px) {  /* For small screens */
+@media (max-width: 1000px) {
+  /* For small screens */
   .note {
-    flex: 0 1 100%; 
+    flex: 0 1 100%;
   }
 }
-
