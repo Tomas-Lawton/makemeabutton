@@ -1,5 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
   const notesList = document.getElementById("notes-list");
+  const openButton = document.getElementById("instant-paste")
+
+
+
+  openButton.addEventListener("click", function () {
+    openButton.addEventListener("click", function () {
+        chrome.tabs.create({}); // This opens a new empty tab
+    });
+});
 
   // Retrieve notes from sync storage
   chrome.storage.sync.get('notes', (data) => {
@@ -36,3 +45,4 @@ function insertNoteIntoActiveTab(note) {
         }
     });
 }
+

@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Sixtyfour+Convergence&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Reenie+Beanie&family=Sixtyfour+Convergence&display=swap");
 
-::-moz-selection { /* Code for Firefox */
+::-moz-selection {
+  /* Code for Firefox */
   background: rgb(249, 222, 75);
   /* background: rgb(46, 4, 245); */
-
 }
 
 ::selection {
@@ -33,7 +33,7 @@ body {
   min-height: 100vh;
 
   margin: 0;
-  
+
   /* background-color: rgb(254, 254, 239);;
   --color: rgb(255, 255, 177);;
   background-image: linear-gradient(
@@ -114,7 +114,7 @@ footer div {
   align-items: center;
 }
 
-#orb { 
+#orb {
   width: 120vw;
   left: 100px;
   position: fixed;
@@ -153,7 +153,6 @@ h1 {
   font-weight: bold;
   background-color: #ffce00;
   /* background: rgb(46, 4, 245); */
-
 }
 
 @keyframes typing {
@@ -174,7 +173,6 @@ h1 {
     border-color: transparent;
   }
 }
-
 
 .draggable {
   cursor: grab;
@@ -234,11 +232,10 @@ section {
   position: relative;
 }
 
-section > p {
+section > h2 {
   text-align: center;
   font-weight: bold;
 }
-
 
 @keyframes bubble {
   0% {
@@ -291,7 +288,7 @@ section > p {
   top: calc(70%);
   width: 80px;
   transform: translate(-50%, 50%);
-  animation: bubble-2 2s ease-in-out 1; 
+  animation: bubble-2 2s ease-in-out 1;
 }
 
 #bang-1:hover {
@@ -301,9 +298,6 @@ section > p {
 #bang-2:hover {
   animation: bubble-2 2s ease-in-out infinite;
 }
-
-
-
 
 input::placeholder {
   font-family: "Lexend Mega", sans-serif;
@@ -604,7 +598,7 @@ input::placeholder {
 
 .note-content {
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   height: 100%;
 }
 
@@ -644,7 +638,7 @@ input::placeholder {
   /* word-wrap: break-word;
   word-break: break-all; */
   white-space: break-spaces;
-  
+
   /* line-height: 1.3; */
   overflow: hidden;
   display: -webkit-box;

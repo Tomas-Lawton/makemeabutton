@@ -1,24 +1,29 @@
 {
-  "name": "Hello Extensions",
+  "name": "Contact Mapping Extension",
   "description": "Base Level Extension",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": ["storage", "tabs", "scripting", "activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "public/icon/star.png",
       "48": "public/icon/star.png",
       "128": "public/icon/star.png"
     }
   },
-  "background": {
-    "service_worker": "background.js"
-  },
   "content_scripts": [
     {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"]
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["content.styles.css", "popup.html", "index.html", "public/icon/star.png"],
+      "matches": ["<all_urls>"]
     }
   ],
   "chrome_url_overrides": {
@@ -28,5 +33,8 @@
     "16": "public/icon/star.png",
     "48": "public/icon/star.png",
     "128": "public/icon/star.png"
-  }
+  },
+  "host_permissions": [
+    "chrome-extension://*/*"
+  ]
 }
