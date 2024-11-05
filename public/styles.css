@@ -22,6 +22,34 @@ a {
   text-decoration: none;
 }
 
+/* li {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 2rem;
+  background: rgb(201 206 255 / 98%);
+  border: 4px solid #05060f;
+  font-size: 1rem;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: #00bf9f;
+  border-radius: 1rem;
+  gap: .5rem;
+
+  background-color: red;
+} */
+
 body {
   font-family: "Lexend Mega", sans-serif;
   font-optical-sizing: auto;

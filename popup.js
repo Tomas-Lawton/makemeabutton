@@ -10,13 +10,19 @@ document.addEventListener("DOMContentLoaded", function () {
       const notes = data.notes || {};
       notesList.innerHTML = '';
   
+      if (Object.keys(notes).length > 0) {
       Object.keys(notes).forEach((key) => {
         const note = notes[key];
         let li = document.createElement('li');
-        li.textContent = note.noteName || `🗒️ Note ${note.noteIndex + 1}`;
+        li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
         li.onclick = () => insertNoteIntoActiveTab(note.noteText);
         notesList.appendChild(li);
       });
+      } else {
+        let li = document.createElement('li');
+        li.textContent = `Notes appear here. Type “/” followed by the note name to insert it.`
+        notesList.appendChild(li);
+      }
     });
   });
   

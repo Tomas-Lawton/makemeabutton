@@ -26,6 +26,11 @@ function createNoteInputField(notes) {
   inputField.setAttribute("popup_input_box", "popup-input-box-1234");
   inputField.style.position = "absolute";
   inputField.style.zIndex = "9999";
+  inputField.style.width = `200px`;
+  inputField.style.height = `50px`;
+  inputField.style.outline = "none"; 
+
+
 
   if (lastFocusedElement) {
     const rect = lastFocusedElement.getBoundingClientRect();
@@ -41,68 +46,76 @@ function createNoteInputField(notes) {
   notesContainer.id = "notes-container"; // Set ID for styling
   notesContainer.style.position = "absolute";
   notesContainer.style.zIndex = "9999";
-  notesContainer.style.listStyleType = "none";
-  notesContainer.style.padding = "0";
-  notesContainer.style.margin = "0";
-  notesContainer.style.top = `${inputField.getBoundingClientRect().bottom + window.scrollY}px`;
+  notesContainer.style.listStyleType = "none"; // Already set
+  notesContainer.style.top = `${inputField.getBoundingClientRect().bottom + window.scrollY + 5}px`;
   notesContainer.style.left = `${inputField.getBoundingClientRect().left + window.scrollX}px`;
   notesContainer.style.width = `${inputField.offsetWidth}px`;
-  notesContainer.style.backgroundColor = "white";
-  notesContainer.style.border = "1px solid #ccc";
-  notesContainer.style.maxHeight = "200px";
-  notesContainer.style.overflowY = "auto";
+  notesContainer.style.backgroundColor = "#00bf9f"; // Updated background color
+  notesContainer.style.maxHeight = "200px"; // Set max height
+//   notesContainer.style.overflowY = "auto"; // Enable vertical scrolling
   notesContainer.style.display = "none"; // Initially hidden
+  notesContainer.style.flexDirection = "column"; // Set flex direction
+  notesContainer.style.flex = "1"; // Allow it to grow
+  notesContainer.style.gap = "0.5rem"; // Add gap between items
+  notesContainer.style.borderRadius = "12px"; // Add gap between items
+
+  const title = document.createElement("h2");
+  title.textContent = "Notes";
+  notesContainer.appendChild(title)
   document.body.appendChild(notesContainer);
 
   // Function to show matching notes
   const showMatchingNotes = () => {
     const query = inputField.value.toLowerCase();
     const matchingNotes = Object.entries(notes)
-      .filter(
-        ([, note]) =>
-          note.noteName && note.noteName.toLowerCase().startsWith(query)
-      )
-      .map(([, note]) => note);
-
-    // If there are no matches, show the first five notes
-    if (matchingNotes.length === 0) {
-      const firstFiveNotes = Object.entries(notes)
-        .slice(0, 5)
+        .filter(
+            ([, note]) =>
+                note.noteName && note.noteName.toLowerCase().startsWith(query)
+        )
         .map(([, note]) => note);
-      matchingNotes.push(...firstFiveNotes);
+
+    // If no matches, show the first five notes
+    if (matchingNotes.length === 0) {
+        const firstFiveNotes = Object.entries(notes)
+            .slice(0, 5)
+            .map(([, note]) => note);
+        matchingNotes.push(...firstFiveNotes);
     }
+
+    console.log('Matching notes:', matchingNotes);
 
     // Clear previous notes
     notesContainer.innerHTML = "";
 
     // Populate matching notes
     matchingNotes.forEach((note) => {
-      const li = document.createElement("li");
-      li.textContent = note.noteName; // Use noteName for display
-      li.style.cursor = "pointer";
-      li.style.padding = "4px";
-      li.style.borderBottom = "1px solid #ccc";
+        const li = document.createElement("li");
+        li.textContent = note.noteName; // Use noteName for display
+        li.style.cursor = "pointer";
+        li.style.padding = "1rem"; // Updated padding
+        // li.style.borderBottom = "1px solid #000";
+        li.style.fontSize = "1rem";
 
-      // Ensure that the note has text to paste
-      li.addEventListener("click", () => {
-        console.log('Note clicked:', note.noteName);
-        if (note.noteText) {
-          pasteValueToTarget(note.noteText, true); // Paste the note content
-        } else {
-          console.warn(`No text available for note: ${note.noteName}`);
-        }
+        li.addEventListener("click", () => {
+            console.log('Note clicked:', note.noteName);
+            if (note.noteText) {
+                pasteValueToTarget(note.noteText, true); // Paste the note content
+            } else {
+                console.warn(`No text available for note: ${note.noteName}`);
+            }
+            inputField.blur();
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
+            notesContainer.style.display = "none"; // Hide notes container
+        });
 
-        inputField.blur(); // Remove input field after selection
-        lastFocusedElement.focus(); // Restore focus to the last focused input
-        notesContainer.style.display = "none"; // Hide notes container
-      });
-
-      notesContainer.appendChild(li);
+        notesContainer.appendChild(li);
     });
+
     // Show or hide the container based on matches
     notesContainer.style.display = matchingNotes.length > 0 ? "block" : "none";
-  };
-
+};
   // Show matching notes initially and on each keyup
   showMatchingNotes(); // Show notes immediately
   inputField.addEventListener("keyup", showMatchingNotes);

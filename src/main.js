@@ -151,7 +151,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   noteHeader.classList.add("note-header");
 
   let noteHeading = document.createElement("h3");
-  noteHeading.textContent = noteName || `🗒️ Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
+  noteHeading.textContent = noteName || `Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
   noteHeading.classList.add("note-title");
 
   const editBtn = document.createElement("div");
