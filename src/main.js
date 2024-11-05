@@ -219,6 +219,9 @@ function createNote({ noteText, date, noteIndex }) {
     input2.classList.add("note-text");
     noteTextDiv.replaceWith(input2);
 
+    actionContainer.classList.add("note-background")
+    note.draggable = false
+
     const autoResize = () => {
       input2.style.height = "auto"; // Reset height
       input2.style.height = `${input2.scrollHeight}px`; // Set height based on scrollHeight
@@ -251,6 +254,10 @@ function createNote({ noteText, date, noteIndex }) {
     noteTextDiv.replaceWith(newTextDiv);
     noteHeading = newHeading;
     noteTextDiv = newTextDiv;
+
+    actionContainer.classList.remove("note-background")
+    note.draggable = true
+
   
     editBtn.style.display = "flex";
     // deleteBtn.style.display = "flex";
@@ -273,6 +280,9 @@ function createNote({ noteText, date, noteIndex }) {
   
     noteHeading = newHeading;
     noteTextDiv = newTextDiv;
+
+    actionContainer.classList.remove("note-background")
+    note.draggable = true
   
     editBtn.style.display = "flex";
     // deleteBtn.style.display = "flex";
@@ -308,14 +318,15 @@ function loadShapePositions() {
   const shapes = document.querySelectorAll(".background-svg");
   shapes.forEach((shape) => {
     let x = Math.floor(Math.random() * 100);
-    let y = Math.floor(Math.random() * 100);
     let width = Math.floor(Math.random() * 150) + 150;
+    let maxY = 100 - (width / window.innerHeight) * 100;
+    let y = Math.floor(Math.random() * maxY);
 
     shape.style.top = `${y}%`;
     shape.style.left = `${x}%`;
-    console.log(width);
     shape.style.width = `${width}px`;
     shape.style.display = "block";
+    console.log(`Width: ${width}px, X: ${x}%, Y: ${y}%`);
   });
 }
 
