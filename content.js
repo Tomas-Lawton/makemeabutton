@@ -2,52 +2,107 @@ console.log("Content script loaded");
 
 let lastFocusedElement = null;
 
-// Event listener to track the last focused input, textarea, or content-editable element
 document.addEventListener('focus', (event) => {
-    // Check if the focused element is an input, textarea, or contenteditable
-    if (event.target.tagName === 'INPUT' || 
-        event.target.tagName === 'TEXTAREA' || 
-        event.target.isContentEditable) {
-        lastFocusedElement = event.target;
+    const target = event.target;
+    if ((target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) && !target.hasAttribute("popup_input_box")) {
+        lastFocusedElement = target;
+        console.log('Set target:', lastFocusedElement);
     }
-}, true); // Use capturing phase to ensure we catch focus events
+}, true);
 
-// Listen for messages from the popup
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log("Message received:", request);
-    if (request.action === "pasteValue") {
-        // First, try to get the currently active input or textarea
-        const activeElement = document.activeElement;
+function createNoteInputField(notes) {
+    console.log('Active mode');
+    const inputField = document.createElement('input');
+    inputField.setAttribute("popup_input_box", "popup-input-box-1234");
+    inputField.style.position = 'absolute';
+    inputField.style.zIndex = '9999';
 
-        // Check if the active element is a valid target
-        let targetElement = null;
-        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable)) {
-            targetElement = activeElement;
-        } else {
-            // Fallback to last focused element if no active element is valid
-            targetElement = lastFocusedElement;
-        }
+    if (lastFocusedElement) {
+        const rect = lastFocusedElement.getBoundingClientRect();
+        inputField.style.top = `${rect.bottom + window.scrollY}px`;
+        inputField.style.left = `${rect.left + window.scrollX}px`;
+    }
 
-        if (targetElement) {
-            // If the target element is contenteditable
-            if (targetElement.isContentEditable) {
-                // Create a new range and select it
-                const range = document.createRange();
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                range.selectNodeContents(targetElement);
-                range.collapse(false); // Collapse to the end of the target element
-                selection.addRange(range);
+    document.body.appendChild(inputField);
+    inputField.focus();
 
-                // Insert the text at the current selection
-                document.execCommand('insertText', false, request.value);
-            } else {
-                // For input or textarea
-                targetElement.value = request.value;
-                targetElement.dispatchEvent(new Event('input', { bubbles: true })); // Dispatch event to notify change
+    inputField.addEventListener('keyup', () => {
+        const query = inputField.value.toLowerCase();
+        const matchingNotes = Object.entries(notes)
+            .filter(([, note]) => note.noteName && note.noteName.toLowerCase().includes(query))
+            .map(([, note]) => note);
+        console.log("Matching Notes:", matchingNotes);
+    });
+
+    inputField.addEventListener('blur', () => {
+        document.body.removeChild(inputField);
+    });
+
+    inputField.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const selectedNote = Object.entries(notes).find(([, note]) =>
+                note.noteName && note.noteName.toLowerCase().includes(inputField.value.toLowerCase())
+            );
+            if (selectedNote) {
+                const noteContent = selectedNote[1].noteText;
+                console.log("Pasted Value:", noteContent);
+                pasteValueToTarget(noteContent, true);
             }
-        } else {
-            console.error("No input, textarea, or contenteditable element was found.");
+            inputField.blur();
+        } else if (event.key === 'Escape' || (event.key === 'Backspace' && inputField.value === '')) {
+            inputField.blur();
         }
+    });
+}
+
+function pasteValueToTarget(value, fromKeyUp = false) {
+    const targetElement = lastFocusedElement;
+    console.log(targetElement);
+    
+    if (!targetElement) {
+        console.error("No input, textarea, or contenteditable element was found.");
+        return;
+    }
+
+    if (targetElement.isContentEditable) {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+
+        if (fromKeyUp) {
+            range.deleteContents(); // Delete last character if triggered by keyup
+        }
+
+        const textNode = document.createTextNode(value);
+        range.insertNode(textNode);
+        range.setStartAfter(textNode);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        console.log(`Inserted "${value}" into content editable element.`);
+    } else {
+        if (fromKeyUp) {
+            targetElement.value = targetElement.value.slice(0, -1) + value; // Remove last character
+        } else {
+            targetElement.value += value; // Just append the value
+        }
+        targetElement.dispatchEvent(new Event('input', { bubbles: true }));
+        console.log(`Inserted "${value}" into input/textarea element.`);
+    }
+}
+
+chrome.storage.sync.get('notes', (data) => {
+    const notes = data.notes || {};
+    console.log("Fetched Notes:", notes);
+    
+    document.addEventListener('keyup', (event) => {
+        if (event.key === '/') {
+            createNoteInputField(notes);
+        }
+    });
+});
+
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.action === "pasteValue") {
+        pasteValueToTarget(request.value);
     }
 });
