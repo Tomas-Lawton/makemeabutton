@@ -1,15 +1,10 @@
 // first time initialisation
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({ notes: {} }, () => {
-    console.log("Initialized empty notes array in local storage.");
-  });
-
-  chrome.storage.sync.set({ noteCounter: 0 }, () => {
-    console.log("Updated noteCounter to 0");
-  });
+  chrome.storage.local.set({ notes: {} });
+  chrome.storage.sync.set({ noteCounter: 0 });
+  chrome.storage.sync.set({ slashCommandsEnabled: true });
+  console.log("Initialized chrome sync storage data.");
 });
-
-
 
 chrome.action.onClicked.addListener(async (tab) => {
   console.log("Action clicked, creating iframe");

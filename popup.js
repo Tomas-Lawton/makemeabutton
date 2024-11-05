@@ -1,6 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
     const notesList = document.getElementById("notes-list");
     const openButton = document.getElementById("home");
+    const slashCheckbox = document.getElementById("check-5");
+
+    chrome.storage.sync.get("slashCommandsEnabled", (data) => {
+      slashCheckbox.checked = data.slashCommandsEnabled ?? true; // Default to true
+    });
+    slashCheckbox.addEventListener("change", () => {
+      const isEnabled = slashCheckbox.checked;
+      chrome.storage.sync.set({ slashCommandsEnabled: isEnabled });
+    });
   
     openButton.addEventListener("click", function () {
       chrome.tabs.create({});
