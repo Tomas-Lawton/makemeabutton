@@ -67,7 +67,7 @@ function getDate() {
   const currentDate = new Date();
   const date = `${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getDate().toString().padStart(2, "0")}/${currentDate.getFullYear()}`;
   const time = `${currentDate.getHours().toString().padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
-  return `${date} ${time}`; // Combine date and time
+  return `${time}, ${date}`; // Combine date and time
 }
 
 function makeNote(noteText) {
@@ -149,7 +149,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
   // HEADER DONE
   const dateElem = document.createElement("p");
-  dateElem.textContent = `Edited: ${date}`;
+  dateElem.textContent = date;
   dateElem.classList.add("note-date");
 
   let noteTextDiv = document.createElement("div");
@@ -169,6 +169,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
   const deleteIcon = document.createElement("img");
   deleteIcon.src = "./public/uicons/uicons-round-medium-outline-trash.svg";
+  // deleteIcon.src = "./public/uicons/uicons-round-medium-outline-archivebox.svg";
   const deleteBtn = document.createElement("div");
   deleteBtn.appendChild(deleteIcon);
   deleteBtn.classList.add("delete-btn");
@@ -234,7 +235,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     // Update local storage with the new note data
     const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
     const newDate = getDate();
-    dateElem.textContent = `Edited: ${newDate}`;
+    dateElem.textContent = newDate;
     savedNotes[noteIndex] = { noteText: originalText, date: newDate, noteIndex, displayIndex, noteName: originalTitle };
     localStorage.setItem("notes", JSON.stringify(savedNotes));
     console.log(savedNotes)
