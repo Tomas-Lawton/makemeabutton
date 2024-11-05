@@ -9,7 +9,7 @@ const notes = document.getElementById("notes");
 let noteCounter = 0;
 
 function checkNoteMessage(savedNotes) {
-  console.log(savedNotes)
+  // console.log(savedNotes)
   if (Object.keys(savedNotes).length > 0) {
     noteMessage.style.display = "none"
   } else {
@@ -39,6 +39,7 @@ function loadLocalNotes() {
     .sort(([, a], [, b]) => a.noteIndex - b.noteIndex)
     .forEach(([, data]) => {
       createNote(data);
+      console.log(data)
     });
 
   updateDragDropListeners();
@@ -96,7 +97,7 @@ input.addEventListener("keydown", (event) => {
 
 function deleteLocalNote(index) {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  console.log("delete, ", index);
+  console.log("deleted, ", index);
   delete savedNotes[index];
   console.log(savedNotes);
   checkNoteMessage(savedNotes)
@@ -106,7 +107,7 @@ function deleteLocalNote(index) {
 }
 
 function createNote({ noteText, date, noteIndex }) {
-  console.log("Creating note: ", noteText, date, noteIndex);
+  // console.log("Creating note: ", noteText, date, noteIndex);
 
   // NOTE CONTENT
   const noteContent = document.createElement("div");
@@ -184,7 +185,7 @@ function createNote({ noteText, date, noteIndex }) {
   // deleteBtn.textContent = "Delete";
 
   deleteBtn.addEventListener("click", () => {
-    console.log("deleting note: ", noteIndex);
+    // console.log("deleting note: ", noteIndex);
     note.remove();
     deleteLocalNote(noteIndex); // Remove note using index
   });
@@ -246,7 +247,7 @@ function createNote({ noteText, date, noteIndex }) {
   
     const newTextDiv = document.createElement("div");
     newTextDiv.textContent = originalText;
-    console.log(originalText)
+    // console.log(originalText)
 
     newTextDiv.classList.add("note-text");
   
@@ -272,7 +273,7 @@ function createNote({ noteText, date, noteIndex }) {
   
     const newTextDiv = document.createElement("div");
     newTextDiv.textContent = originalText;
-    console.log(originalText)
+    // console.log(originalText)
     newTextDiv.classList.add("note-text");
   
     noteHeading.replaceWith(newHeading);
@@ -310,23 +311,24 @@ function createNote({ noteText, date, noteIndex }) {
   notes.prepend(note); // switch with append to reorder
 }
 
-
-
-
-
 function loadShapePositions() {
   const shapes = document.querySelectorAll(".background-svg");
   shapes.forEach((shape) => {
-    let x = Math.floor(Math.random() * 100);
-    let width = Math.floor(Math.random() * 150) + 150;
-    let maxY = 100 - (width / window.innerHeight) * 100;
-    let y = Math.floor(Math.random() * maxY);
-
-    shape.style.top = `${y}%`;
-    shape.style.left = `${x}%`;
+    // Ensure shape width and height stay within a reasonable size
+    let width = Math.floor(Math.random() * 150) + 150; // Between 150 and 300
     shape.style.width = `${width}px`;
+    shape.style.height = `${width}px`; // Make height equal to width for square shapes
     shape.style.display = "block";
-    console.log(`Width: ${width}px, X: ${x}%, Y: ${y}%`);
+
+    // Calculate position ensuring no overflow
+    let rangeX = window.innerWidth - 425; // because the rotating hypotoneuse is longer than width
+    let rangeY = window.innerHeight - 425;
+
+    let x = Math.floor(Math.random() * rangeX) + (100);
+    let y = Math.floor(Math.random() * rangeY) + (100);
+
+    shape.style.left = `${x}px`;
+    shape.style.top = `${y}px`;
   });
 }
 

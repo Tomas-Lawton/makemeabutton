@@ -194,15 +194,14 @@ h1 {
 }
 
 .background-svg {
-  /* position: fixed; */
-  /* transition: top 0.5s ease, left 0.5s ease, width 0.5s ease; */
+  position: absolute;
   z-index: -1000;
   animation: spin 8s linear infinite;
   display: none;
 
-  position: absolute;
-
-  overflow: none;
+  /* Limit the size of shapes */
+  max-width: 300px;
+  max-height: 300px;
 }
 
 button {

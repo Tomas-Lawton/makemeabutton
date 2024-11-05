@@ -4,23 +4,33 @@ export function updateDragDropListeners() {
   const draggables = document.querySelectorAll(".draggable");
   const containers = document.querySelectorAll(".container");
 
-  console.log(draggables, containers);
-
   draggables.forEach((draggable) => {
+    let originalContainer = null;
+    let originalIndex = null;
+
+
+    // For the individual notes
     draggable.addEventListener("dragstart", () => {
       draggable.classList.add("dragging");
+      originalContainer = draggable.closest(".container"); // Track the starting container
+      originalIndex = Array.from(originalContainer.children).indexOf(draggable); // Track the starting index
     });
+
     draggable.addEventListener("dragend", () => {
       draggable.classList.remove("dragging");
 
-      //    remove
-      const container = draggable.closest(".container");
-      if (container) {
+      const newContainer = draggable.closest(".container");
+      const newIndex = Array.from(newContainer.children).indexOf(draggable);
+
+      // Play sound only if the draggable was moved within the same container or to a different container
+      if (newContainer && (newContainer !== originalContainer || newIndex !== originalIndex)) {
         playPop();
+        console.log(`moved from i=${originalIndex} to i=${newIndex}`)
       }
     });
   });
 
+  // For the note container looking at all notes
   containers.forEach((container) => {
     container.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -35,6 +45,7 @@ export function updateDragDropListeners() {
     });
   });
 }
+
 
 function getDragAfterElement(container, x, y) {
   const draggableElements = [
