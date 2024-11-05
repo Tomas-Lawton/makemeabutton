@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let li = document.createElement('li');
         li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
         li.onclick = () => insertNoteIntoActiveTab(note.noteText);
-        notesList.appendChild(li);
+        notesList.prepend(li);
       });
       } else {
         let li = document.createElement('li');
