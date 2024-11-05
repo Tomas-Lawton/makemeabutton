@@ -8,17 +8,22 @@ const notes = document.getElementById("notes");
 
 let noteCounter = 0;
 
-
 function deleteLocalNote(index) {
-  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  console.log("deleted, ", index);
-  delete savedNotes[index];
-  checkNoteMessage(savedNotes);
-  updateDragDropListeners();
+  chrome.storage.sync.get("notes", (data) => {
+    const savedNotes = data.notes || {};
 
-  localStorage.setItem("notes", JSON.stringify(savedNotes));
-  const audio = new Audio("./public/audio/swish.mp3");
-  audio.play();
+    console.log("deleted, ", index);
+    delete savedNotes[index];
+    checkNoteMessage(savedNotes);
+    updateDragDropListeners();
+
+    chrome.storage.sync.set({ notes: savedNotes }, () => {
+      console.log("Notes saved:", savedNotes);
+    });
+
+    const audio = new Audio("./public/audio/swish.mp3");
+    audio.play();
+  });
 }
 
 function checkNoteMessage(savedNotes) {
@@ -30,43 +35,65 @@ function checkNoteMessage(savedNotes) {
   }
 }
 
-function saveLocalNote(data) {
-  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  const key = noteCounter.toString();
-  // console.log("Saving note ", key);
-  savedNotes[key] = data; // set key (index) to current count
-  localStorage.setItem("notes", JSON.stringify(savedNotes));
-  checkNoteMessage(savedNotes);
+function saveLocalNote(noteData) {
+  chrome.storage.sync.get("notes", (data) => {
+    const savedNotes = data.notes || {};
 
-  noteCounter++; // increment the count
-  localStorage.setItem("noteCounter", noteCounter);
+    const key = noteCounter.toString();
+    // console.log("Saving note ", key);
+    savedNotes[key] = noteData; // set key (index) to current count
+    chrome.storage.sync.set({ notes: savedNotes }, () => {
+      console.log("Notes saved:", savedNotes);
+    });
+    checkNoteMessage(savedNotes);
+
+    noteCounter++; // increment the count
+    chrome.storage.sync.set({ noteCounter: noteCounter }, () => {
+      console.log("Set counter:", noteCounter);
+    });
+  });
 }
 
 function loadNotes() {
-  noteCounter = JSON.parse(localStorage.getItem("noteCounter")) || 0; // Initialize counter
-  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {}; // Load saved notes
-  console.log(savedNotes);
+  chrome.storage.sync.get("notes", (data) => {
+    const savedNotes = data.notes || {};
 
-  checkNoteMessage(savedNotes);
+    chrome.storage.sync.get(
+      "noteCounter",
+      (data) => (noteCounter = data.noteCounter)
+    );
+    console.log(savedNotes);
 
-  const sortedNotes = Object.entries(savedNotes).sort(([, a], [, b]) => a.displayIndex - b.displayIndex);
+    checkNoteMessage(savedNotes);
 
-  sortedNotes.forEach(([_, data], index) => {
-    data.displayIndex = index;
-    createNote(data);
+    const sortedNotes = Object.entries(savedNotes).sort(
+      ([, a], [, b]) => a.displayIndex - b.displayIndex
+    );
+
+    sortedNotes.forEach(([_, data], index) => {
+      data.displayIndex = index;
+      createNote(data);
+    });
+
+    console.log("Before sorting:", savedNotes);
+    console.log("After sorting:", sortedNotes);
+
+    updateDragDropListeners();
   });
-
-  console.log("Before sorting:", savedNotes);
-console.log("After sorting:", sortedNotes);
-
-  updateDragDropListeners();
 }
-
 
 function getDate() {
   const currentDate = new Date();
-  const date = `${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getDate().toString().padStart(2, "0")}/${currentDate.getFullYear()}`;
-  const time = `${currentDate.getHours().toString().padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
+  const date = `${(currentDate.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}/${currentDate
+    .getDate()
+    .toString()
+    .padStart(2, "0")}/${currentDate.getFullYear()}`;
+  const time = `${currentDate
+    .getHours()
+    .toString()
+    .padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
   return `${time}, ${date}`; // Combine date and time
 }
 
@@ -118,8 +145,6 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   note.setAttribute("draggable", true);
   note.setAttribute("display-index", displayIndex);
   note.setAttribute("key", noteIndex);
-
-
 
   // HEADER START
   const noteHeader = document.createElement("div");
@@ -175,7 +200,6 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   deleteBtn.classList.add("delete-btn");
   // deleteBtn.textContent = "Delete";
 
-
   actionContainer.classList.add("note-actions");
 
   // EDITING LISTEWNERS. TO DO ADD SAVING TO THE STATE AGAIN ALSO FOR REAARAGNING
@@ -203,13 +227,12 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     noteTextDiv.replaceWith(input2);
 
     actionContainer.classList.add("note-background");
-    
+
     note.draggable = false;
 
-    const autoResize = () => input2.style.height = `${input2.scrollHeight}px`; // Set height based on scrollHeight
+    const autoResize = () => (input2.style.height = `${input2.scrollHeight}px`); // Set height based on scrollHeight
     input2.addEventListener("input", autoResize);
     autoResize(); // Initial resize
-    
 
     noteHeading = input1;
     noteTextDiv = input2;
@@ -233,13 +256,22 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     noteTextDiv = newTextDiv;
 
     // Update local storage with the new note data
-    const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-    const newDate = getDate();
-    dateElem.textContent = newDate;
-    savedNotes[noteIndex] = { noteText: originalText, date: newDate, noteIndex, displayIndex, noteName: originalTitle };
-    localStorage.setItem("notes", JSON.stringify(savedNotes));
-    console.log(savedNotes)
+    chrome.storage.sync.get("notes", (data) => {
+      const savedNotes = data.notes || {};
+      const newDate = getDate();
+      dateElem.textContent = newDate;
+      savedNotes[noteIndex] = {
+        noteText: originalText,
+        date: newDate,
+        noteIndex,
+        displayIndex,
+        noteName: originalTitle,
+      };
 
+      chrome.storage.sync.set({ notes: savedNotes }, () => {
+        console.log("Notes saved:", savedNotes);
+      });
+    });
 
     actionContainer.classList.remove("note-background");
     note.draggable = true;
@@ -247,7 +279,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     editBtn.style.display = "flex";
     acceptBtn.style.display = "none";
     discardBtn.style.display = "none";
-});
+  });
 
   discardBtn.addEventListener("click", () => {
     const newHeading = document.createElement("h3");
@@ -273,7 +305,6 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     acceptBtn.style.display = "none";
     discardBtn.style.display = "none";
   });
-
 
   deleteBtn.addEventListener("click", () => {
     // console.log("deleting note: ", noteIndex);
@@ -335,5 +366,5 @@ function loadShapePositions() {
   });
 }
 
-loadNotes();
 loadShapePositions();
+loadNotes();

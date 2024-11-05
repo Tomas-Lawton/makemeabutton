@@ -10,17 +10,15 @@ export function updateDragDropListeners() {
 
     draggable.addEventListener("dragstart", () => {
       draggable.classList.add("dragging");
-      originalContainer = draggable.closest(".container"); 
-      originalIndex = Array.from(originalContainer.children).indexOf(draggable); 
+      originalContainer = draggable.closest(".container");
+      originalIndex = Array.from(originalContainer.children).indexOf(draggable);
     });
 
     draggable.addEventListener("dragend", () => {
       draggable.classList.remove("dragging");
 
       const newContainer = draggable.closest(".container");
-      if (
-        newContainer 
-      ) {
+      if (newContainer) {
         updateDisplayIndexes();
         playPop();
       }
@@ -87,18 +85,22 @@ function getDragAfterElement(container, x, y) {
 
 export function updateDisplayIndexes() {
   const notesElements = document.querySelectorAll(".note");
-  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
   const totalNotes = notesElements.length;
 
-  notesElements.forEach((noteElem, i) => {
-    const dataKey = noteElem.getAttribute("key");
+  chrome.storage.sync.get("notes", (data) => {
+    const savedNotes = data.notes || {}; 
 
-    if (savedNotes[dataKey]) {
-      savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // inverse index because reverse display order
-      noteElem.setAttribute("display-index", totalNotes - 1 - i); // inverse index because reverse display order
-    }
+    notesElements.forEach((noteElem, i) => {
+      const dataKey = noteElem.getAttribute("key");
+
+      if (savedNotes[dataKey]) {
+        savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // inverse index because reverse display order
+        noteElem.setAttribute("display-index", totalNotes - 1 - i); // inverse index because reverse display order
+      }
+    });
+
+    chrome.storage.sync.set({ notes: savedNotes }, () => {
+      console.log("Notes saved:", savedNotes);
   });
-
-  localStorage.setItem("notes", JSON.stringify(savedNotes)); // save
-  console.log("Updated saved notes:", savedNotes);
+  });
 }
