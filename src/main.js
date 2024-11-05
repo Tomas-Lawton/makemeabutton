@@ -1,4 +1,4 @@
-import { updateDragDropListeners } from "./drag.js";
+import { updateDragDropListeners, updateDisplayIndexes } from "./drag.js";
 import { playPop } from "./sounds.js";
 
 const input = document.getElementById("note-input");
@@ -8,11 +8,6 @@ const notes = document.getElementById("notes");
 
 let noteCounter = 0;
 
-// function updateIndividualNote(key, data) {
-//   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-//   deletesavedNotes[key] = data;
-//   localStorage.setItem("notes", JSON.stringify(savedNotes));
-// }
 
 function deleteLocalNote(index) {
   const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
@@ -47,22 +42,26 @@ function saveLocalNote(data) {
   localStorage.setItem("noteCounter", noteCounter);
 }
 
-function loadLocalNotes() {
-  noteCounter = JSON.parse(localStorage.getItem("noteCounter")) || 0; // init 0
-  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {}; // init empty
+function loadNotes() {
+  noteCounter = JSON.parse(localStorage.getItem("noteCounter")) || 0; // Initialize counter
+  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {}; // Load saved notes
+  console.log(savedNotes);
 
   checkNoteMessage(savedNotes);
 
-  Object.entries(savedNotes)
-    .sort(([, a], [, b]) => a.noteIndex - b.noteIndex)
-    .forEach(([, data]) => {
-      console.log(data);
-      createNote(data);
-    });
+  const sortedNotes = Object.entries(savedNotes).sort(([, a], [, b]) => a.displayIndex - b.displayIndex);
 
-  console.log("LOADED NOTE DATA");
+  sortedNotes.forEach(([key, data], index) => {
+    data.displayIndex = index;
+    createNote(data);
+  });
+
+  console.log("Before sorting:", savedNotes);
+console.log("After sorting:", sortedNotes);
+
   updateDragDropListeners();
 }
+
 
 function getDate() {
   const currentDate = new Date();
@@ -110,8 +109,8 @@ input.addEventListener("keydown", (event) => {
   }
 });
 
-function createNote({ noteText, date, noteIndex }) {
-  // console.log("Creating note: ", noteText, date, noteIndex);
+function createNote({ noteText, date, noteIndex, displayIndex }) {
+  console.log("Creating note: ", noteText, date, noteIndex);
 
   // NOTE CONTENT
   const noteContent = document.createElement("div");
@@ -121,6 +120,10 @@ function createNote({ noteText, date, noteIndex }) {
   note.classList.add("draggable");
   note.classList.add("note");
   note.setAttribute("draggable", true);
+  note.setAttribute("display-index", displayIndex);
+  note.setAttribute("key", noteIndex);
+
+
 
   // HEADER START
   const noteHeader = document.createElement("div");
@@ -223,16 +226,13 @@ function createNote({ noteText, date, noteIndex }) {
     noteTextDiv.replaceWith(input2);
 
     actionContainer.classList.add("note-background");
+    
     note.draggable = false;
 
-    const autoResize = () => {
-      input2.style.height = "auto"; // Reset height
-      input2.style.height = `${input2.scrollHeight}px`; // Set height based on scrollHeight
-    };
-
-    // Trigger auto-resize on input event
+    const autoResize = () => input2.style.height = `${input2.scrollHeight}px`; // Set height based on scrollHeight
     input2.addEventListener("input", autoResize);
     autoResize(); // Initial resize
+    
 
     noteHeading = input1;
     noteTextDiv = input2;
@@ -308,7 +308,7 @@ function createNote({ noteText, date, noteIndex }) {
   note.appendChild(noteContent);
   note.appendChild(actionContainer);
 
-  notes.prepend(note); // switch with append to reorder
+  notes.prepend(note); // display in reverse order
 }
 
 function loadShapePositions() {
@@ -332,5 +332,5 @@ function loadShapePositions() {
   });
 }
 
-loadLocalNotes();
+loadNotes();
 loadShapePositions();

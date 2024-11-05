@@ -8,24 +8,21 @@ export function updateDragDropListeners() {
     let originalContainer = null;
     let originalIndex = null;
 
-
-    // For the individual notes
     draggable.addEventListener("dragstart", () => {
       draggable.classList.add("dragging");
-      originalContainer = draggable.closest(".container"); // Track the starting container
-      originalIndex = Array.from(originalContainer.children).indexOf(draggable); // Track the starting index
+      originalContainer = draggable.closest(".container"); 
+      originalIndex = Array.from(originalContainer.children).indexOf(draggable); 
     });
 
     draggable.addEventListener("dragend", () => {
       draggable.classList.remove("dragging");
 
       const newContainer = draggable.closest(".container");
-      const newIndex = Array.from(newContainer.children).indexOf(draggable);
-
-      // Play sound only if the draggable was moved within the same container or to a different container
-      if (newContainer && (newContainer !== originalContainer || newIndex !== originalIndex)) {
+      if (
+        newContainer 
+      ) {
+        updateDisplayIndexes();
         playPop();
-        console.log(`moved from i=${originalIndex} to i=${newIndex}`)
       }
     });
   });
@@ -45,7 +42,6 @@ export function updateDragDropListeners() {
     });
   });
 }
-
 
 function getDragAfterElement(container, x, y) {
   const draggableElements = [
@@ -87,4 +83,22 @@ function getDragAfterElement(container, x, y) {
       offset: Number.NEGATIVE_INFINITY,
     }
   ).element;
+}
+
+export function updateDisplayIndexes() {
+  const notesElements = document.querySelectorAll(".note");
+  const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+  const totalNotes = notesElements.length;
+
+  notesElements.forEach((noteElem, i) => {
+    const dataKey = noteElem.getAttribute("key");
+
+    if (savedNotes[dataKey]) {
+      savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // inverse index because reverse display order
+      noteElem.setAttribute("display-index", totalNotes - 1 - i); // inverse index because reverse display order
+    }
+  });
+
+  localStorage.setItem("notes", JSON.stringify(savedNotes)); // save
+  console.log("Updated saved notes:", savedNotes);
 }
