@@ -1,4 +1,4 @@
-import { updateDragDropListeners, updateDisplayIndexes } from "./drag.js";
+import { updateDragDropListeners } from "./drag.js";
 import { playPop } from "./sounds.js";
 
 const input = document.getElementById("note-input");
@@ -51,7 +51,7 @@ function loadNotes() {
 
   const sortedNotes = Object.entries(savedNotes).sort(([, a], [, b]) => a.displayIndex - b.displayIndex);
 
-  sortedNotes.forEach(([key, data], index) => {
+  sortedNotes.forEach(([_, data], index) => {
     data.displayIndex = index;
     createNote(data);
   });
@@ -65,13 +65,9 @@ console.log("After sorting:", sortedNotes);
 
 function getDate() {
   const currentDate = new Date();
-  const date = `${(currentDate.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${currentDate
-    .getDate()
-    .toString()
-    .padStart(2, "0")}/${currentDate.getFullYear()}`;
-  return date;
+  const date = `${(currentDate.getMonth() + 1).toString().padStart(2, "0")}/${currentDate.getDate().toString().padStart(2, "0")}/${currentDate.getFullYear()}`;
+  const time = `${currentDate.getHours().toString().padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
+  return `${date} ${time}`; // Combine date and time
 }
 
 function makeNote(noteText) {
@@ -109,7 +105,7 @@ input.addEventListener("keydown", (event) => {
   }
 });
 
-function createNote({ noteText, date, noteIndex, displayIndex }) {
+function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   console.log("Creating note: ", noteText, date, noteIndex);
 
   // NOTE CONTENT
@@ -130,7 +126,7 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
   noteHeader.classList.add("note-header");
 
   let noteHeading = document.createElement("h3");
-  noteHeading.textContent = `🗒️ Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
+  noteHeading.textContent = noteName || `🗒️ Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
   noteHeading.classList.add("note-title");
 
   const editBtn = document.createElement("div");
@@ -171,19 +167,6 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
   copyBtn.appendChild(copyIcon);
   copyBtn.appendChild(document.createTextNode("Copy"));
 
-  copyBtn.addEventListener("click", () => {
-    navigator.clipboard
-      .writeText(noteText)
-      .then(() => {
-        const allNotes = notes.querySelectorAll(".copy-btn");
-        allNotes.forEach((singleNote) => {
-          singleNote.childNodes[1].textContent = "Copy";
-        });
-        copyBtn.childNodes[1].textContent = "Copied";
-      })
-      .catch((err) => console.error("Failed to copy text: ", err));
-  });
-
   const deleteIcon = document.createElement("img");
   deleteIcon.src = "./public/uicons/uicons-round-medium-outline-trash.svg";
   const deleteBtn = document.createElement("div");
@@ -191,11 +174,6 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
   deleteBtn.classList.add("delete-btn");
   // deleteBtn.textContent = "Delete";
 
-  deleteBtn.addEventListener("click", () => {
-    // console.log("deleting note: ", noteIndex);
-    note.remove();
-    deleteLocalNote(noteIndex); // Remove note using index
-  });
 
   actionContainer.classList.add("note-actions");
 
@@ -218,8 +196,6 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
     const input2 = document.createElement("textarea");
     input2.name = "post";
     input2.maxLength = "5000";
-    // input2.cols = "80";
-    // input2.rows = "5";  // Set rows to 6
 
     input2.value = noteTextDiv.textContent;
     input2.classList.add("note-text");
@@ -248,8 +224,6 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
 
     const newTextDiv = document.createElement("div");
     newTextDiv.textContent = originalText;
-    // console.log(originalText)
-
     newTextDiv.classList.add("note-text");
 
     noteHeading.replaceWith(newHeading);
@@ -257,14 +231,22 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
     noteHeading = newHeading;
     noteTextDiv = newTextDiv;
 
+    // Update local storage with the new note data
+    const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+    const newDate = getDate();
+    dateElem.textContent = `Edited: ${newDate}`;
+    savedNotes[noteIndex] = { noteText: originalText, date: newDate, noteIndex, displayIndex, noteName: originalTitle };
+    localStorage.setItem("notes", JSON.stringify(savedNotes));
+    console.log(savedNotes)
+
+
     actionContainer.classList.remove("note-background");
     note.draggable = true;
 
     editBtn.style.display = "flex";
-    // deleteBtn.style.display = "flex";
     acceptBtn.style.display = "none";
     discardBtn.style.display = "none";
-  });
+});
 
   discardBtn.addEventListener("click", () => {
     const newHeading = document.createElement("h3");
@@ -289,6 +271,26 @@ function createNote({ noteText, date, noteIndex, displayIndex }) {
     // deleteBtn.style.display = "flex";
     acceptBtn.style.display = "none";
     discardBtn.style.display = "none";
+  });
+
+
+  deleteBtn.addEventListener("click", () => {
+    // console.log("deleting note: ", noteIndex);
+    note.remove();
+    deleteLocalNote(noteIndex); // Remove note using index
+  });
+
+  copyBtn.addEventListener("click", () => {
+    navigator.clipboard
+      .writeText(originalText)
+      .then(() => {
+        const allNotes = notes.querySelectorAll(".copy-btn");
+        allNotes.forEach((singleNote) => {
+          singleNote.childNodes[1].textContent = "Copy";
+        });
+        copyBtn.childNodes[1].textContent = "Copied";
+      })
+      .catch((err) => console.error("Failed to copy text: ", err));
   });
 
   //
