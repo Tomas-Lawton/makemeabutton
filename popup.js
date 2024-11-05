@@ -1,48 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const notesList = document.getElementById("notes-list");
-  const openButton = document.getElementById("instant-paste")
-
-
-
-  openButton.addEventListener("click", function () {
+    const notesList = document.getElementById("notes-list");
+    const openButton = document.getElementById("home");
+  
     openButton.addEventListener("click", function () {
-        chrome.tabs.create({}); // This opens a new empty tab
+      chrome.tabs.create({});
     });
-});
-
-  // Retrieve notes from sync storage
-  chrome.storage.sync.get('notes', (data) => {
-    const notes = data.notes || {}; // Keep notes as an object
-    console.log(notes);
-    
-    // Clear the notes list before populating
-    notesList.innerHTML = '';
-
-    // Populate the list
-    Object.keys(notes).forEach((key) => {
+  
+    chrome.storage.sync.get('notes', (data) => {
+      const notes = data.notes || {};
+      notesList.innerHTML = '';
+  
+      Object.keys(notes).forEach((key) => {
         const note = notes[key];
         let li = document.createElement('li');
-        li.textContent =  note.noteName || `🗒️ Note ${note.noteIndex + 1}`;
+        li.textContent = note.noteName || `🗒️ Note ${note.noteIndex + 1}`;
         li.onclick = () => insertNoteIntoActiveTab(note.noteText);
         notesList.appendChild(li);
+      });
     });
-});
-});
-
-function insertNoteIntoActiveTab(note) {
+  });
+  
+  function insertNoteIntoActiveTab(note) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length > 0) {
-            console.log(note)
-
-            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-                if (tabs.length > 0) {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: "pasteValue", value: note });
-                } else {
-                    console.error("No active tab found");
-                }
-            });
-       
-        }
+      if (tabs.length > 0) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "pasteValue", value: note });
+      }
     });
-}
-
+  }
+  
