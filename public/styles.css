@@ -147,6 +147,7 @@ h1 {
   /* color: #ff4910; */
   /* color: #3300FF; */
   font-weight: bold;
+  background-color: #ffce00;
 }
 
 @keyframes typing {
@@ -230,6 +231,7 @@ section {
 
 section > p {
   text-align: center;
+  font-weight: bold;
 }
 
 
