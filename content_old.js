@@ -1,7 +1,6 @@
 console.log("Content script loaded");
 
 let lastFocusedElement = null;
-let popupContainer = null;
 
 // Load Google Fonts
 const link = document.createElement("link");
@@ -9,7 +8,7 @@ link.rel = "stylesheet";
 link.href = "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Reenie+Beanie&family=Sixtyfour+Convergence&display=swap";
 document.head.appendChild(link);
 
-// Track the last focused input element
+// Track focused element
 document.addEventListener("focus", (event) => {
     const target = event.target;
     if ((target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) && !target.hasAttribute("popup_input_box")) {
@@ -17,43 +16,6 @@ document.addEventListener("focus", (event) => {
         console.log("Set target:", lastFocusedElement);
     }
 }, true);
-
-// Paste value into the focused element
-function pasteValueToTarget(value, fromKeyUp = false) {
-    const target = lastFocusedElement;
-    if (!target) return;
-
-    if (target.isContentEditable) {
-        const selection = window.getSelection();
-        const range = selection.getRangeAt(0);
-        if (fromKeyUp) range.deleteContents();
-        const textNode = document.createTextNode(value);
-        range.insertNode(textNode);
-        range.setStartAfter(textNode);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } else {
-        target.value = fromKeyUp ? target.value.slice(0, -1) + value : target.value + value;
-        target.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-}
-
-chrome.storage.sync.get(["notes", "slashCommandsEnabled"], (data) => {
-    const notes = data.notes || {};
-    if (data.slashCommandsEnabled) {
-        document.addEventListener("keyup", (event) => {
-            if (event.key === "/") useExistingInputField(notes);
-        });
-    }
-});
-
-// Listen for messages from the extension (e.g., paste requests)
-chrome.runtime.onMessage.addListener((request) => {
-    if (request.action === "pasteValue") {
-        pasteValueToTarget(request.value);
-    }
-});
 
 function useExistingInputField(notes) {
     console.log("Active mode");
@@ -63,13 +25,12 @@ function useExistingInputField(notes) {
         return;
     }
 
-    // set the global var here
-    popupContainer = document.createElement("div");
-
+    // Create and style popup container
+    const popupContainer = document.createElement("div");
     popupContainer.id = "notes-container";
     Object.assign(popupContainer.style, {
         fontFamily: "'Lexend Mega', sans-serif",
-        fontWeight: "400",
+        fontWeight: "400",  // Default font weight for body text
         position: "absolute",
         zIndex: "9999",
         listStyleType: "none",
@@ -88,12 +49,14 @@ function useExistingInputField(notes) {
         overflow: "scroll"
     });
 
+    // Title with bold font
     const title = document.createElement("h2");
     title.textContent = "Notes";
     title.style.fontWeight = "700";
     title.style.marginBottom = "1rem";
     popupContainer.appendChild(title);
 
+    // Container for matching notes
     const notesContainer = document.createElement("ul");
     Object.assign(notesContainer.style, {
         flex: "1",
@@ -114,11 +77,9 @@ function useExistingInputField(notes) {
             })
             .map(([, note]) => note);
 
-        notesContainer.innerHTML = "";
+        notesContainer.innerHTML = ""; // Clear previous notes
 
         const notesToShow = matchingNotes.length ? matchingNotes : Object.values(notes).slice(0, 5);
-        
-        
         notesToShow.forEach(note => {
             const li = document.createElement("li");
             li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
@@ -157,3 +118,34 @@ function useExistingInputField(notes) {
         }
     });
 }
+
+function pasteValueToTarget(value, fromKeyUp = false) {
+    const target = lastFocusedElement;
+    if (!target) return;
+
+    if (target.isContentEditable) {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        if (fromKeyUp) range.deleteContents();
+        const textNode = document.createTextNode(value);
+        range.insertNode(textNode);
+        range.setStartAfter(textNode);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else {
+        target.value = fromKeyUp ? target.value.slice(0, -1) + value : target.value + value;
+        target.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+}
+
+chrome.storage.sync.get("notes", (data) => {
+    const notes = data.notes || {};
+    document.addEventListener("keyup", (event) => {
+        if (event.key === "/") useExistingInputField(notes);
+    });
+});
+
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.action === "pasteValue") pasteValueToTarget(request.value);
+});
