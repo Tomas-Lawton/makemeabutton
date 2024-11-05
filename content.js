@@ -51,6 +51,7 @@ function createNoteInputField(notes) {
             inputField.blur();
         } else if (event.key === 'Escape' || (event.key === 'Backspace' && inputField.value === '')) {
             inputField.blur();
+            lastFocusedElement.focus();
         }
     });
 }
