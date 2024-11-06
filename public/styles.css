@@ -176,11 +176,8 @@ h1 {
     blink-caret 0.5s step-end infinite;
   width: 0;
   margin: 0;
-  /* color: #ff4910; */
-  /* color: #3300FF; */
   font-weight: bold;
   background-color: #ffce00;
-  /* background: rgb(46, 4, 245); */
 }
 
 @keyframes typing {
@@ -908,10 +905,6 @@ input .note-text{
 @media (max-width: 550px) {
   /* For tiny screens */
 
-  /* .note-date {
-    display: none
-  } */
-
   #header-shape {
     display: none;
   }
@@ -947,5 +940,19 @@ input .note-text{
     background: none;
     border: none;
     box-shadow: none;
+    border-radius: 2rem;
+  }
+
+  #orb {
+  top: 50%;
+  position: fixed;
+  }
+
+  #input-zone {
+    padding: 1rem;
+  }
+
+  #input-zone label {
+    font-size: 1rem;
   }
 }
