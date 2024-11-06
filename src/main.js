@@ -27,11 +27,10 @@ function deleteLocalNote(index) {
 }
 
 function checkNoteMessage(savedNotes) {
-  // console.log(savedNotes)
   if (Object.keys(savedNotes).length > 0) {
     noteMessage.style.display = "none";
   } else {
-    noteMessage.style.display = "";
+    noteMessage.style.display = "block";
   }
 }
 
@@ -54,7 +53,7 @@ function saveLocalNote(noteData) {
   });
 }
 
-function loadNotes() {
+function loadNotes() {  
   chrome.storage.sync.get("notes", (data) => {
     const savedNotes = data.notes || {};
 
@@ -62,11 +61,8 @@ function loadNotes() {
       "noteCounter",
       (data) => (noteCounter = data.noteCounter)
     );
-    console.log(savedNotes);
 
-    checkNoteMessage(savedNotes);
-
-    const sortedNotes = Object.entries(savedNotes).sort(
+    let sortedNotes = Object.entries(savedNotes).sort(
       ([, a], [, b]) => a.displayIndex - b.displayIndex
     );
 
@@ -75,11 +71,32 @@ function loadNotes() {
       createNote(data);
     });
 
-    console.log("Before sorting:", savedNotes);
-    console.log("After sorting:", sortedNotes);
-
+    chrome.storage.sync.get("firstLoad", (data) => {
+      let firstLoad = data.firstLoad
+      if (firstLoad){
+        createNote({
+            noteText: `This is your first BlockNote... :) In a new tab type "/" followed by Hello World to paste your note.`,
+            noteIndex: 0,
+            date: getDate(),
+            displayIndex: 0,
+            noteName: "Hello world",
+          })
+          // set it false
+          chrome.storage.sync.set({ firstLoad: false }, () => {
+            console.log("Completed first load");
+          });
+          // dumby key
+          savedNotes = {'0':''}
+      } else {
+        checkNoteMessage(savedNotes);
+      }
+    });
+    
     updateDragDropListeners();
   });
+
+
+
 }
 
 function getDate() {
@@ -220,143 +237,142 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   }
 
   let originalTitle = noteHeading.textContent;
-let originalText = noteTextDiv.textContent;
+  let originalText = noteTextDiv.textContent;
 
-const handleKeydown = (e) => {
-  if (e.key === "Enter") {
-    // Save the changes
-    acceptBtn.click();
-  } else if (e.key === "Escape") {
-    // Discard the changes
-    discardBtn.click();
-  }
-};
+  const handleKeydown = (e) => {
+    if (e.key === "Enter") {
+      // Save the changes
+      acceptBtn.click();
+    } else if (e.key === "Escape") {
+      // Discard the changes
+      discardBtn.click();
+    }
+  };
 
-// Event listeners for edit, delete, copy, etc.
-editBtn.addEventListener("click", () => {
-  editBtn.style.display = "none";
-  acceptBtn.style.display = "flex";
-  discardBtn.style.display = "flex";
+  // Event listeners for edit, delete, copy, etc.
+  editBtn.addEventListener("click", () => {
+    editBtn.style.display = "none";
+    acceptBtn.style.display = "flex";
+    discardBtn.style.display = "flex";
 
-  const input1 = document.createElement("input");
-  input1.type = "text";
-  input1.value = noteHeading.textContent;
-  input1.classList.add("note-title");
-  noteHeading.replaceWith(input1);
+    const input1 = document.createElement("input");
+    input1.type = "text";
+    input1.value = noteHeading.textContent;
+    input1.classList.add("note-title");
+    noteHeading.replaceWith(input1);
 
-  const input2 = document.createElement("textarea");
-  input2.name = "post";
-  input2.maxLength = "5000";
-  input2.value = noteTextDiv.textContent;
-  input2.classList.add("note-text");
-  noteTextDiv.replaceWith(input2);
+    const input2 = document.createElement("textarea");
+    input2.name = "post";
+    input2.maxLength = "5000";
+    input2.value = noteTextDiv.textContent;
+    input2.classList.add("note-text");
+    noteTextDiv.replaceWith(input2);
 
-  actionContainer.classList.add("note-background");
+    actionContainer.classList.add("note-background");
 
-  note.draggable = false;
+    note.draggable = false;
 
-  const autoResize = () => (input2.style.height = `${input2.scrollHeight}px`);
-  input2.addEventListener("input", autoResize);
-  autoResize();
+    const autoResize = () => (input2.style.height = `${input2.scrollHeight}px`);
+    input2.addEventListener("input", autoResize);
+    autoResize();
 
-  noteHeading = input1;
-  noteTextDiv = input2;
-  input1.focus();
+    noteHeading = input1;
+    noteTextDiv = input2;
+    input1.focus();
 
-  // Add keydown event listener when in edit mode
-  document.addEventListener("keydown", handleKeydown);
-});
-
-acceptBtn.addEventListener("click", () => {
-  originalTitle = noteHeading.value;
-  originalText = noteTextDiv.value;
-
-  const newHeading = document.createElement("h3");
-  newHeading.textContent = originalTitle;
-  newHeading.classList.add("note-title");
-
-  const newTextDiv = document.createElement("div");
-  newTextDiv.textContent = originalText;
-  newTextDiv.classList.add("note-text");
-
-  noteHeading.replaceWith(newHeading);
-  noteTextDiv.replaceWith(newTextDiv);
-  noteHeading = newHeading;
-  noteTextDiv = newTextDiv;
-
-  // Update local storage with the new note data
-  chrome.storage.sync.get("notes", (data) => {
-    const savedNotes = data.notes || {};
-    const newDate = getDate();
-    dateElem.textContent = newDate;
-    savedNotes[noteIndex] = {
-      noteText: originalText,
-      date: newDate,
-      noteIndex,
-      displayIndex,
-      noteName: originalTitle,
-    };
-
-    chrome.storage.sync.set({ notes: savedNotes }, () => {
-      console.log("Notes saved:", savedNotes);
-    });
+    // Add keydown event listener when in edit mode
+    document.addEventListener("keydown", handleKeydown);
   });
 
-  actionContainer.classList.remove("note-background");
-  note.draggable = true;
+  acceptBtn.addEventListener("click", () => {
+    originalTitle = noteHeading.value;
+    originalText = noteTextDiv.value;
 
-  editBtn.style.display = "flex";
-  acceptBtn.style.display = "none";
-  discardBtn.style.display = "none";
+    const newHeading = document.createElement("h3");
+    newHeading.textContent = originalTitle;
+    newHeading.classList.add("note-title");
 
-  // Remove keydown event listener after saving
-  document.removeEventListener("keydown", handleKeydown);
-});
+    const newTextDiv = document.createElement("div");
+    newTextDiv.textContent = originalText;
+    newTextDiv.classList.add("note-text");
 
-discardBtn.addEventListener("click", () => {
-  const newHeading = document.createElement("h3");
-  newHeading.textContent = originalTitle;
-  newHeading.classList.add("note-title");
+    noteHeading.replaceWith(newHeading);
+    noteTextDiv.replaceWith(newTextDiv);
+    noteHeading = newHeading;
+    noteTextDiv = newTextDiv;
 
-  const newTextDiv = document.createElement("div");
-  newTextDiv.textContent = originalText;
-  newTextDiv.classList.add("note-text");
+    // Update local storage with the new note data
+    chrome.storage.sync.get("notes", (data) => {
+      const savedNotes = data.notes || {};
+      const newDate = getDate();
+      dateElem.textContent = newDate;
+      savedNotes[noteIndex] = {
+        noteText: originalText,
+        date: newDate,
+        noteIndex,
+        displayIndex,
+        noteName: originalTitle,
+      };
 
-  noteHeading.replaceWith(newHeading);
-  noteTextDiv.replaceWith(newTextDiv);
-
-  noteHeading = newHeading;
-  noteTextDiv = newTextDiv;
-
-  actionContainer.classList.remove("note-background");
-  note.draggable = true;
-
-  editBtn.style.display = "flex";
-  acceptBtn.style.display = "none";
-  discardBtn.style.display = "none";
-
-  // Remove keydown event listener after discarding
-  document.removeEventListener("keydown", handleKeydown);
-});
-
-deleteBtn.addEventListener("click", () => {
-  note.remove();
-  deleteLocalNote(noteIndex); // Remove note using index
-});
-
-copyBtn.addEventListener("click", (e) => {
-  navigator.clipboard
-    .writeText(originalText)
-    .then(() => {
-      const allNotes = notes.querySelectorAll(".copy-btn");
-      allNotes.forEach((singleNote) => {
-        singleNote.childNodes[1].textContent = "Copy";
+      chrome.storage.sync.set({ notes: savedNotes }, () => {
+        console.log("Notes saved:", savedNotes);
       });
-      copyBtn.childNodes[1].textContent = "Copied";
-    })
-    .catch((err) => console.error("Failed to copy text: ", err));
-});
+    });
 
+    actionContainer.classList.remove("note-background");
+    note.draggable = true;
+
+    editBtn.style.display = "flex";
+    acceptBtn.style.display = "none";
+    discardBtn.style.display = "none";
+
+    // Remove keydown event listener after saving
+    document.removeEventListener("keydown", handleKeydown);
+  });
+
+  discardBtn.addEventListener("click", () => {
+    const newHeading = document.createElement("h3");
+    newHeading.textContent = originalTitle;
+    newHeading.classList.add("note-title");
+
+    const newTextDiv = document.createElement("div");
+    newTextDiv.textContent = originalText;
+    newTextDiv.classList.add("note-text");
+
+    noteHeading.replaceWith(newHeading);
+    noteTextDiv.replaceWith(newTextDiv);
+
+    noteHeading = newHeading;
+    noteTextDiv = newTextDiv;
+
+    actionContainer.classList.remove("note-background");
+    note.draggable = true;
+
+    editBtn.style.display = "flex";
+    acceptBtn.style.display = "none";
+    discardBtn.style.display = "none";
+
+    // Remove keydown event listener after discarding
+    document.removeEventListener("keydown", handleKeydown);
+  });
+
+  deleteBtn.addEventListener("click", () => {
+    note.remove();
+    deleteLocalNote(noteIndex); // Remove note using index
+  });
+
+  copyBtn.addEventListener("click", (e) => {
+    navigator.clipboard
+      .writeText(originalText)
+      .then(() => {
+        const allNotes = notes.querySelectorAll(".copy-btn");
+        allNotes.forEach((singleNote) => {
+          singleNote.childNodes[1].textContent = "Copy";
+        });
+        copyBtn.childNodes[1].textContent = "Copied";
+      })
+      .catch((err) => console.error("Failed to copy text: ", err));
+  });
 
   // Append elements to note structure
   noteHeader.appendChild(noteHeading);

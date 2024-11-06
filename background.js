@@ -3,8 +3,21 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({ notes: {} });
   chrome.storage.sync.set({ noteCounter: 0 });
   chrome.storage.sync.set({ slashCommandsEnabled: true });
-  console.log("Initialized chrome sync storage data.");
+  chrome.storage.sync.set({ firstLoad: true });
+  console.log("Extension installed successfully.");
 });
+
+// chrome.storage.local.set({
+//   notes: {
+//     0: {
+//       date: "11/07/2024",
+//       displayIndex: 0,
+//       noteIndex: 3,
+//       noteName: "Hello, world!",
+//       noteText: "This is your first BlockNote... :)",
+//     },
+//   },
+// });
 
 chrome.action.onClicked.addListener(async (tab) => {
   console.log("Action clicked, creating iframe");

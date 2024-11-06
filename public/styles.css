@@ -62,8 +62,9 @@ body {
 
   margin: 0;
 
-  /* background-color: rgb(254, 254, 239);;
-  --color: rgb(255, 255, 177);;
+  background-color: rgb(254, 254, 239);
+
+  /* --color: rgb(252, 243, 209);
   background-image: linear-gradient(
       0deg,
       transparent 24%,
@@ -88,10 +89,8 @@ body {
       transparent 77%,
       transparent
     );
-  background-size: 220px 220px; */
+  background-size: 180px 180px; */
 
-  /* background-color: #fff6d3; */
-  background-color: rgb(254, 254, 239);
   position: relative;
 
   overflow-x: hidden;
@@ -272,6 +271,37 @@ section {
   border: 4px solid #05060f;
   box-shadow: 0.4rem 0.4rem #05060f;
   position: relative;
+
+
+
+  --color: rgb(252, 243, 209);
+  /* --color: rgb(0, 0, 0); */
+
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 180px 180px;
 }
 
 section > h2 {
@@ -512,6 +542,10 @@ input::placeholder {
 
 #input-zone:hover #note-input:focus {
   border-color: #48dc00;
+}
+
+#note-message {
+  display: none;
 }
 
 #notes {
