@@ -148,6 +148,7 @@ function useExistingInputField(notes) {
     border: "3px solid #05060f",
     boxShadow: "0.2rem 0.2rem #05060f",
     overflow: "scroll",
+    color: "black"
   });
 
   const title = document.createElement("h2");
@@ -247,6 +248,16 @@ function useExistingInputField(notes) {
       });
     }
     selectedIndex = -1; // Reset selected index on every popup load
+
+    const popupHeight = popupContainer.offsetHeight;
+    const containerHeight = window.innerHeight - popupContainer.getBoundingClientRect().top;
+
+    if (popupHeight > containerHeight) {
+      popupContainer.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
+      });
+    }
   }
 
   function hidePopup() {
