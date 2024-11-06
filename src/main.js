@@ -236,6 +236,9 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
     noteHeading = input1;
     noteTextDiv = input2;
+    
+    input1.focus();
+
   });
 
   acceptBtn.addEventListener("click", () => {

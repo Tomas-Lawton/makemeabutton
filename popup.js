@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } else {
       let li = document.createElement("li");
-      li.textContent = `Notes appear here. Type “/” followed by the note name to insert it.`;
+      li.textContent = `Notes appear here. Type “/” followed by the name to insert it.`;
       notesList.appendChild(li);
     }
   });
