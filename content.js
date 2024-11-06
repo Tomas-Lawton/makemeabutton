@@ -17,31 +17,50 @@ document.addEventListener(
   "focus",
   (event) => {
     const target = event.target;
+
     if (
-      (target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable) &&
-      !target.hasAttribute("popup_input_box")
+      target.isContentEditable ||
+      target.tagName === "TEXTAREA" ||
+      target.tagName === "INPUT"
     ) {
       lastFocusedElement = target;
       console.log("Set target:", lastFocusedElement);
+    } else {
+      // If the focused element is a container (e.g., a div), drill down to find a child text node
+      const textElement = findTextElement(target);
+      if (textElement) {
+        lastFocusedElement = textElement;
+        console.log("Set target to text element:", lastFocusedElement);
+      }
     }
   },
   true
 );
+
+// Recursive function to find the lowest-level child that contains text input
+function findTextElement(element) {
+  if (element.nodeType === Node.TEXT_NODE || element.isContentEditable) {
+    return element;
+  }
+
+  for (const child of element.children) {
+    const result = findTextElement(child);
+    if (result) return result;
+  }
+
+  return null;
+}
 
 // Paste value into the focused element
 function pasteValueToTarget(value) {
   const target = lastFocusedElement;
   if (!target) return;
 
-  // Remove "/" and text after it
   const slashIndex = target.value.indexOf("/");
   if (slashIndex !== -1) {
     target.value = target.value.slice(0, slashIndex);
   }
 
-  // Insert the selected note text
   target.value += value;
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
@@ -55,7 +74,6 @@ chrome.storage.sync.get(["notes", "slashCommandsEnabled"], (data) => {
   }
 });
 
-// Listen for messages from the extension (e.g., paste requests)
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === "pasteValue") {
     pasteValueToTarget(request.value);
@@ -72,13 +90,19 @@ function useExistingInputField(notes) {
     return;
   }
 
-  // Remove the existing popup container if present
+  // Remove old popup before creating a new one
   if (popupContainer) {
     popupContainer.remove();
   }
 
-  // Create new popup container
+  selectedIndex = -1;
   popupContainer = document.createElement("div");
+
+  if (!listenersAdded) {
+    lastFocusedElement.addEventListener("input", showMatchingNotes);
+    lastFocusedElement.addEventListener("keydown", handleKeydown);
+    listenersAdded = true;
+  }
 
   popupContainer.id = "notes-container";
   Object.assign(popupContainer.style, {
@@ -101,8 +125,8 @@ function useExistingInputField(notes) {
     flexDirection: "column",
     borderRadius: "1rem",
     padding: "1rem",
-    border: "4px solid #05060f",
-    boxShadow: "0.4rem 0.4rem #05060f",
+    border: "3px solid #05060f",
+    boxShadow: "0.2rem 0.2rem #05060f",
     overflow: "scroll",
   });
 
@@ -124,35 +148,28 @@ function useExistingInputField(notes) {
 
   document.body.appendChild(popupContainer);
 
-  // Ensure event listeners are added only once
-  if (!listenersAdded) {
-    lastFocusedElement.addEventListener("input", showMatchingNotes);
-    lastFocusedElement.addEventListener("keydown", handleKeydown);
-    listenersAdded = true;
-  }
-
   function showMatchingNotes() {
     const query = lastFocusedElement.value.toLowerCase().substring(1);
     const matchingNotes = Object.entries(notes)
       .filter(([_, note]) => {
-        const defaultName = `Note ${note.noteIndex + 1}`;
-        return (
-          (note.noteName && note.noteName.toLowerCase().includes(query)) ||
-          defaultName.toLowerCase().includes(query)
-        );
+        const queryStr = String(query).toLowerCase();
+        const noteNameQuery = note.noteName !== null
+          ? String(note.noteName).toLowerCase() 
+          : `Note ${note.noteIndex + 1}`.toLowerCase(); 
+
+        return noteNameQuery.includes(queryStr);
       })
       .map(([, note]) => note);
+    console.log(matchingNotes);
+    notesContainer.innerHTML = ""; // Clear the notes list
 
-    notesContainer.innerHTML = "";
+    // Show matching notes or a placeholder message if no results
+    const notesToShow = matchingNotes.length ? matchingNotes : [];
 
-    const notesToShow = matchingNotes.length
-      ? matchingNotes
-      : Object.values(notes).slice(0, 5);
-
-    notesToShow.forEach((note, index) => {
-      const li = document.createElement("li");
-      li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
-      Object.assign(li.style, {
+    if (notesToShow.length === 0) {
+      const noResults = document.createElement("li");
+      noResults.textContent = "No matching notes";
+      Object.assign(noResults.style, {
         cursor: "pointer",
         padding: ".5rem",
         fontSize: "1rem",
@@ -160,19 +177,39 @@ function useExistingInputField(notes) {
         fontWeight: "400",
         transition: ".3s ease",
       });
-      li.addEventListener("mouseenter", () => highlightNote(index));
-      li.addEventListener("mouseleave", () => removeHighlight(index));
-      li.addEventListener("click", () => {
-        pasteValueToTarget(note.noteText);
-        hidePopup();
+      notesContainer.appendChild(noResults);
+      console.log("none");
+    } else {
+      notesToShow.forEach((note, index) => {
+        const li = document.createElement("li");
+        li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
+        Object.assign(li.style, {
+          cursor: "pointer",
+          padding: ".5rem",
+          fontSize: "1rem",
+          borderRadius: ".5rem",
+          fontWeight: "400",
+          transition: ".3s ease",
+        });
+        li.addEventListener("mouseenter", () => highlightNote(index));
+        li.addEventListener("mouseleave", () => removeHighlight(index));
+        li.addEventListener("click", () => {
+          pasteValueToTarget(note.noteText);
+          hidePopup();
+        });
+        notesContainer.appendChild(li);
       });
-      notesContainer.appendChild(li);
-    });
+    }
 
     if (popupContainer) {
       popupContainer.style.display = notesToShow.length ? "block" : "none";
     }
-    selectedIndex = -1; // Reset selected index
+    selectedIndex = -1; // Reset selected index on every popup load
+  }
+
+  function hidePopup() {
+    popupContainer.style.display = "none";
+    document.body.removeChild(popupContainer);
   }
 
   function removeHighlight(index) {
@@ -188,15 +225,6 @@ function useExistingInputField(notes) {
     }
     selectedIndex = index;
     items[selectedIndex].style.backgroundColor = "rgb(6 211 177)"; // Highlight selected item
-    items[selectedIndex].scrollIntoView({ block: "nearest" });
-  }
-
-  function hidePopup() {
-    popupContainer.style.display = "none";
-    selectedIndex = -1;
-    if (popupContainer.parentNode) {
-      popupContainer.parentNode.removeChild(popupContainer);
-    }
   }
 
   function handleKeydown(event) {
