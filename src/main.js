@@ -90,11 +90,12 @@ function getDate() {
     .getDate()
     .toString()
     .padStart(2, "0")}/${currentDate.getFullYear()}`;
-  const time = `${currentDate
-    .getHours()
-    .toString()
-    .padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
-  return `${time}, ${date}`; // Combine date and time
+  // const time = `${currentDate
+  //   .getHours()
+  //   .toString()
+  //   .padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
+  // return `${time}, ${date}`; // Combine date and time
+  return date;
 }
 
 function makeNote(noteText) {
@@ -140,9 +141,8 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   noteContent.classList.add("note-content");
 
   const note = document.createElement("div");
-  note.classList.add("draggable");
-  note.classList.add("note");
-  note.setAttribute("draggable", true);
+  note.classList.add("draggable", "note");
+  note.setAttribute("draggable", window.innerWidth > 1000); // draggable only on large screens
   note.setAttribute("display-index", displayIndex);
   note.setAttribute("key", noteIndex);
 
@@ -151,7 +151,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   noteHeader.classList.add("note-header");
 
   let noteHeading = document.createElement("h3");
-  noteHeading.textContent = noteName || `Note ${noteIndex + 1}`; // Display note index + 1 for user-friendly numbering
+  noteHeading.textContent = noteName || `Note ${noteIndex + 1}`;
   noteHeading.classList.add("note-title");
 
   const editBtn = document.createElement("div");
@@ -172,7 +172,6 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   acceptIcon.src = "./public/uicons/uicons-round-medium-outline-checkmark.svg";
   acceptBtn.appendChild(acceptIcon);
 
-  // HEADER DONE
   const dateElem = document.createElement("p");
   dateElem.textContent = date;
   dateElem.classList.add("note-date");
@@ -181,34 +180,52 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   noteTextDiv.textContent = noteText;
   noteTextDiv.classList.add("note-text");
 
-  //   NOTE ACTIONS
   const actionContainer = document.createElement("div");
-
   const copyBtn = document.createElement("button");
   copyBtn.classList.add("copy-btn");
-  const copyIcon = document.createElement("img"); // Use a div instead of an <i>
+  const copyIcon = document.createElement("img");
   copyIcon.src = "./public/uicons/uicons-round-medium-outline-copy.svg";
-
   copyBtn.appendChild(copyIcon);
   copyBtn.appendChild(document.createTextNode("Copy"));
 
   const deleteIcon = document.createElement("img");
   deleteIcon.src = "./public/uicons/uicons-round-medium-outline-trash.svg";
-  // deleteIcon.src = "./public/uicons/uicons-round-medium-outline-archivebox.svg";
   const deleteBtn = document.createElement("div");
   deleteBtn.appendChild(deleteIcon);
   deleteBtn.classList.add("delete-btn");
-  // deleteBtn.textContent = "Delete";
 
   actionContainer.classList.add("note-actions");
+
+  // DRAG HANDLE (Visible on touch devices only)
+  const dragIcon = document.createElement("img");
+  dragIcon.src =
+    "./public/uicons/uicons-round-medium-outline-3-dots-horizontal.svg";
+  const dragHandle = document.createElement("div");
+  dragHandle.appendChild(dragIcon);
+  dragHandle.classList.add("drag-handle");
+  dragHandle.style.display = window.innerWidth <= 1000 ? "flex" : "none";
+
+  // Show or hide drag handle based on screen width
+  function updateHandleVisibility() {
+    dragHandle.style.display = window.innerWidth <= 1000 ? "flex" : "none";
+    note.setAttribute("draggable", window.innerWidth > 1000); // Entire note draggable on larger screens
+  }
+
+  window.addEventListener("resize", updateHandleVisibility);
+
+  // Drag only from handle on small screens
+  if (window.innerWidth <= 1000) {
+    dragHandle.addEventListener("mousedown", (e) => e.stopPropagation());
+    dragHandle.addEventListener("touchstart", (e) => e.stopPropagation());
+  }
 
   // EDITING LISTEWNERS. TO DO ADD SAVING TO THE STATE AGAIN ALSO FOR REAARAGNING
   let originalTitle = noteHeading.textContent;
   let originalText = noteTextDiv.textContent;
 
+  // Event listeners for edit, delete, copy, etc.
   editBtn.addEventListener("click", () => {
     editBtn.style.display = "none";
-    // deleteBtn.style.display = "none";
     acceptBtn.style.display = "flex";
     discardBtn.style.display = "flex";
 
@@ -221,7 +238,6 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     const input2 = document.createElement("textarea");
     input2.name = "post";
     input2.maxLength = "5000";
-
     input2.value = noteTextDiv.textContent;
     input2.classList.add("note-text");
     noteTextDiv.replaceWith(input2);
@@ -230,15 +246,13 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
     note.draggable = false;
 
-    const autoResize = () => (input2.style.height = `${input2.scrollHeight}px`); // Set height based on scrollHeight
+    const autoResize = () => (input2.style.height = `${input2.scrollHeight}px`);
     input2.addEventListener("input", autoResize);
-    autoResize(); // Initial resize
+    autoResize();
 
     noteHeading = input1;
     noteTextDiv = input2;
-    
     input1.focus();
-
   });
 
   acceptBtn.addEventListener("click", () => {
@@ -315,7 +329,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
     deleteLocalNote(noteIndex); // Remove note using index
   });
 
-  copyBtn.addEventListener("click", () => {
+  copyBtn.addEventListener("click", (e) => {
     navigator.clipboard
       .writeText(originalText)
       .then(() => {
@@ -328,8 +342,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
       .catch((err) => console.error("Failed to copy text: ", err));
   });
 
-  //
-
+  // Append elements to note structure
   noteHeader.appendChild(noteHeading);
   noteHeader.appendChild(editBtn);
   noteHeader.appendChild(acceptBtn);
@@ -338,14 +351,14 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
   actionContainer.appendChild(copyBtn);
   actionContainer.appendChild(dateElem);
+  actionContainer.appendChild(dragHandle);
 
   noteContent.appendChild(noteHeader);
   noteContent.appendChild(noteTextDiv);
-
   note.appendChild(noteContent);
   note.appendChild(actionContainer);
 
-  notes.prepend(note); // display in reverse order
+  notes.prepend(note); // Display in reverse order
 }
 
 function loadShapePositions() {
@@ -365,7 +378,7 @@ function loadShapePositions() {
       // Calculate position to prevent overflow
       let rangeX = window.innerWidth - 425;
       let rangeY = window.innerHeight - 425;
-      
+
       let x = Math.floor(Math.random() * rangeX) + 100;
       let y = Math.floor(Math.random() * rangeY) + 100;
 
@@ -375,7 +388,6 @@ function loadShapePositions() {
   });
 }
 window.addEventListener("resize", loadShapePositions);
-
 
 loadShapePositions();
 loadNotes();

@@ -1,31 +1,92 @@
 import { playPop } from "./sounds.js";
 
+// Detect screen width initially
+let isVerticalOnly = window.innerWidth <= 1000;
+
 export function updateDragDropListeners() {
   const draggables = document.querySelectorAll(".draggable");
   const containers = document.querySelectorAll(".container");
 
-  draggables.forEach((draggable) => {
-    let originalContainer = null;
-    let originalIndex = null;
-
-    draggable.addEventListener("dragstart", () => {
-      draggable.classList.add("dragging");
-      originalContainer = draggable.closest(".container");
-      originalIndex = Array.from(originalContainer.children).indexOf(draggable);
-    });
-
-    draggable.addEventListener("dragend", () => {
-      draggable.classList.remove("dragging");
-
-      const newContainer = draggable.closest(".container");
-      if (newContainer) {
-        updateDisplayIndexes();
-        playPop();
-      }
-    });
+  // Update the drag mode on resize events
+  window.addEventListener("resize", () => {
+    isVerticalOnly = window.innerWidth <= 1000;
+    handleDragHandleVisibility();  // Recheck drag handle visibility on resize
   });
 
-  // For the note container looking at all notes
+  // Handle drag and touch events for each draggable note
+  draggables.forEach((draggable) => {
+    let originalContainer = null;
+    const dragHandle = draggable.querySelector('.drag-handle');
+
+    function handleDragStart() {
+      draggable.classList.add("dragging");
+      originalContainer = draggable.closest(".container");
+    }
+
+    function handleDragEnd() {
+      draggable.classList.remove("dragging");
+      const newContainer = draggable.closest(".container");
+      
+      if (newContainer && originalContainer !== newContainer) {
+        updateDisplayIndexes();  // Update if moved to another container
+        playPop();
+      } else {
+        updateDisplayIndexes();  // Update if stayed in same container
+        playPop();
+      }
+    }
+
+    draggable.addEventListener("dragstart", handleDragStart);
+    draggable.addEventListener("dragend", handleDragEnd);
+
+    if (dragHandle) {
+      dragHandle.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        handleDragStart();
+      });
+
+      dragHandle.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const container = draggable.closest(".container");
+        const afterElement = getDragAfterElement(container, touch.clientX, touch.clientY);
+
+        draggable.style.position = "absolute";
+
+        // Ensure both x and y are updated for non-vertical screens
+        if (isVerticalOnly) {
+          draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`;
+        } else {
+          draggable.style.left = `${touch.clientX - draggable.offsetWidth / 2}px`;
+          draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`;
+        }
+
+        if (afterElement == null) {
+          container.appendChild(draggable);
+        } else {
+          container.insertBefore(draggable, afterElement);
+        }
+      });
+
+      dragHandle.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        draggable.style.position = "static";
+        handleDragEnd();
+      });
+    }
+
+    draggable.addEventListener("touchstart", (e) => {
+      if (e.target !== dragHandle) {
+        e.stopPropagation();
+      }
+    });
+
+    if (dragHandle) {
+      dragHandle.addEventListener("mousedown", (e) => e.stopPropagation());
+      dragHandle.addEventListener("touchstart", (e) => e.stopPropagation());
+    }
+  });
+
   containers.forEach((container) => {
     container.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -45,42 +106,24 @@ function getDragAfterElement(container, x, y) {
   const draggableElements = [
     ...container.querySelectorAll(".draggable:not(.dragging)"),
   ];
-  return draggableElements.reduce(
-    (closest, child, index) => {
-      const box = child.getBoundingClientRect();
-      const nextBox =
-        draggableElements[index + 1] &&
-        draggableElements[index + 1].getBoundingClientRect();
-      const inRow = y - box.bottom <= 0 && y - box.top >= 0; // check if this is in the same row
-      const offset = x - (box.left + box.width / 2);
-      if (inRow) {
-        if (offset < 0 && offset > closest.offset) {
-          return {
-            offset: offset,
-            element: child,
-          };
-        } else {
-          if (
-            // handle row ends,
-            nextBox && // there is a box after this one.
-            y - nextBox.top <= 0 && // the next is in a new row
-            closest.offset === Number.NEGATIVE_INFINITY // we didn't find a fit in the current row.
-          ) {
-            return {
-              offset: 0,
-              element: draggableElements[index + 1],
-            };
-          }
-          return closest;
-        }
-      } else {
-        return closest;
-      }
-    },
-    {
-      offset: Number.NEGATIVE_INFINITY,
+
+  let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+
+  draggableElements.forEach((child) => {
+    const box = child.getBoundingClientRect();
+    const offsetY = y - (box.top + box.height / 2);
+    const offsetX = x - (box.left + box.width / 2);
+
+    const isCloser = isVerticalOnly
+      ? offsetY < 0 && offsetY > closest.offset
+      : offsetY < 0 && offsetX < 0 && offsetY > closest.offset;
+
+    if (isCloser) {
+      closest = { offset: offsetY, element: child };
     }
-  ).element;
+  });
+
+  return closest.element;
 }
 
 export function updateDisplayIndexes() {
@@ -94,13 +137,26 @@ export function updateDisplayIndexes() {
       const dataKey = noteElem.getAttribute("key");
 
       if (savedNotes[dataKey]) {
-        savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // inverse index because reverse display order
-        noteElem.setAttribute("display-index", totalNotes - 1 - i); // inverse index because reverse display order
+        savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // Save in reverse order
+        noteElem.setAttribute("display-index", totalNotes - 1 - i); // Reverse order
       }
     });
 
     chrome.storage.sync.set({ notes: savedNotes }, () => {
       console.log("Notes saved:", savedNotes);
+    });
   });
+}
+
+function handleDragHandleVisibility() {
+  const dragHandles = document.querySelectorAll('.drag-handle');
+  const isVerticalOnly = window.innerWidth <= 1000;
+
+  dragHandles.forEach(handle => {
+    if (isVerticalOnly) {
+      handle.style.display = 'block';
+    } else {
+      handle.style.display = 'none';
+    }
   });
 }
