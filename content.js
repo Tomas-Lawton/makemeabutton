@@ -149,13 +149,17 @@ function useExistingInputField(notes) {
   document.body.appendChild(popupContainer);
 
   function showMatchingNotes() {
-    const query = lastFocusedElement.value.toLowerCase().substring(1);
+    // const query = lastFocusedElement.value.toLowerCase().substring(1);
+    const query = lastFocusedElement.value
+      .toLowerCase()
+      .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
     const matchingNotes = Object.entries(notes)
       .filter(([_, note]) => {
         const queryStr = String(query).toLowerCase();
-        const noteNameQuery = note.noteName !== null
-          ? String(note.noteName).toLowerCase() 
-          : `Note ${note.noteIndex + 1}`.toLowerCase(); 
+        const noteNameQuery =
+          note.noteName !== null
+            ? String(note.noteName).toLowerCase()
+            : `Note ${note.noteIndex + 1}`.toLowerCase();
 
         return noteNameQuery.includes(queryStr);
       })
@@ -164,18 +168,18 @@ function useExistingInputField(notes) {
     notesContainer.innerHTML = ""; // Clear the notes list
 
     // Show matching notes or a placeholder message if no results
-    const notesToShow = matchingNotes.length ? matchingNotes : [];
+    let notesToShow = matchingNotes.length ? matchingNotes : [];
     if (notesToShow.length === 0) {
       const noResults = document.createElement("li");
       noResults.textContent = "No matching notes";
       Object.assign(noResults.style, {
-        fontSize: '.8rem',
-        borderRadius: '0.5rem',
-        fontWeight: '400',
-        pointerEvents: 'none'
+        fontSize: ".8rem",
+        borderRadius: "0.5rem",
+        fontWeight: "400",
+        pointerEvents: "none",
       });
       notesContainer.appendChild(noResults);
-      notesToShow = [null] // just to trigger
+      notesToShow = [null]; // just to trigger
       console.log("none");
     } else {
       notesToShow.forEach((note, index) => {
