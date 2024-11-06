@@ -153,6 +153,7 @@ function useExistingInputField(notes) {
     const query = lastFocusedElement.value
       .toLowerCase()
       .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
+      console.log(query)
     const matchingNotes = Object.entries(notes)
       .filter(([_, note]) => {
         const queryStr = String(query).toLowerCase();
@@ -165,11 +166,13 @@ function useExistingInputField(notes) {
       })
       .map(([, note]) => note);
     console.log(matchingNotes);
-    notesContainer.innerHTML = ""; // Clear the notes list
+    notesContainer.innerHTML = ""; // Clear 
 
     // Show matching notes or a placeholder message if no results
     let notesToShow = matchingNotes.length ? matchingNotes : [];
     if (notesToShow.length === 0) {
+      notesContainer.innerHTML = "";
+      console.log("none");
       const noResults = document.createElement("li");
       noResults.textContent = "No matching notes";
       Object.assign(noResults.style, {
@@ -180,7 +183,6 @@ function useExistingInputField(notes) {
       });
       notesContainer.appendChild(noResults);
       notesToShow = [null]; // just to trigger
-      console.log("none");
     } else {
       notesToShow.forEach((note, index) => {
         const li = document.createElement("li");
@@ -268,7 +270,7 @@ function useExistingInputField(notes) {
       }
     } else if (
       event.key === "Escape" ||
-      (event.key === "Backspace" && lastFocusedElement.value === "/")
+      (event.key === "Backspace" && lastFocusedElement.value.endsWith("/"))
     ) {
       hidePopup();
     }
