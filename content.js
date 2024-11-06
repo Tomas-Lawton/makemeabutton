@@ -165,19 +165,17 @@ function useExistingInputField(notes) {
 
     // Show matching notes or a placeholder message if no results
     const notesToShow = matchingNotes.length ? matchingNotes : [];
-
     if (notesToShow.length === 0) {
       const noResults = document.createElement("li");
       noResults.textContent = "No matching notes";
       Object.assign(noResults.style, {
-        cursor: "pointer",
-        padding: ".5rem",
-        fontSize: "1rem",
-        borderRadius: ".5rem",
-        fontWeight: "400",
-        transition: ".3s ease",
+        fontSize: '.8rem',
+        borderRadius: '0.5rem',
+        fontWeight: '400',
+        pointerEvents: 'none'
       });
       notesContainer.appendChild(noResults);
+      notesToShow = [null] // just to trigger
       console.log("none");
     } else {
       notesToShow.forEach((note, index) => {
