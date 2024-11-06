@@ -2,6 +2,8 @@ console.log("Content script loaded");
 
 let lastFocusedElement = null;
 let popupContainer = null;
+let selectedIndex = -1; // Track the selected index for arrow key navigation
+let listenersAdded = false; // Flag to ensure listeners are added only once
 
 // Load Google Fonts
 const link = document.createElement("link");
@@ -29,26 +31,19 @@ document.addEventListener(
 );
 
 // Paste value into the focused element
-function pasteValueToTarget(value, fromKeyUp = false) {
+function pasteValueToTarget(value) {
   const target = lastFocusedElement;
   if (!target) return;
 
-  if (target.isContentEditable) {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    if (fromKeyUp) range.deleteContents();
-    const textNode = document.createTextNode(value);
-    range.insertNode(textNode);
-    range.setStartAfter(textNode);
-    range.collapse(true);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  } else {
-    target.value = fromKeyUp
-      ? target.value.slice(0, -1) + value
-      : target.value + value;
-    target.dispatchEvent(new Event("input", { bubbles: true }));
+  // Remove "/" and text after it
+  const slashIndex = target.value.indexOf("/");
+  if (slashIndex !== -1) {
+    target.value = target.value.slice(0, slashIndex);
   }
+
+  // Insert the selected note text
+  target.value += value;
+  target.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 chrome.storage.sync.get(["notes", "slashCommandsEnabled"], (data) => {
@@ -77,7 +72,12 @@ function useExistingInputField(notes) {
     return;
   }
 
-  // set the global var here
+  // Remove the existing popup container if present
+  if (popupContainer) {
+    popupContainer.remove();
+  }
+
+  // Create new popup container
   popupContainer = document.createElement("div");
 
   popupContainer.id = "notes-container";
@@ -124,6 +124,13 @@ function useExistingInputField(notes) {
 
   document.body.appendChild(popupContainer);
 
+  // Ensure event listeners are added only once
+  if (!listenersAdded) {
+    lastFocusedElement.addEventListener("input", showMatchingNotes);
+    lastFocusedElement.addEventListener("keydown", handleKeydown);
+    listenersAdded = true;
+  }
+
   function showMatchingNotes() {
     const query = lastFocusedElement.value.toLowerCase().substring(1);
     const matchingNotes = Object.entries(notes)
@@ -142,7 +149,7 @@ function useExistingInputField(notes) {
       ? matchingNotes
       : Object.values(notes).slice(0, 5);
 
-    notesToShow.forEach((note) => {
+    notesToShow.forEach((note, index) => {
       const li = document.createElement("li");
       li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
       Object.assign(li.style, {
@@ -153,48 +160,89 @@ function useExistingInputField(notes) {
         fontWeight: "400",
         transition: ".3s ease",
       });
-      li.addEventListener("mouseenter", () => {
-        li.style.backgroundColor = "rgb(6 211 177)";
-        li.style.transform = " scale(1.05)";
-      });
-      li.addEventListener("mouseleave", () => {
-        li.style.backgroundColor = "";
-        li.style.transform = "";
-      });
+      li.addEventListener("mouseenter", () => highlightNote(index));
+      li.addEventListener("mouseleave", () => removeHighlight(index));
       li.addEventListener("click", () => {
-        if (note.noteText) pasteValueToTarget(note.noteText, true);
-        popupContainer.style.display = "none";
-        document.body.removeChild(popupContainer);
+        pasteValueToTarget(note.noteText);
+        hidePopup();
       });
-      notesContainer.prepend(li); //can swap append
+      notesContainer.appendChild(li);
     });
 
-    popupContainer.style.display = notesToShow.length ? "block" : "none";
+    if (popupContainer) {
+      popupContainer.style.display = notesToShow.length ? "block" : "none";
+    }
+    selectedIndex = -1; // Reset selected index
+  }
+
+  function removeHighlight(index) {
+    const items = notesContainer.querySelectorAll("li");
+    items[index].style.backgroundColor = "";
+    items[index].style.transform = "";
+  }
+
+  function highlightNote(index) {
+    const items = notesContainer.querySelectorAll("li");
+    if (selectedIndex >= 0) {
+      items[selectedIndex].style.backgroundColor = ""; // Reset previous item style
+    }
+    selectedIndex = index;
+    items[selectedIndex].style.backgroundColor = "rgb(6 211 177)"; // Highlight selected item
+    items[selectedIndex].scrollIntoView({ block: "nearest" });
+  }
+
+  function hidePopup() {
+    popupContainer.style.display = "none";
+    selectedIndex = -1;
+    if (popupContainer.parentNode) {
+      popupContainer.parentNode.removeChild(popupContainer);
+    }
+  }
+
+  function handleKeydown(event) {
+    const items = notesContainer.querySelectorAll("li");
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      if (selectedIndex < items.length - 1) {
+        highlightNote(selectedIndex + 1);
+      }
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      if (selectedIndex > 0) {
+        highlightNote(selectedIndex - 1);
+      }
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      const currentValue = lastFocusedElement.value;
+      const query = currentValue
+        .slice(currentValue.indexOf("/") + 1)
+        .toLowerCase();
+      const selectedNote =
+        Object.values(notes).find((note) => {
+          const noteIndex = `note${note.noteIndex + 1}`;
+          const noteName = note.noteName && note.noteName.toLowerCase();
+          return noteName === query || noteIndex === query;
+        }) ||
+        (selectedIndex >= 0
+          ? Object.values(notes)[selectedIndex]
+          : Object.values(notes)[0]);
+
+      if (selectedNote) {
+        lastFocusedElement.value = currentValue.slice(
+          0,
+          currentValue.indexOf("/")
+        );
+        pasteValueToTarget(selectedNote.noteText);
+        hidePopup();
+      }
+    } else if (
+      event.key === "Escape" ||
+      (event.key === "Backspace" && lastFocusedElement.value === "/")
+    ) {
+      hidePopup();
+    }
   }
 
   showMatchingNotes();
-  lastFocusedElement.addEventListener("input", showMatchingNotes);
-
-
-  
-  lastFocusedElement.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      const selectedNote = Object.entries(notes).find(
-        ([, note]) =>
-          note.noteName &&
-          note.noteName
-            .toLowerCase()
-            .includes(lastFocusedElement.value.toLowerCase())
-      );
-      if (selectedNote) pasteValueToTarget(selectedNote[1].noteText, true);
-      popupContainer.style.display = "none";
-      document.body.removeChild(popupContainer);
-    } else if (
-      ["Escape", "Backspace"].includes(event.key) &&
-      lastFocusedElement.value === ""
-    ) {
-      popupContainer.style.display = "none";
-      document.body.removeChild(popupContainer);
-    }
-  });
 }
