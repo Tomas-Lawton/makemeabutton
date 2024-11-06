@@ -121,7 +121,7 @@ function useExistingInputField(notes) {
     maxWidth: "300px",
     backgroundColor: "rgb(5 222 186)",
     maxHeight: "400px",
-    display: "none",
+    // display: "none",
     flexDirection: "column",
     borderRadius: "1rem",
     padding: "1rem",
@@ -182,7 +182,7 @@ function useExistingInputField(notes) {
         pointerEvents: "none",
       });
       notesContainer.appendChild(noResults);
-      notesToShow = [null]; // just to trigger
+      // notesToShow = [null]; // just to trigger
     } else {
       notesToShow.forEach((note, index) => {
         const li = document.createElement("li");
@@ -205,9 +205,9 @@ function useExistingInputField(notes) {
       });
     }
 
-    if (popupContainer) {
-      popupContainer.style.display = notesToShow.length ? "block" : "none";
-    }
+    // if (popupContainer) {
+    //   popupContainer.style.display = notesToShow.length ? "block" : "none";
+    // }
     selectedIndex = -1; // Reset selected index on every popup load
   }
 
