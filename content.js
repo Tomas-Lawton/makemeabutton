@@ -36,6 +36,22 @@ document.addEventListener(
   true
 );
 
+// document.addEventListener("focus", (event) => {
+//   const target = event.target;
+//   if (target.isContentEditable || target.tagName === "TEXTAREA" || target.tagName === "INPUT") {
+//     lastFocusedElement = target;
+//     console.log("Set focus target:", lastFocusedElement);
+//   }
+// }, true);
+
+// document.addEventListener("input", (event) => {
+//   const target = event.target;
+//   if (target.isContentEditable) {
+//     lastFocusedElement = target;
+//     console.log("Set input target:", lastFocusedElement);
+//   }
+// });
+
 // Recursive function to find the lowest-level child that contains text input
 function findTextElement(element) {
   if (element.nodeType === Node.TEXT_NODE || element.isContentEditable) {
@@ -68,6 +84,7 @@ chrome.storage.sync.get(["notes", "slashCommandsEnabled"], (data) => {
   const notes = data.notes || {};
   if (data.slashCommandsEnabled) {
     document.addEventListener("keyup", (event) => {
+      console.log("Creating popup");
       if (event.key === "/") useExistingInputField(notes);
     });
   }
@@ -80,7 +97,6 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 function useExistingInputField(notes) {
-  console.log("Creating popup");
 
   if (!lastFocusedElement) {
     console.warn(
@@ -104,7 +120,7 @@ function useExistingInputField(notes) {
     zIndex: "9999",
     listStyleType: "none",
     top: `${
-      lastFocusedElement.getBoundingClientRect().bottom + window.scrollY + 5
+      lastFocusedElement.getBoundingClientRect().bottom + window.scrollY + 2
     }px`,
     left: `${
       lastFocusedElement.getBoundingClientRect().left + window.scrollX
@@ -116,7 +132,7 @@ function useExistingInputField(notes) {
     // display: "none",
     flexDirection: "column",
     borderRadius: "1rem",
-    padding: "1rem",
+    padding: ".5rem",
     border: "3px solid #05060f",
     boxShadow: "0.2rem 0.2rem #05060f",
     overflow: "scroll",
@@ -125,16 +141,20 @@ function useExistingInputField(notes) {
   const title = document.createElement("h2");
   title.textContent = "Notes";
   title.style.fontWeight = "700";
-  title.style.marginBottom = "1rem";
+  title.style.marginBottom = "0";
+  title.style.fontSize = "small";
   popupContainer.appendChild(title);
 
   const notesContainer = document.createElement("ul");
   Object.assign(notesContainer.style, {
-    flex: "1",
-    flexDirection: "column",
-    gap: "1rem",
-    listStyleType: "none",
-    padding: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '.25rem',
+    listStyleType: 'none',
+    padding: '3px',
+    background: 'rgb(6 211 177)',
+    borderRadius: '6px',
+    margin: '4px 0'
   });
   popupContainer.appendChild(notesContainer);
 
@@ -169,7 +189,7 @@ function useExistingInputField(notes) {
       noResults.textContent = "No matching notes";
       Object.assign(noResults.style, {
         fontSize: ".8rem",
-        borderRadius: "0.5rem",
+        borderRadius: "6px",
         fontWeight: "400",
         pointerEvents: "none",
       });
@@ -180,9 +200,9 @@ function useExistingInputField(notes) {
         li.textContent = note.noteName || `Note ${note.noteIndex + 1}`;
         Object.assign(li.style, {
           cursor: "pointer",
-          padding: ".5rem",
+          padding: "3px",
           fontSize: "1rem",
-          borderRadius: ".5rem",
+          borderRadius: "6px",
           fontWeight: "400",
           transition: ".3s ease",
         });
@@ -218,7 +238,7 @@ function useExistingInputField(notes) {
       items[selectedIndex].style.backgroundColor = ""; // Reset previous item style
     }
     selectedIndex = index;
-    items[selectedIndex].style.backgroundColor = "rgb(6 211 177)"; // Highlight selected item
+    items[selectedIndex].style.backgroundColor = '#fffccf'; // Highlight selected item
   }
 
   function handleKeydown(event) {
