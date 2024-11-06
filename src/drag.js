@@ -13,54 +13,57 @@ export function updateDragDropListeners() {
     handleDragHandleVisibility();  // Recheck drag handle visibility on resize
   });
 
-  // Handle drag and touch events for each draggable note
   draggables.forEach((draggable) => {
     let originalContainer = null;
+    let originalIndex = null;
+
+    // Select the drag handle within the draggable note
     const dragHandle = draggable.querySelector('.drag-handle');
 
-    function handleDragStart() {
+    // Desktop drag events
+    draggable.addEventListener("dragstart", () => {
       draggable.classList.add("dragging");
       originalContainer = draggable.closest(".container");
-    }
+      originalIndex = Array.from(originalContainer.children).indexOf(draggable);
+    });
 
-    function handleDragEnd() {
+    draggable.addEventListener("dragend", () => {
       draggable.classList.remove("dragging");
       const newContainer = draggable.closest(".container");
-      
-      if (newContainer && originalContainer !== newContainer) {
-        updateDisplayIndexes();  // Update if moved to another container
-        playPop();
-      } else {
-        updateDisplayIndexes();  // Update if stayed in same container
+      if (newContainer) {
+        updateDisplayIndexes();
         playPop();
       }
-    }
+    });
 
-    draggable.addEventListener("dragstart", handleDragStart);
-    draggable.addEventListener("dragend", handleDragEnd);
-
+    // Touch drag events (for touch devices, we'll only start dragging on the drag-handle)
     if (dragHandle) {
       dragHandle.addEventListener("touchstart", (e) => {
         e.preventDefault();
-        handleDragStart();
+        draggable.classList.add("dragging");
+        originalContainer = draggable.closest(".container");
+        originalIndex = Array.from(originalContainer.children).indexOf(draggable);
       });
 
       dragHandle.addEventListener("touchmove", (e) => {
         e.preventDefault();
         const touch = e.touches[0];
         const container = draggable.closest(".container");
+        
         const afterElement = getDragAfterElement(container, touch.clientX, touch.clientY);
 
         draggable.style.position = "absolute";
 
-        // Ensure both x and y are updated for non-vertical screens
+        // For vertical-only screens (small screens), move only vertically
         if (isVerticalOnly) {
-          draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`;
+          draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`; // Align with touch position on Y-axis
         } else {
+          // Full X-Y movement for larger screens
           draggable.style.left = `${touch.clientX - draggable.offsetWidth / 2}px`;
           draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`;
         }
 
+        // Insert draggable element in the correct position
         if (afterElement == null) {
           container.appendChild(draggable);
         } else {
@@ -71,20 +74,21 @@ export function updateDragDropListeners() {
       dragHandle.addEventListener("touchend", (e) => {
         e.preventDefault();
         draggable.style.position = "static";
-        handleDragEnd();
+        draggable.classList.remove("dragging");
+        const newContainer = draggable.closest(".container");
+        if (newContainer) {
+          updateDisplayIndexes();
+          playPop();
+        }
       });
     }
 
+    // Prevent drag initiation if touch is not on the drag handle
     draggable.addEventListener("touchstart", (e) => {
       if (e.target !== dragHandle) {
-        e.stopPropagation();
+        e.stopPropagation(); // Prevent drag if the target is not the drag-handle
       }
     });
-
-    if (dragHandle) {
-      dragHandle.addEventListener("mousedown", (e) => e.stopPropagation());
-      dragHandle.addEventListener("touchstart", (e) => e.stopPropagation());
-    }
   });
 
   containers.forEach((container) => {
@@ -102,28 +106,52 @@ export function updateDragDropListeners() {
   });
 }
 
+// Function to get the nearest element after which to place the dragged element
 function getDragAfterElement(container, x, y) {
   const draggableElements = [
     ...container.querySelectorAll(".draggable:not(.dragging)"),
   ];
 
-  let closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+  return draggableElements.reduce(
+    (closest, child, index) => {
+      const box = child.getBoundingClientRect();
+      const nextBox =
+        draggableElements[index + 1] &&
+        draggableElements[index + 1].getBoundingClientRect();
 
-  draggableElements.forEach((child) => {
-    const box = child.getBoundingClientRect();
-    const offsetY = y - (box.top + box.height / 2);
-    const offsetX = x - (box.left + box.width / 2);
+      // Check if we are within the same row
+      const inRow = y - box.bottom <= 0 && y - box.top >= 0;
+      const offsetX = x - (box.left + box.width / 2);
 
-    const isCloser = isVerticalOnly
-      ? offsetY < 0 && offsetY > closest.offset
-      : offsetY < 0 && offsetX < 0 && offsetY > closest.offset;
-
-    if (isCloser) {
-      closest = { offset: offsetY, element: child };
+      // For vertical-only dragging, we only care about the Y-axis
+      if (inRow) {
+        if (offsetX < 0 && offsetX > closest.offset) {
+          return {
+            offset: offsetX,
+            element: child,
+          };
+        } else {
+          // If not in the same row, check if the next box is in the new row
+          if (
+            nextBox && // There's a box after this one
+            y - nextBox.top <= 0 && // The next box is in a new row
+            closest.offset === Number.NEGATIVE_INFINITY // We didn't find a fit in the current row
+          ) {
+            return {
+              offset: 0,
+              element: draggableElements[index + 1],
+            };
+          }
+          return closest;
+        }
+      } else {
+        return closest;
+      }
+    },
+    {
+      offset: Number.NEGATIVE_INFINITY,
     }
-  });
-
-  return closest.element;
+  ).element;
 }
 
 export function updateDisplayIndexes() {
@@ -137,8 +165,8 @@ export function updateDisplayIndexes() {
       const dataKey = noteElem.getAttribute("key");
 
       if (savedNotes[dataKey]) {
-        savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // Save in reverse order
-        noteElem.setAttribute("display-index", totalNotes - 1 - i); // Reverse order
+        savedNotes[dataKey].displayIndex = totalNotes - 1 - i; // Reverse index order
+        noteElem.setAttribute("display-index", totalNotes - 1 - i); // Set display index
       }
     });
 
@@ -154,9 +182,9 @@ function handleDragHandleVisibility() {
 
   dragHandles.forEach(handle => {
     if (isVerticalOnly) {
-      handle.style.display = 'block';
+      handle.style.display = 'block'; // Show drag handle for small screens
     } else {
-      handle.style.display = 'none';
+      handle.style.display = 'none'; // Hide drag handle for larger screens
     }
   });
 }

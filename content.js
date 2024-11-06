@@ -175,6 +175,8 @@ function useExistingInputField(notes) {
   showMatchingNotes();
   lastFocusedElement.addEventListener("input", showMatchingNotes);
 
+
+  
   lastFocusedElement.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       const selectedNote = Object.entries(notes).find(

@@ -586,6 +586,13 @@ input::placeholder {
     justify-content: center;
 }
 
+/* .drag-handle:hover {
+  background: #d8adfd;
+  box-shadow: 0.2rem 0.2rem #05060f;
+  cursor: pointer;
+  transform: scale(1.05);
+} */
+
 .edit {
   cursor: pointer;
   display: flex;
@@ -878,8 +885,12 @@ input .note-text{
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 550px) {
   /* For tiny screens */
+
+  .note-date {
+    display: none
+  }
 
   #header-shape {
     display: none;
