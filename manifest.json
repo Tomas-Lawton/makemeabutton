@@ -9,9 +9,9 @@
   },
   "action": {
     "default_icon": {
-      "16": "public/icon/star.png",
-      "48": "public/icon/star.png",
-      "128": "public/icon/star.png"
+      "16": "public/icon/logo.png",
+      "48": "public/icon/logo.png",
+      "128": "public/icon/logo.png"
     }
   },
   "content_scripts": [
@@ -22,7 +22,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["content.styles.css", "popup.html", "index.html", "public/icon/star.png"],
+      "resources": ["content.styles.css", "popup.html", "index.html", "public/icon/logo.png"],
       "matches": ["<all_urls>"]
     }
   ],
@@ -30,9 +30,9 @@
     "newtab": "index.html"
   },
   "icons": {
-    "16": "public/icon/star.png",
-    "48": "public/icon/star.png",
-    "128": "public/icon/star.png"
+    "16": "public/icon/logo.png",
+    "48": "public/icon/logo.png",
+    "128": "public/icon/logo.png"
   },
   "host_permissions": [
     "chrome-extension://*/*"

@@ -350,24 +350,32 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
 function loadShapePositions() {
   const shapes = document.querySelectorAll(".background-svg");
+  const isSmallScreen = window.innerWidth < 600;
+
   shapes.forEach((shape) => {
-    // Ensure shape width and height stay within a reasonable size
-    let width = Math.floor(Math.random() * 150) + 150; // Between 150 and 300
-    shape.style.width = `${width}px`;
-    shape.style.height = `${width}px`; // Make height equal to width for square shapes
-    shape.style.display = "block";
+    if (isSmallScreen) {
+      shape.style.display = "none"; // Hide shapes on small screens
+    } else {
+      // Set shape dimensions within a reasonable size
+      let width = Math.floor(Math.random() * 150) + 150; // Between 150 and 300
+      shape.style.width = `${width}px`;
+      shape.style.height = `${width}px`;
+      shape.style.display = "block";
 
-    // Calculate position ensuring no overflow
-    let rangeX = window.innerWidth - 425; // because the rotating hypotoneuse is longer than width
-    let rangeY = window.innerHeight - 425;
+      // Calculate position to prevent overflow
+      let rangeX = window.innerWidth - 425;
+      let rangeY = window.innerHeight - 425;
+      
+      let x = Math.floor(Math.random() * rangeX) + 100;
+      let y = Math.floor(Math.random() * rangeY) + 100;
 
-    let x = Math.floor(Math.random() * rangeX) + 100;
-    let y = Math.floor(Math.random() * rangeY) + 100;
-
-    shape.style.left = `${x}px`;
-    shape.style.top = `${y}px`;
+      shape.style.left = `${x}px`;
+      shape.style.top = `${y}px`;
+    }
   });
 }
+window.addEventListener("resize", loadShapePositions);
+
 
 loadShapePositions();
 loadNotes();

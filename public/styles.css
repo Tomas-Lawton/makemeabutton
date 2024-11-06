@@ -130,7 +130,7 @@ footer {
   display: flex;
   justify-content: space-between;
   /* width: calc(100% - 60px); */
-  align-items: baseline;
+  align-items: flex-end;
   position: relative;
 
   margin: 2rem 8rem 2rem 8rem;
@@ -222,6 +222,22 @@ h1 {
   z-index: 1;
 }
 #header-shape:hover {
+  animation-play-state: paused; /* Pauses animation on hover */
+}
+
+#header-shape-2 {
+  display: none;
+  width: 150px;
+  animation: spin 8s linear infinite;
+  padding-top: -200px;
+  /* position: absolute; */
+  /* top: -8px; */
+  /* left: calc(50% - 50px); */
+  /* overflow: visible; */
+  z-index: 1;
+}
+
+#header-shape-2:hover {
   animation-play-state: paused; /* Pauses animation on hover */
 }
 
@@ -397,6 +413,7 @@ input::placeholder {
   display: flex;
   align-items: center;
   margin: 12px 0;
+  gap: 0.5rem;
 }
 
 #input-zone:hover {
@@ -439,7 +456,7 @@ input::placeholder {
 }
 
 #inputs {
-  height: 60px;
+  /* height: 60px; */
   display: flex;
   align-items: center;
   /* background: black; */
@@ -449,7 +466,8 @@ input::placeholder {
 #instant-paste {
   height: 100%;
   text-wrap: nowrap;
-  margin-left: 0.5rem;
+  /* margin-left: 0.5rem; */
+  height: 60px;
 }
 
 #instant-paste {
@@ -502,7 +520,8 @@ input::placeholder {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1rem;
+  /* gap: 1rem; */
+  row-gap: 1rem;
 }
 
 .note {
@@ -793,7 +812,88 @@ input .note-text{
 
 @media (max-width: 1000px) {
   /* For small screens */
+
+  header {
+    display: flex;
+    margin: 3rem;
+    text-align: left;
+    flex-direction: row;
+    text-align: left;
+    justify-content: space-between;
+  }
+  section {
+    margin: 0 3rem;
+    padding: 2rem;
+  }
+
+  footer {
+    margin: 2rem 3rem;
+  }
+
+  #bang-1 {
+    width: 70px;
+  }
+
+  #inputs {
+    flex-wrap: wrap;
+  }
+
+  .wrapper {
+    width: auto;
+  }
+
+  .line-break {
+    font-size: 4rem;
+  }
+
+  #header-shape {
+    display: none;
+  }
+  #header-shape-2 {
+    display: block;
+  }
   .note {
     flex: 0 1 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  /* For tiny screens */
+
+  #header-shape {
+    display: none;
+  }
+  #header-shape-2 {
+    display: none;
+  }
+
+  .line-break {
+    font-size: 2rem;
+  }
+
+  #bang-1 {
+    display: none;
+  }
+
+  #bang-2 {
+    display: none;
+  }
+  footer {
+    margin: 1rem;
+    display: block;
+  }
+
+  header {
+    margin: 1rem;
+    display: block;
+  }
+
+  section {
+    margin: 1rem;
+    display: block;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
   }
 }
