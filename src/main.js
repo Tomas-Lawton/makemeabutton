@@ -74,19 +74,24 @@ function loadNotes() {
     chrome.storage.sync.get("firstLoad", (data) => {
       let firstLoad = data.firstLoad
       if (firstLoad){
-        createNote({
-            noteText: `This is your first BlockNote... :) In a new tab type "/" followed by Hello World to paste your note.`,
-            noteIndex: 0,
-            date: getDate(),
-            displayIndex: 0,
-            noteName: "Hello world",
-          })
+        const data = {
+          noteText: `Wow, your first BlockNote! In a new tab type "/" followed by Hello World to paste it.`,
+          noteIndex: 0,
+          date: getDate(),
+          displayIndex: 0,
+          noteName: "Hello world",
+        }
+
+          // const data = { noteText, date, noteIndex: noteCounter };
+          createNote(data);
+          saveLocalNote(data);
+
           // set it false
           chrome.storage.sync.set({ firstLoad: false }, () => {
             console.log("Completed first load");
           });
           // dumby key
-          savedNotes = {'0':''}
+          // savedNotes = {'0':''}
       } else {
         checkNoteMessage(savedNotes);
       }
