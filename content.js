@@ -3,7 +3,6 @@ console.log("Content script loaded");
 let lastFocusedElement = null;
 let popupContainer = null;
 let selectedIndex = -1; // Track the selected index for arrow key navigation
-let listenersAdded = false; // Flag to ensure listeners are added only once
 
 // Load Google Fonts
 const link = document.createElement("link");
@@ -81,7 +80,7 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 function useExistingInputField(notes) {
-  console.log("Active mode");
+  console.log("Creating popup");
 
   if (!lastFocusedElement) {
     console.warn(
@@ -90,19 +89,12 @@ function useExistingInputField(notes) {
     return;
   }
 
-  // Remove old popup before creating a new one
-  if (popupContainer) {
-    popupContainer.remove();
-  }
-
   selectedIndex = -1;
   popupContainer = document.createElement("div");
 
-  if (!listenersAdded) {
     lastFocusedElement.addEventListener("input", showMatchingNotes);
     lastFocusedElement.addEventListener("keydown", handleKeydown);
-    listenersAdded = true;
-  }
+
 
   popupContainer.id = "notes-container";
   Object.assign(popupContainer.style, {
@@ -153,7 +145,7 @@ function useExistingInputField(notes) {
     const query = lastFocusedElement.value
       .toLowerCase()
       .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
-      console.log(query)
+    console.log(query);
     const matchingNotes = Object.entries(notes)
       .filter(([_, note]) => {
         const queryStr = String(query).toLowerCase();
@@ -166,7 +158,7 @@ function useExistingInputField(notes) {
       })
       .map(([, note]) => note);
     console.log(matchingNotes);
-    notesContainer.innerHTML = ""; // Clear 
+    notesContainer.innerHTML = ""; // Clear
 
     // Show matching notes or a placeholder message if no results
     let notesToShow = matchingNotes.length ? matchingNotes : [];
@@ -182,7 +174,6 @@ function useExistingInputField(notes) {
         pointerEvents: "none",
       });
       notesContainer.appendChild(noResults);
-      // notesToShow = [null]; // just to trigger
     } else {
       notesToShow.forEach((note, index) => {
         const li = document.createElement("li");
@@ -204,16 +195,15 @@ function useExistingInputField(notes) {
         notesContainer.appendChild(li);
       });
     }
-
-    // if (popupContainer) {
-    //   popupContainer.style.display = notesToShow.length ? "block" : "none";
-    // }
     selectedIndex = -1; // Reset selected index on every popup load
   }
 
   function hidePopup() {
-    popupContainer.style.display = "none";
-    document.body.removeChild(popupContainer);
+    if (popupContainer) {
+      lastFocusedElement.removeEventListener("input", showMatchingNotes);
+      lastFocusedElement.removeEventListener("keydown", handleKeydown);
+      popupContainer.remove();
+    }
   }
 
   function removeHighlight(index) {
