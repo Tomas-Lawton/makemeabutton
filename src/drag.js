@@ -10,7 +10,7 @@ export function updateDragDropListeners() {
   // Update the drag mode on resize events
   window.addEventListener("resize", () => {
     isVerticalOnly = window.innerWidth <= 1000;
-    handleDragHandleVisibility();  // Recheck drag handle visibility on resize
+    handleDragHandleVisibility(); // Recheck drag handle visibility on resize
   });
 
   draggables.forEach((draggable) => {
@@ -18,7 +18,7 @@ export function updateDragDropListeners() {
     let originalIndex = null;
 
     // Select the drag handle within the draggable note
-    const dragHandle = draggable.querySelector('.drag-handle');
+    const dragHandle = draggable.querySelector(".drag-handle");
 
     // Desktop drag events
     draggable.addEventListener("dragstart", () => {
@@ -42,39 +42,61 @@ export function updateDragDropListeners() {
         e.preventDefault();
         draggable.classList.add("dragging");
         originalContainer = draggable.closest(".container");
-        originalIndex = Array.from(originalContainer.children).indexOf(draggable);
+        originalIndex = Array.from(originalContainer.children).indexOf(
+          draggable
+        );
       });
 
       dragHandle.addEventListener("touchmove", (e) => {
         e.preventDefault();
         const touch = e.touches[0];
         const container = draggable.closest(".container");
-        
-        const afterElement = getDragAfterElement(container, touch.clientX, touch.clientY);
+        const containerRect = container.getBoundingClientRect(); // Get container's position
 
         draggable.style.position = "absolute";
+        draggable.style.zIndex = "10"; // Make sure it's above other elements
+        draggable.style.pointerEvents = "none"; // Prevent interaction with the dragged element itself
 
-        // For vertical-only screens (small screens), move only vertically
         if (isVerticalOnly) {
-          draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`; // Align with touch position on Y-axis
+          draggable.style.top = `${
+            touch.clientY - draggable.offsetHeight / 2
+          }px`; // Vertical movement
         } else {
-          // Full X-Y movement for larger screens
-          draggable.style.left = `${touch.clientX - draggable.offsetWidth / 2}px`;
-          draggable.style.top = `${touch.clientY - draggable.offsetHeight / 2}px`;
+          draggable.style.left = `${
+            touch.clientX - draggable.offsetWidth / 2
+          }px`; // X movement
+          draggable.style.top = `${
+            touch.clientY - draggable.offsetHeight / 2
+          }px`; // Y movement
         }
 
-        // Insert draggable element in the correct position
-        if (afterElement == null) {
-          container.appendChild(draggable);
+        // Check if touch position is near the top of the container (insert at position 0)
+        const afterElement = getDragAfterElement(
+          container,
+          touch.clientX,
+          touch.clientY
+        );
+
+        // If touch position is near the top of the container, insert at the first position
+        if (touch.clientY <= containerRect.top + 1) {
+          container.prepend(draggable); // Insert at the start of the container
+        } else if (afterElement == null) {
+          container.appendChild(draggable); // Insert at the end of the container
         } else {
-          container.insertBefore(draggable, afterElement);
+          container.insertBefore(draggable, afterElement); // Insert at the correct position
         }
       });
 
       dragHandle.addEventListener("touchend", (e) => {
         e.preventDefault();
-        draggable.style.position = "static";
+        // Reset position and styles after dragging
+        draggable.style.position = "static"; // Reset the position
+        draggable.style.zIndex = ""; // Remove z-index
+        draggable.style.pointerEvents = ""; // Re-enable interaction
+
+        // Stop dragging
         draggable.classList.remove("dragging");
+
         const newContainer = draggable.closest(".container");
         if (newContainer) {
           updateDisplayIndexes();
@@ -159,7 +181,7 @@ export function updateDisplayIndexes() {
   const totalNotes = notesElements.length;
 
   chrome.storage.sync.get("notes", (data) => {
-    const savedNotes = data.notes || {}; 
+    const savedNotes = data.notes || {};
 
     notesElements.forEach((noteElem, i) => {
       const dataKey = noteElem.getAttribute("key");
@@ -177,14 +199,14 @@ export function updateDisplayIndexes() {
 }
 
 function handleDragHandleVisibility() {
-  const dragHandles = document.querySelectorAll('.drag-handle');
+  const dragHandles = document.querySelectorAll(".drag-handle");
   const isVerticalOnly = window.innerWidth <= 1000;
 
-  dragHandles.forEach(handle => {
+  dragHandles.forEach((handle) => {
     if (isVerticalOnly) {
-      handle.style.display = 'block'; // Show drag handle for small screens
+      handle.style.display = "block"; // Show drag handle for small screens
     } else {
-      handle.style.display = 'none'; // Hide drag handle for larger screens
+      handle.style.display = "none"; // Hide drag handle for larger screens
     }
   });
 }

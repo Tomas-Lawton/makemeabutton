@@ -71,12 +71,26 @@ function pasteValueToTarget(value) {
   const target = lastFocusedElement;
   if (!target) return;
 
-  const slashIndex = target.value.indexOf("/");
+  let targetContent = target.value || target.textContent;
+
+  const slashIndex = targetContent.indexOf("/");
   if (slashIndex !== -1) {
-    target.value = target.value.slice(0, slashIndex);
+    // Update the value or textContent depending on which is available
+    if (target.value !== undefined) {
+      target.value = targetContent.slice(0, slashIndex);
+    } else {
+      target.textContent = targetContent.slice(0, slashIndex);
+    }
   }
 
-  target.value += value;
+  // Append the new value to the target
+  if (target.value !== undefined) {
+    target.value += value;
+  } else {
+    target.textContent += value;
+  }
+
+  // Dispatch input event to notify changes
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
@@ -97,7 +111,6 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 function useExistingInputField(notes) {
-
   if (!lastFocusedElement) {
     console.warn(
       "No input, textarea, or contenteditable element is currently focused."
@@ -108,9 +121,8 @@ function useExistingInputField(notes) {
   selectedIndex = -1;
   popupContainer = document.createElement("div");
 
-    lastFocusedElement.addEventListener("input", showMatchingNotes);
-    lastFocusedElement.addEventListener("keydown", handleKeydown);
-
+  lastFocusedElement.addEventListener("input", showMatchingNotes);
+  lastFocusedElement.addEventListener("keydown", handleKeydown);
 
   popupContainer.id = "notes-container";
   Object.assign(popupContainer.style, {
@@ -147,14 +159,14 @@ function useExistingInputField(notes) {
 
   const notesContainer = document.createElement("ul");
   Object.assign(notesContainer.style, {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '.25rem',
-    listStyleType: 'none',
-    padding: '3px',
-    background: 'rgb(6 211 177)',
-    borderRadius: '6px',
-    margin: '4px 0'
+    display: "flex",
+    flexDirection: "column",
+    gap: ".25rem",
+    listStyleType: "none",
+    padding: "3px",
+    background: "rgb(6 211 177)",
+    borderRadius: "6px",
+    margin: "4px 0",
   });
   popupContainer.appendChild(notesContainer);
 
@@ -162,9 +174,28 @@ function useExistingInputField(notes) {
 
   function showMatchingNotes() {
     // const query = lastFocusedElement.value.toLowerCase().substring(1);
-    const query = lastFocusedElement.value
-      .toLowerCase()
-      .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
+    console.log(lastFocusedElement);
+    // const query = lastFocusedElement.value
+    //   .toLowerCase()
+    //   .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
+
+    let query = "";
+    if (lastFocusedElement) {
+      if (lastFocusedElement.value) {
+        query = lastFocusedElement.value
+          .toLowerCase()
+          .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
+      } else if (lastFocusedElement.textContent) {
+        query = lastFocusedElement.textContent
+          .toLowerCase()
+          .substring(lastFocusedElement.textContent.lastIndexOf("/") + 1);
+      } else {
+        console.error("lastFocusedElement is undefined or not valid");
+      }
+    } else {
+      console.error("lastFocusedElement is undefined or not valid");
+    }
+
     console.log(query);
     const matchingNotes = Object.entries(notes)
       .filter(([_, note]) => {
@@ -238,7 +269,7 @@ function useExistingInputField(notes) {
       items[selectedIndex].style.backgroundColor = ""; // Reset previous item style
     }
     selectedIndex = index;
-    items[selectedIndex].style.backgroundColor = '#fffccf'; // Highlight selected item
+    items[selectedIndex].style.backgroundColor = "#fffccf"; // Highlight selected item
   }
 
   function handleKeydown(event) {
@@ -256,10 +287,22 @@ function useExistingInputField(notes) {
       }
     } else if (event.key === "Enter") {
       event.preventDefault();
-      const currentValue = lastFocusedElement.value;
-      const query = currentValue
-        .slice(currentValue.indexOf("/") + 1)
-        .toLowerCase();
+      // const currentValue = lastFocusedElement.value;
+      // const query = currentValue
+      //   .slice(currentValue.indexOf("/") + 1)
+      //   .toLowerCase();
+
+      const currentValue = lastFocusedElement
+        ? lastFocusedElement.value || lastFocusedElement.textContent
+        : "";
+      let query = "";
+
+      if (currentValue) {
+        query = currentValue.slice(currentValue.indexOf("/") + 1).toLowerCase();
+      } else {
+        console.log("not found");
+      }
+
       const selectedNote =
         Object.values(notes).find((note) => {
           const noteIndex = `note${note.noteIndex + 1}`;
@@ -278,9 +321,19 @@ function useExistingInputField(notes) {
         pasteValueToTarget(selectedNote.noteText);
         hidePopup();
       }
-    } else if (
+    }
+    // else if (
+    //   event.key === "Escape" ||
+    //   (event.key === "Backspace" && lastFocusedElement.value.endsWith("/"))
+    // ) {
+    //   hidePopup();
+    // }
+    else if (
       event.key === "Escape" ||
-      (event.key === "Backspace" && lastFocusedElement.value.endsWith("/"))
+      (event.key === "Backspace" &&
+        (lastFocusedElement.value || lastFocusedElement.textContent).endsWith(
+          "/"
+        ))
     ) {
       hidePopup();
     }

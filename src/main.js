@@ -360,6 +360,7 @@ copyBtn.addEventListener("click", (e) => {
 
   // Append elements to note structure
   noteHeader.appendChild(noteHeading);
+  noteHeader.appendChild(dragHandle);
   noteHeader.appendChild(editBtn);
   noteHeader.appendChild(acceptBtn);
   noteHeader.appendChild(discardBtn);
@@ -367,7 +368,6 @@ copyBtn.addEventListener("click", (e) => {
 
   actionContainer.appendChild(copyBtn);
   actionContainer.appendChild(dateElem);
-  actionContainer.appendChild(dragHandle);
 
   noteContent.appendChild(noteHeader);
   noteContent.appendChild(noteTextDiv);
