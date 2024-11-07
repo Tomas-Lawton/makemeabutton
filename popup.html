@@ -8,7 +8,32 @@
       @import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Sixtyfour+Convergence&display=swap");
       @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend+Mega:wght@100..900&family=Reenie+Beanie&family=Sixtyfour+Convergence&display=swap");
 
+      /* .note-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+      } */
 
+      .note-icon-wrapper {
+        /* display: inline-block; */
+        display: flex;
+        padding: 8px 16px;
+        /* background: white; */
+        /* background: #ffce00; */
+        cursor: pointer;
+        box-shadow: 0.1rem 0.1rem #05060f;
+        transition: 0.3s ease;
+        border-radius: 2rem;
+        border: 4px solid #05060f;
+        padding: 8px;
+        /* margin-left: 8px; */
+        /* gap: 1rem; */
+      }
+
+      .note-icon {
+        width: 20px;
+        height: 20px;
+      }
 
       a {
         color: black;
@@ -17,20 +42,21 @@
 
       body {
         border-radius: 2rem;
-        border: 4px solid #05060f;
+        /* border: 4px solid #05060f; */
         background-color: rgb(254, 254, 239);
         margin: 0;
         font-family: "Lexend Mega", sans-serif;
         font-style: normal;
         font-size: 1rem;
         overflow: hidden;
-        padding: 2rem;
+        /* padding: 2rem; */
         /* height: 100%; */
         display: flex;
         flex-direction: column;
-
         /* height: 785px; */
-        height: 714px;
+        /* height: 714px; */
+        height: 763px;
+        gap: 1rem;
       }
 
       footer {
@@ -41,11 +67,25 @@
         margin-bottom: 0;
       }
 
-      body > div {
+      body > div:first-child {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        /* margin-bottom: 1rem; */
+        padding: 1rem;
+        /* background: aqua; */
+        /* background: #cbffdb; */
+        border-radius: 1rem 1rem 0 0;
+        padding: 1rem 1rem 0.7rem 1rem;
+
+        background: #fed703;
       }
+
+      /* body > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      } */
 
       hr {
         border: 2px solid #05060f;
@@ -54,8 +94,8 @@
       }
 
       h1 {
-        font-family: "Reenie Beanie", cursive;
-        font-size: 3rem;
+        /* font-family: "Reenie Beanie", cursive; */
+        font-size: 1.4rem;
         display: inline-block;
         overflow: hidden;
         white-space: nowrap;
@@ -63,34 +103,47 @@
         font-weight: bold;
       }
 
+      #note-container {
+        background: rgb(201 206 255 / 98%);
+        margin: 0 1rem;
+        border: 4px solid #05060f;
+        box-shadow: 0.4rem 0.4rem #05060f;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+      }
+
+      #note-container h2 {
+        margin: 0;
+      }
+
       ul {
         list-style: none;
         padding: 0;
         display: flex;
         flex-direction: column;
-        /* gap: 1rem; */
-        flex: 1;
-        overflow-y: auto;
-        padding: 1rem;
-        /* background: #1bedca; */
-        background-color: #00bf9f;
-        /* background: linear-gradient(90deg, #1bedca, #00bf9f); */
+        /* flex: 1; */
+        overflow: visible;
         border-radius: 1rem;
-
-        gap: .5rem;
+        gap: 0.5rem;
+        margin: 0;
       }
 
       li {
         display: flex;
-        justify-content: space-between;
+        /* justify-content: flex-start; */
+        align-items: center;
         cursor: pointer;
-        border-radius: 2rem;
-        background: rgb(201 206 255 / 98%);
+        border-radius: 0.5rem;
+        /* background: rgb(201 206 255 / 98%); */
         border: 4px solid #05060f;
         font-size: 1rem;
-        padding: 1rem;
+        padding: 0.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         will-change: transform;
+        background: #87b7de;
+        gap: 0.5rem;
       }
 
       li:hover {
@@ -101,6 +154,7 @@
       h2 {
         font-size: 1rem;
         align-items: center;
+        font-weight: 400;
       }
       button {
         font-family: "Lexend Mega", sans-serif;
@@ -112,6 +166,88 @@
         display: flex;
         gap: 1rem;
         justify-content: space-between;
+        margin: 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+        border: 4px solid #05060f;
+        font-size: 1rem;
+        padding: 0 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        will-change: transform;
+        background: #cbffdb;
+        align-items: center;
+        border: 4px solid #05060f;
+        box-shadow: 0.4rem 0.4rem #05060f;
+      }
+
+      #setting-naming {
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        margin: 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+        border: 4px solid #05060f;
+        font-size: 1rem;
+        padding: 0 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        will-change: transform;
+        /* background: #cbffdb; */
+        /* background: #fed703; */
+        background-color: #60fe03;
+        align-items: center;
+        border: 4px solid #05060f;
+        box-shadow: 0.4rem 0.4rem #05060f;
+      }
+
+      .oai-key-container {
+        gap: 1rem;
+        justify-content: space-between;
+        margin: 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+        border: 4px solid #05060f;
+        font-size: 1rem;
+        padding: 0 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        will-change: transform;
+        background: #fed703;
+        align-items: center;
+        border: 4px solid #05060f;
+        box-shadow: 0.4rem 0.4rem #05060f;
+        padding: 1rem;
+      }
+
+      .oai-key-container input {
+        width: 100%;
+        padding: 8px 8px;
+        width: 100%;
+        border: 4px solid black;
+        border-radius: 2rem;
+        transition: 0.3s ease;
+        background: white;
+        outline: none;
+        margin: 0;
+        border-radius: 0.5rem;
+      }
+
+      button {
+        display: flex;
+        /* border: none; */
+        padding: 4px 8px;
+        cursor: pointer;
+        background: #0ecdad;
+        /* border: 2px solid black; */
+        /* box-shadow: 0.1rem 0.1rem #05060f; */
+        transition: 0.3s ease;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.7rem;
+        border-radius: 2rem;
+        border: 4px solid #05060f;
       }
 
       /* Duplicate */
@@ -127,7 +263,7 @@
         border: 4px solid #05060f;
         padding: 8px;
         margin-left: 8px;
-
+        background: #ffd500;
         /* linear-gradient(90deg, #1bedca, #00bf9f); */
       }
 
@@ -183,7 +319,8 @@
       /* SWITCH */
 
       .checkbox-wrapper-5 {
-        margin: auto 0;
+        /* margin: auto 0; */
+        margin-top: 3px;
       }
 
       /* From Uiverse.io by Shoh2008 */
@@ -296,10 +433,10 @@
       </div>
     </div>
 
-    <hr />
+    <!-- <hr /> -->
 
     <div id="setting-slash">
-      <h2>Slash commands</h2>
+      <h2>Use Slash "/"</h2>
       <div class="checkbox-wrapper-5">
         <div class="check">
           <input checked="" id="check-5" type="checkbox" />
@@ -308,9 +445,17 @@
       </div>
     </div>
 
-    <ul id="notes-list"></ul>
+    <div id="setting-naming">
+      <h2>Auto Name</h2>
+      <button>Set Key</button>
+    </div>
 
-    <footer>
+    <div id="note-container">
+      <h2>Your Notes</h2>
+      <p>Select a note to paste it.</p>
+      <ul id="notes-list"></ul>
+    </div>
+    <!-- <footer>
       <h2>
         <a
           href="https://tomaslawton.netlify.app"
@@ -319,7 +464,7 @@
           >Made by Tommy 💚</a
         >
       </h2>
-    </footer>
+    </footer> -->
     <script src="popup.js"></script>
   </body>
 </html>

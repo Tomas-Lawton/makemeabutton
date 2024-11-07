@@ -15,6 +15,9 @@
 
 p {
   margin: 0;
+
+  text-align: center;
+  font-weight: bold;
 }
 
 a {
@@ -91,6 +94,8 @@ body {
     );
   background-size: 180px 180px; */
 
+
+  
   position: relative;
 
   overflow-x: hidden;
@@ -265,26 +270,20 @@ button {
   font-weight: 500;
 }
 section {
-  /* margin: 0 10%; */
-  flex: 1;
-
+  /* flex: 1;
   margin: 0 8rem;
-  /* background: #ffdd4d; */
-  padding: 4rem;
-  /* border-radius: 2rem; */
+  padding: 4rem; */
 
-  /* background: #c9ceffed; */
   background: rgb(201 206 255 / 98%);
-  border-radius: 12px;
-
+  /* border-radius: 12px; */
+/* 
   border: 4px solid #05060f;
   box-shadow: 0.4rem 0.4rem #05060f;
-  position: relative;
+  position: relative; */
+
 
   --color: rgb(252, 243, 209);
-  /* --color: rgb(0, 0, 0); */
-
-  /* background-image: linear-gradient(
+  background-image: linear-gradient(
       0deg,
       transparent 24%,
       var(--color) 25%,
@@ -308,7 +307,17 @@ section {
       transparent 77%,
       transparent
     );
-  background-size: 180px 180px; */
+  background-size: 190px 190px;
+
+
+  border-radius: 4rem 4rem 0 0;
+  flex: 1;
+  margin: 0 8rem;
+  padding: 4rem;
+  /* background: rgb(201 206 255 / 98%); */
+  border: .5rem solid #05060f;
+  box-shadow: 1rem 1rem #05060f;
+  position: relative;
 }
 
 section > h2 {
@@ -579,6 +588,13 @@ input::placeholder {
 
 #note-message {
   display: none;
+  margin: auto;
+}
+
+#note-message p {
+  background-color: #ffce00;
+  width: fit-content;
+  margin: auto;
 }
 
 #notes {

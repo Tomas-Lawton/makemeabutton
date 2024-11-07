@@ -150,6 +150,19 @@ function loadNotes() {
 
 
 function makeNote(noteText) {
+
+  //ENABLE AUTO NOTE NAMING WITH OAI.
+  // chrome.storage.sync.get(["notes", "settings"], (data) => {
+  //   const notes = data.notes || {};
+  //   if (data.settings.slashCommandsEnabled) {
+  //     document.addEventListener("keyup", (event) => {
+  //       console.log("Creating popup");
+  //       if (event.key === "/") useExistingInputField(notes);
+  //     });
+  //   }
+  // });
+
+
   const date = getDate();
   const data = { noteText, date, noteIndex: noteCounter };
   createNote(data);

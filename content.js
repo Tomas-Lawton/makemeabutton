@@ -94,9 +94,9 @@ function pasteValueToTarget(value) {
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
-chrome.storage.sync.get(["notes", "slashCommandsEnabled"], (data) => {
+chrome.storage.sync.get(["notes", "settings"], (data) => {
   const notes = data.notes || {};
-  if (data.slashCommandsEnabled) {
+  if (data.settings.slashCommandsEnabled) {
     document.addEventListener("keyup", (event) => {
       console.log("Creating popup");
       if (event.key === "/") useExistingInputField(notes);
