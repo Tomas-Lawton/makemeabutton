@@ -197,7 +197,12 @@ function makeNote(noteText) {
             {
               parts: [
                 {
-                  text: `Suggest a concise and meaningful title for the following note content:\n"${noteText}. YOU MUST CONCICELY ANSWER WITH ONLY THE ONE TOP CHOICE FOR A NAME. RETURN THE NAME DIRECTLY. Do your best to capture what the note actually contains so it is easy to remember what it was about later. Maximum 5 words suggested name."`
+                  text: `Suggest a one concise and meaningful title for the following note content:\n"${noteText}. 
+                        IT IS VERY CRITICALLY IMPORTANT YOU ANSWER WITH ONLY ONE NAME. 
+                        Do your best to capture what the note actually contains so it is easy to remember what it was about later. 
+                        Maximum 5 words suggested name.
+                        If the note text is not understandable just combine a ranom color with a random animal and a random 2-digit number
+                        IT IS VERY CRITICALLY IMPORTANT YOU ANSWER WITH ONLY ONE NAME.`
                 }
               ]
             }
@@ -511,18 +516,28 @@ function loadShapePositions() {
       shape.style.height = `${width}px`;
       shape.style.display = "block";
 
-      // Calculate position to prevent overflow
-      let rangeX = window.innerWidth - 425;
-      let rangeY = window.innerHeight - 425;
+      // Random rotation (e.g., 0, 90, 180, or 270 degrees)
+      const rotation = Math.floor(Math.random() * 4) * 90;
+      shape.style.transform = `rotate(${rotation}deg)`;
 
-      let x = Math.floor(Math.random() * rangeX) + 100;
-      let y = Math.floor(Math.random() * rangeY) + 100;
+      // Calculate position to prevent overflow, considering rotation
+      const shapeSize = width;
+      const rotatedSize = rotation === 90 || rotation === 270 ? shapeSize : shapeSize; // For 90 or 270, the size swaps, but it's the same here because it's square
+
+      let rangeX = window.innerWidth - rotatedSize; // Account for width of shape and some margin
+      let rangeY = window.innerHeight - rotatedSize; // Account for height of shape and some margin
+
+      // Position the shape randomly within the range, ensuring it fits in the viewport
+      let x = Math.floor(Math.random() * rangeX);
+      let y = Math.floor(Math.random() * rangeY);
 
       shape.style.left = `${x}px`;
       shape.style.top = `${y}px`;
     }
   });
 }
+
+
 window.addEventListener("resize", loadShapePositions);
 
 document.addEventListener("keydown", async (event) => {

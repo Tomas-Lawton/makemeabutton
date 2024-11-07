@@ -252,7 +252,7 @@ h1 {
   animation-play-state: paused; /* Pauses animation on hover */
 }
 
-.background-svg {
+.background-svg-animate {
   position: absolute;
   z-index: -1000;
   animation: spin 8s linear infinite;
@@ -261,6 +261,26 @@ h1 {
   /* Limit the size of shapes */
   max-width: 300px;
   max-height: 300px;
+}
+
+.background-svg, .shape-4, .shape-5 {
+  position: absolute;
+  z-index: -1000;
+  display: none;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.shape-5 {
+  left: 0;
+  top: 0;
+  display: block;
+}
+
+.shape-4 {
+  top: 40px;
+  right: 20%;
+  display: block;
 }
 
 button {

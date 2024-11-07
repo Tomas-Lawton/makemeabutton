@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
     inputField.placeholder = "Add Free Gemini Key";
 
     const saveButton = document.createElement("button");
-    saveButton.textContent = "Save";
+    saveButton.textContent = "UPDATE";
 
     containerDiv.appendChild(inputField);
     containerDiv.appendChild(saveButton);
