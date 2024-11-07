@@ -10,9 +10,10 @@ const notes = document.getElementById("notes");
 let noteCounter = 0;
 
 function deleteLocalNote(index) {
+  console.log("deleting, ", index);
+
   chrome.storage.sync.get("notes", (data) => {
     const savedNotes = data.notes || {};
-
     console.log("deleted, ", index);
     delete savedNotes[index];
     checkNoteMessage(savedNotes);
@@ -52,8 +53,9 @@ function saveLocalNote(noteData) {
     });
   });
 }
-
 function loadNotes() {  
+  let sortedNotes = null;
+
   chrome.storage.sync.get("notes", (data) => {
     const savedNotes = data.notes || {};
 
@@ -62,7 +64,7 @@ function loadNotes() {
       (data) => (noteCounter = data.noteCounter)
     );
 
-    let sortedNotes = Object.entries(savedNotes).sort(
+    sortedNotes = Object.entries(savedNotes).sort(
       ([, a], [, b]) => a.displayIndex - b.displayIndex
     );
 
@@ -71,8 +73,10 @@ function loadNotes() {
       createNote(data);
     });
 
+    console.log("Loaded notes in storage.");
+
     chrome.storage.sync.get("firstLoad", (data) => {
-      let firstLoad = data.firstLoad
+      let firstLoad = data.firstLoad;
       if (firstLoad){
         const data = {
           noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
@@ -80,25 +84,21 @@ function loadNotes() {
           date: getDate(),
           displayIndex: 0,
           noteName: "First Note",
-        }
-          createNote(data);
-          saveLocalNote(data);
+        };
+        createNote(data);
+        saveLocalNote(data);
 
-          chrome.storage.sync.set({ firstLoad: false }, () => {
-            console.log("Completed first load");
-          });
-          // dumby key
-          // savedNotes = {'0':''}
+        chrome.storage.sync.set({ firstLoad: false }, () => {
+          console.log("Completed first time loading.");
+        });
       } else {
-        checkNoteMessage(savedNotes);
+        checkNoteMessage(savedNotes); // don't include first time
       }
+
+      console.log("Done loading notes.");
+      updateDragDropListeners();
     });
-    
-    updateDragDropListeners();
   });
-
-
-
 }
 
 
