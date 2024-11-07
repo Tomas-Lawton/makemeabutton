@@ -20,7 +20,6 @@
         position: absolute;
         z-index: -400;
         opacity: 0.5;
-
       }
 
       input::placeholder {
@@ -78,7 +77,8 @@
       }
 
       section {
-        gap: 1.5rem;
+        /* gap: 1.5rem; */
+        gap: 1rem;
         display: flex;
         flex-direction: column;
         margin: 0 1.5em;
@@ -86,10 +86,20 @@
 
       footer {
         text-align: center;
+        margin: 0 1.6rem;
+        margin-top: auto;
       }
 
-      footer h2 {
-        margin-bottom: 0;
+      footer p {
+        background-color: #ffce00;
+        width: fit-content;
+        margin: 0;
+        border-radius: 5px;
+        /* padding: 5px; */
+        padding: 1rem;
+        line-height: 1.6;
+        font-size: 0.5rem;
+        font-weight: 700;
       }
 
       body > div:first-child {
@@ -103,7 +113,7 @@
         border-radius: 1rem 1rem 0 0;
         padding: 1rem 1rem 0.7rem 1rem;
 
-        background: #fed703;
+        background: #ffce00;;
         border: 4px solid #05060f;
       }
 
@@ -210,7 +220,7 @@
       #auto-name-setting {
         display: flex;
         /* gap: 1rem; */
-        gap: .2rem;
+        gap: 0.2rem;
         justify-content: space-between;
         display: flex;
         justify-content: space-between;
@@ -230,7 +240,7 @@
 
       .oai-key-container {
         /* gap: 1rem; */
-        gap: .2rem;
+        gap: 0.2rem;
         justify-content: space-between;
         display: flex;
         justify-content: space-between;
@@ -489,16 +499,20 @@
       </div>
     </section>
 
-    <!-- <footer>
-      <h2>
+    <footer>
+      <p>
+        Neo-brutalism blends raw aesthetics with modern elements, emphasizing
+        utilitarian design.
+      </p>
+      <!-- <h2>
         <a
           href="https://tomaslawton.netlify.app"
           target="_blank"
           class="footer-text"
           >Made by Tommy 💚</a
         >
-      </h2>
-    </footer> -->
+      </h2> -->
+    </footer>
     <script src="popup.js"></script>
   </body>
 </html>

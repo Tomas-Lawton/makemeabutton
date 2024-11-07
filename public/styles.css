@@ -626,7 +626,9 @@ input::placeholder {
   margin: auto;
   border-radius: 5px;
   padding: 5px;
+  line-height: 1.6;
 }
+
 
 #notes {
   display: flex;
