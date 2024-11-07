@@ -14,6 +14,22 @@
         margin-right: 8px;
       } */
 
+      .random-image {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        z-index: -400;
+        opacity: 0.5;
+
+      }
+
+      input::placeholder {
+        font-family: "Lexend Mega", sans-serif;
+
+        color: #333333;
+        opacity: 0.5;
+      }
+
       .note-icon-wrapper {
         /* display: inline-block; */
         display: flex;
@@ -57,6 +73,15 @@
         /* height: 714px; */
         height: 763px;
         gap: 1rem;
+
+        overflow: hidden;
+      }
+
+      section {
+        gap: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        margin: 0 1.5em;
       }
 
       footer {
@@ -79,6 +104,7 @@
         padding: 1rem 1rem 0.7rem 1rem;
 
         background: #fed703;
+        border: 4px solid #05060f;
       }
 
       /* body > div {
@@ -105,7 +131,7 @@
 
       #note-container {
         background: rgb(201 206 255 / 98%);
-        margin: 0 1rem;
+        /* margin: 0 1rem; */
         border: 4px solid #05060f;
         box-shadow: 0.4rem 0.4rem #05060f;
         padding: 1rem;
@@ -166,7 +192,6 @@
         display: flex;
         gap: 1rem;
         justify-content: space-between;
-        margin: 0 1rem;
         display: flex;
         justify-content: space-between;
         cursor: pointer;
@@ -181,11 +206,10 @@
         box-shadow: 0.4rem 0.4rem #05060f;
       }
 
-      #setting-naming {
+      #auto-name-setting {
         display: flex;
         gap: 1rem;
         justify-content: space-between;
-        margin: 0 1rem;
         display: flex;
         justify-content: space-between;
         cursor: pointer;
@@ -196,7 +220,7 @@
         will-change: transform;
         /* background: #cbffdb; */
         /* background: #fed703; */
-        background-color: #60fe03;
+        background-color: #35eeff;
         align-items: center;
         border: 4px solid #05060f;
         box-shadow: 0.4rem 0.4rem #05060f;
@@ -205,7 +229,6 @@
       .oai-key-container {
         gap: 1rem;
         justify-content: space-between;
-        margin: 0 1rem;
         display: flex;
         justify-content: space-between;
         cursor: pointer;
@@ -268,9 +291,9 @@
       }
 
       #home:hover {
-        /* background-color: #4fe803; */
+        background-color: #4fe803;
 
-        background: linear-gradient(90deg, #1bedca, #00bf9f);
+        /* background: linear-gradient(90deg, #1bedca, #00bf9f); */
         box-shadow: 0.2rem 0.2rem #05060f;
         cursor: pointer;
         transform: scale(1.05);
@@ -434,27 +457,35 @@
     </div>
 
     <!-- <hr /> -->
+    <section>
+      <img class="random-image" id="bang-0" src="./public/svg/nice_star.svg" />
+      <img class="random-image" id="bang-1" src="./public/svg/coral_2.svg" />
+      <img class="random-image" id="bang-2" src="./public/svg/luck.svg" />
+      <img class="random-image" id="bang-4" src="./public/svg/nice_star.svg" />
 
-    <div id="setting-slash">
-      <h2>Use Slash "/"</h2>
-      <div class="checkbox-wrapper-5">
-        <div class="check">
-          <input checked="" id="check-5" type="checkbox" />
-          <label for="check-5"></label>
+      <div id="auto-name-setting">
+        <h2>Auto Name</h2>
+        <button id="info">Info</button>
+        <button id="setting-naming">Set Key</button>
+      </div>
+
+      <div id="setting-slash">
+        <h2>Use Slash "/"</h2>
+        <div class="checkbox-wrapper-5">
+          <div class="check">
+            <input checked="" id="check-5" type="checkbox" />
+            <label for="check-5"></label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div id="setting-naming">
-      <h2>Auto Name</h2>
-      <button>Set Key</button>
-    </div>
+      <div id="note-container">
+        <h2>Your Notes</h2>
+        <p>Select a note to paste it.</p>
+        <ul id="notes-list"></ul>
+      </div>
+    </section>
 
-    <div id="note-container">
-      <h2>Your Notes</h2>
-      <p>Select a note to paste it.</p>
-      <ul id="notes-list"></ul>
-    </div>
     <!-- <footer>
       <h2>
         <a

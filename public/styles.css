@@ -587,14 +587,18 @@ input::placeholder {
 }
 
 #note-message {
-  display: none;
+  display: block;
+  width: 70%;
   margin: auto;
+  margin-top: 2rem;
 }
 
 #note-message p {
   background-color: #ffce00;
   width: fit-content;
   margin: auto;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 #notes {

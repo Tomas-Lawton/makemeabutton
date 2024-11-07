@@ -148,28 +148,85 @@ function loadNotes() {
   });
 }
 
-
 function makeNote(noteText) {
+  chrome.storage.sync.get(["settings"], (data) => {
+    const oaiKey = data.settings?.oai_key;
+    const date = getDate();
+    const noteData = { noteText, date, noteIndex: noteCounter };
 
-  //ENABLE AUTO NOTE NAMING WITH OAI.
-  // chrome.storage.sync.get(["notes", "settings"], (data) => {
-  //   const notes = data.notes || {};
-  //   if (data.settings.slashCommandsEnabled) {
-  //     document.addEventListener("keyup", (event) => {
-  //       console.log("Creating popup");
-  //       if (event.key === "/") useExistingInputField(notes);
-  //     });
-  //   }
-  // });
+    if (oaiKey) {
+      // Uncomment the following block to use OpenAI for note naming
+      
+      /*
+      // Set up and make the OpenAI API call
+      fetch("https://api.openai.com/v1/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${oaiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          prompt: `Suggest a concise and meaningful title for the following note content:\n"${noteText}"`,
+          max_tokens: 10,
+          temperature: 0.7
+        })
+      })
+      .then(response => response.json())
+      .then(responseData => {
+        noteData.noteName = responseData.choices[0].text.trim();
+      })
+      .catch(error => console.error("Error generating note name with OpenAI:", error))
+      .finally(() => {
+        // Create and save the note, regardless of whether API call succeeded
+        createNote(noteData);
+        saveLocalNote(noteData);
+        playPop();
+        updateDragDropListeners();
+      });
+      */
 
-
-  const date = getDate();
-  const data = { noteText, date, noteIndex: noteCounter };
-  createNote(data);
-  saveLocalNote(data);
-  playPop();
-  updateDragDropListeners();
+      // Use the Gemini API for note naming instead of OpenAI
+      fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${oaiKey}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Suggest a concise and meaningful title for the following note content:\n"${noteText}. YOU MUST CONCICELY ANSWER WITH ONLY THE ONE TOP CHOICE FOR A NAME. RETURN THE NAME DIRECTLY. Do your best to capture what the note actually contains so it is easy to remember what it was about later. Maximum 5 words suggested name."`
+                }
+              ]
+            }
+          ]
+        })
+      })
+      .then(response => response.json())
+      .then(responseData => {
+        console.log(responseData)
+        noteData.noteName = responseData.candidates[0].content.parts[0].text;
+      })
+      .catch(error => console.error("Error generating note name with Gemini:", error))
+      .finally(() => {
+        createNote(noteData);
+        saveLocalNote(noteData);
+        playPop();
+        updateDragDropListeners();
+      });
+    } else {
+      // Create the note without a generated name if API key is missing
+      createNote(noteData);
+      saveLocalNote(noteData);
+      playPop();
+      updateDragDropListeners();
+    }
+  });
 }
+
+
 
 pasteButton.addEventListener("click", async () => {
   try {
