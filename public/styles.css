@@ -364,7 +364,7 @@ section > h2 {
 #bang-0 {
   position: absolute;
   left: 40px;
-  top: -60px;
+  top: -40px;
   width: 150px;
   transform: translate(50%, -50%);
   animation: bubble 2s ease-in-out 1;
@@ -603,6 +603,7 @@ input::placeholder {
   flex-direction: column;
   flex: 0 1 calc(49%);
   /* margin-bottom: 24px; */
+  z-index: 1000;
 }
 
 .note:hover {

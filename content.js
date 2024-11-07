@@ -140,12 +140,13 @@ function useExistingInputField(notes) {
     // width: `${lastFocusedElement.getBoundingClientRect().width}px`,
     // maxWidth: "300px",
     width: '250px',
-    backgroundColor: "rgb(5 222 186)",
+    // backgroundColor: "rgb(5 222 186)",
+    backgroundColor: "rgb(254, 254, 239)",
     maxHeight: "400px",
     // display: "none",
     flexDirection: "column",
     borderRadius: ".5rem",
-    padding: ".5rem",
+    padding: "6px",
     border: "3px solid #05060f",
     // boxShadow: "0.2rem 0.2rem #05060f",
     overflow: "scroll",
@@ -165,8 +166,8 @@ function useExistingInputField(notes) {
     flexDirection: "column",
     gap: ".25rem",
     listStyleType: "none",
-    padding: "3px",
-    background: "rgb(6 211 177)",
+    padding: "4px",
+    background: "rgb(240 233 202)",
     borderRadius: "6px",
     margin: "4px 0",
   });
@@ -221,10 +222,13 @@ function useExistingInputField(notes) {
       const noResults = document.createElement("li");
       noResults.textContent = "No matching notes";
       Object.assign(noResults.style, {
-        fontSize: ".8rem",
-        borderRadius: "6px",
+        cursor: "pointer",
+        padding: "3px",
+        fontSize: "1rem",
+        borderRadius: "4px",
         fontWeight: "400",
-        pointerEvents: "none",
+        transition: ".3s ease",
+        padding: ".1rem .2rem"
       });
       notesContainer.appendChild(noResults);
     } else {
@@ -235,9 +239,10 @@ function useExistingInputField(notes) {
           cursor: "pointer",
           padding: "3px",
           fontSize: "1rem",
-          borderRadius: "6px",
+          borderRadius: "4px",
           fontWeight: "400",
           transition: ".3s ease",
+          padding: ".1rem .2rem"
         });
         li.addEventListener("mouseenter", () => highlightNote(index));
         li.addEventListener("mouseleave", () => removeHighlight(index));
@@ -281,7 +286,7 @@ function useExistingInputField(notes) {
       items[selectedIndex].style.backgroundColor = ""; // Reset previous item style
     }
     selectedIndex = index;
-    items[selectedIndex].style.backgroundColor = "#fffccf"; // Highlight selected item
+    items[selectedIndex].style.backgroundColor = "rgb(212 205 177)"; // Highlight selected item
   }
 
   function handleKeydown(event) {

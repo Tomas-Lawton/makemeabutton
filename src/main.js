@@ -39,7 +39,6 @@ function saveLocalNote(noteData) {
     const savedNotes = data.notes || {};
 
     const key = noteCounter.toString();
-    // console.log("Saving note ", key);
     savedNotes[key] = noteData; // set key (index) to current count
     chrome.storage.sync.set({ notes: savedNotes }, () => {
       console.log("Notes saved:", savedNotes);
@@ -81,12 +80,9 @@ function loadNotes() {
           displayIndex: 0,
           noteName: "First Note",
         }
-
-          // const data = { noteText, date, noteIndex: noteCounter };
           createNote(data);
           saveLocalNote(data);
 
-          // set it false
           chrome.storage.sync.set({ firstLoad: false }, () => {
             console.log("Completed first load");
           });
