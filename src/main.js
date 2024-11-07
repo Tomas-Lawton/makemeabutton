@@ -1,5 +1,6 @@
 import { updateDragDropListeners } from "./drag.js";
 import { playPop } from "./sounds.js";
+import { getDate } from "./util.js";
 
 const input = document.getElementById("note-input");
 const pasteButton = document.getElementById("instant-paste");
@@ -100,21 +101,6 @@ function loadNotes() {
 
 }
 
-function getDate() {
-  const currentDate = new Date();
-  const date = `${(currentDate.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${currentDate
-    .getDate()
-    .toString()
-    .padStart(2, "0")}/${currentDate.getFullYear()}`;
-  // const time = `${currentDate
-  //   .getHours()
-  //   .toString()
-  //   .padStart(2, "0")}:${currentDate.getMinutes().toString().padStart(2, "0")}`;
-  // return `${time}, ${date}`; // Combine date and time
-  return date;
-}
 
 function makeNote(noteText) {
   const date = getDate();
@@ -422,19 +408,18 @@ function loadShapePositions() {
 }
 window.addEventListener("resize", loadShapePositions);
 
-document.addEventListener('keydown', async (event) => {
-  if (event.key === '/') {
+document.addEventListener("keydown", async (event) => {
+  if (event.key === "/") {
     event.preventDefault();
     input.focus();
     try {
       const clipboardText = await navigator.clipboard.readText();
       input.value = clipboardText;
     } catch (error) {
-      console.error('Failed to read clipboard: ', error);
+      console.error("Failed to read clipboard: ", error);
     }
   }
 });
-
 
 loadShapePositions();
 loadNotes();

@@ -139,7 +139,7 @@ function useExistingInputField(notes) {
     }px`,
     // width: `${lastFocusedElement.getBoundingClientRect().width}px`,
     // maxWidth: "300px",
-    width: '250px',
+    width: "250px",
     // backgroundColor: "rgb(5 222 186)",
     backgroundColor: "rgb(254, 254, 239)",
     maxHeight: "400px",
@@ -150,7 +150,7 @@ function useExistingInputField(notes) {
     border: "3px solid #05060f",
     // boxShadow: "0.2rem 0.2rem #05060f",
     overflow: "scroll",
-    color: "black"
+    color: "black",
   });
 
   const title = document.createElement("h2");
@@ -176,41 +176,50 @@ function useExistingInputField(notes) {
   document.body.appendChild(popupContainer);
 
   function showMatchingNotes() {
-    // const query = lastFocusedElement.value.toLowerCase().substring(1);
-    console.log(lastFocusedElement);
     // const query = lastFocusedElement.value
     //   .toLowerCase()
     //   .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
 
+    // let query = "";
+    // if (lastFocusedElement) {
+    //   if (lastFocusedElement.value) {
+    //     query = lastFocusedElement.value
+    //       .toLowerCase()
+    //       .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
+    //   } else if (lastFocusedElement.textContent) {
+    //     query = lastFocusedElement.textContent
+    //       .toLowerCase()
+    //       .substring(lastFocusedElement.textContent.lastIndexOf("/") + 1);
+    //   } else {
+    //     console.error("lastFocusedElement is undefined or not valid");
+    //   }
+    // } else {
+    //   console.error("lastFocusedElement is undefined or not valid");
+    // }
+
     let query = "";
     if (lastFocusedElement) {
-      if (lastFocusedElement.value) {
-        query = lastFocusedElement.value
-          .toLowerCase()
-          .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
-      } else if (lastFocusedElement.textContent) {
-        query = lastFocusedElement.textContent
-          .toLowerCase()
-          .substring(lastFocusedElement.textContent.lastIndexOf("/") + 1);
+      const text = lastFocusedElement.value || lastFocusedElement.textContent;
+      if (text) {
+        query = text.toLowerCase().substring(text.lastIndexOf("/") + 1);
       } else {
-        console.error("lastFocusedElement is undefined or not valid");
+        console.error("lastFocusedElement has no value or textContent.");
       }
     } else {
       console.error("lastFocusedElement is undefined or not valid");
     }
 
-    console.log(query);
     const matchingNotes = Object.entries(notes)
       .filter(([_, note]) => {
         const queryStr = String(query).toLowerCase();
-        const noteNameQuery =
-          note.noteName !== null
-            ? String(note.noteName).toLowerCase()
-            : `Note ${note.noteIndex + 1}`.toLowerCase();
+        const noteNameQuery = note.noteName
+          ? String(note.noteName).toLowerCase()
+          : `Note ${note.noteIndex + 1}`.toLowerCase();
 
         return noteNameQuery.includes(queryStr);
       })
       .map(([, note]) => note);
+
     console.log(matchingNotes);
     notesContainer.innerHTML = ""; // Clear
 
@@ -228,7 +237,7 @@ function useExistingInputField(notes) {
         borderRadius: "4px",
         fontWeight: "400",
         transition: ".3s ease",
-        padding: ".1rem .2rem"
+        padding: ".1rem .2rem",
       });
       notesContainer.appendChild(noResults);
     } else {
@@ -242,7 +251,7 @@ function useExistingInputField(notes) {
           borderRadius: "4px",
           fontWeight: "400",
           transition: ".3s ease",
-          padding: ".1rem .2rem"
+          padding: ".1rem .2rem",
         });
         li.addEventListener("mouseenter", () => highlightNote(index));
         li.addEventListener("mouseleave", () => removeHighlight(index));
@@ -256,12 +265,13 @@ function useExistingInputField(notes) {
     selectedIndex = -1; // Reset selected index on every popup load
 
     const popupHeight = popupContainer.offsetHeight;
-    const containerHeight = window.innerHeight - popupContainer.getBoundingClientRect().top;
+    const containerHeight =
+      window.innerHeight - popupContainer.getBoundingClientRect().top;
 
     if (popupHeight > containerHeight) {
       popupContainer.scrollIntoView({
         behavior: "smooth",
-        block: "end"
+        block: "end",
       });
     }
   }
