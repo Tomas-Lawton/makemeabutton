@@ -503,7 +503,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 }
 
 function loadShapePositions() {
-  const shapes = document.querySelectorAll(".background-svg");
+  const shapes = document.querySelectorAll(".background-svg-animate");
   const isSmallScreen = window.innerWidth < 600;
 
   shapes.forEach((shape) => {
