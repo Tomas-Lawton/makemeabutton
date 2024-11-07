@@ -525,11 +525,11 @@ function loadShapePositions() {
       const rotatedSize = rotation === 90 || rotation === 270 ? shapeSize : shapeSize; // For 90 or 270, the size swaps, but it's the same here because it's square
 
       let rangeX = window.innerWidth - rotatedSize; // Account for width of shape and some margin
-      let rangeY = window.innerHeight - rotatedSize; // Account for height of shape and some margin
+      let rangeY = window.innerHeight - rotatedSize - 140; // Account for height of shape and some margin
 
       // Position the shape randomly within the range, ensuring it fits in the viewport
       let x = Math.floor(Math.random() * rangeX);
-      let y = Math.floor(Math.random() * rangeY);
+      let y = Math.floor(Math.random() * rangeY) + 140;
 
       shape.style.left = `${x}px`;
       shape.style.top = `${y}px`;
