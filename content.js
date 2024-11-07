@@ -137,16 +137,17 @@ function useExistingInputField(notes) {
     left: `${
       lastFocusedElement.getBoundingClientRect().left + window.scrollX
     }px`,
-    width: `${lastFocusedElement.getBoundingClientRect().width}px`,
-    maxWidth: "300px",
+    // width: `${lastFocusedElement.getBoundingClientRect().width}px`,
+    // maxWidth: "300px",
+    width: '250px',
     backgroundColor: "rgb(5 222 186)",
     maxHeight: "400px",
     // display: "none",
     flexDirection: "column",
-    borderRadius: "1rem",
+    borderRadius: ".5rem",
     padding: ".5rem",
     border: "3px solid #05060f",
-    boxShadow: "0.2rem 0.2rem #05060f",
+    // boxShadow: "0.2rem 0.2rem #05060f",
     overflow: "scroll",
     color: "black"
   });

@@ -115,6 +115,7 @@ header {
   margin: 3rem 8rem 1rem 8rem;
   text-align: center;
   flex-direction: column;
+  z-index: 500;
 }
 
 footer {
@@ -216,7 +217,6 @@ h1 {
   /* background-color: #4fe803; */
 }
 
-
 #header-shape {
   width: 80px;
   animation: spin 8s linear infinite;
@@ -280,8 +280,6 @@ section {
   border: 4px solid #05060f;
   box-shadow: 0.4rem 0.4rem #05060f;
   position: relative;
-
-
 
   --color: rgb(252, 243, 209);
   /* --color: rgb(0, 0, 0); */
@@ -363,6 +361,24 @@ section > h2 {
   animation: bubble 2s ease-in-out 1;
 }
 
+#bang-0 {
+  position: absolute;
+  left: 40px;
+  top: -60px;
+  width: 150px;
+  transform: translate(50%, -50%);
+  animation: bubble 2s ease-in-out 1;
+}
+
+#bang-4 {
+  position: absolute;
+  right: 40px;
+  bottom: -30px;
+  width: 150px;
+  transform: translate(50%, -50%);
+  animation: bubble 2s ease-in-out 1;
+}
+
 #bang-2 {
   position: absolute;
   left: 0;
@@ -376,8 +392,16 @@ section > h2 {
   animation: bubble 2s ease-in-out infinite;
 }
 
+#bang-0:hover {
+  animation: bubble 2s ease-in-out infinite;
+}
+
 #bang-2:hover {
   animation: bubble-2 2s ease-in-out infinite;
+}
+
+#bang-4:hover {
+  animation: bubble 2s ease-in-out infinite;
 }
 
 input::placeholder {
@@ -606,8 +630,6 @@ input::placeholder {
   padding: 1rem 1rem 0.7rem 1rem;
 }
 
-
-
 .drag-handle {
   /* background: #ececec;
   display: flex;
@@ -625,25 +647,25 @@ input::placeholder {
   cursor: grab; */
 
   background: #71fd9b;
-    /* width: 123.37px; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0 0 10px 10px;
-    border: 3px solid black;
-    /* box-shadow: 0.1rem 0.1rem #05060f; */
-    transition: 0.3s ease;
-    /* gap: 8px; */
-    /* font-size: 2rem; */
-    /* padding: 8px 16px; */
-    padding: 0px 16px;
-    /* border-radius: 2rem; */
-    /* border: 4px solid #05060f; */
-    /* cursor: grab; */
-    position: absolute;
-    left: 50%;
-    /* top: 10px; */
-    transform: translate(-50%, -29px);
+  /* width: 123.37px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 0 10px 10px;
+  border: 3px solid black;
+  /* box-shadow: 0.1rem 0.1rem #05060f; */
+  transition: 0.3s ease;
+  /* gap: 8px; */
+  /* font-size: 2rem; */
+  /* padding: 8px 16px; */
+  padding: 0px 16px;
+  /* border-radius: 2rem; */
+  /* border: 4px solid #05060f; */
+  /* cursor: grab; */
+  position: absolute;
+  left: 50%;
+  /* top: 10px; */
+  transform: translate(-50%, -29px);
 }
 
 /* .drag-handle:hover {
@@ -922,6 +944,15 @@ input .note-text{
     width: 70px;
   }
 
+  #bang-0 {
+    width: 70px;
+    top: -20px;
+  }
+
+  #bang-4 {
+    width: 70px;
+  }
+
   #inputs {
     flex-wrap: wrap;
   }
@@ -987,8 +1018,8 @@ input .note-text{
   }
 
   #orb {
-  top: 50%;
-  position: fixed;
+    top: 50%;
+    position: fixed;
   }
 
   #input-zone {

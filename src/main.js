@@ -75,11 +75,11 @@ function loadNotes() {
       let firstLoad = data.firstLoad
       if (firstLoad){
         const data = {
-          noteText: `Wow, your first BlockNote! In a new tab type "/" followed by Hello World to paste it.`,
+          noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
           noteIndex: 0,
           date: getDate(),
           displayIndex: 0,
-          noteName: "Hello world",
+          noteName: "First Note",
         }
 
           // const data = { noteText, date, noteIndex: noteCounter };
@@ -425,6 +425,20 @@ function loadShapePositions() {
   });
 }
 window.addEventListener("resize", loadShapePositions);
+
+document.addEventListener('keydown', async (event) => {
+  if (event.key === '/') {
+    event.preventDefault();
+    input.focus();
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      input.value = clipboardText;
+    } catch (error) {
+      console.error('Failed to read clipboard: ', error);
+    }
+  }
+});
+
 
 loadShapePositions();
 loadNotes();
