@@ -53,48 +53,95 @@ function saveLocalNote(noteData) {
     });
   });
 }
-function loadNotes() {  
-  let sortedNotes = null;
 
-  chrome.storage.sync.get("notes", (data) => {
-    const savedNotes = data.notes || {};
 
-    chrome.storage.sync.get(
-      "noteCounter",
-      (data) => (noteCounter = data.noteCounter)
-    );
+// function loadNotes() {  
+//   let sortedNotes = null;
 
-    sortedNotes = Object.entries(savedNotes).sort(
-      ([, a], [, b]) => a.displayIndex - b.displayIndex
-    );
+//   chrome.storage.sync.get("notes", (data) => {
+//     const savedNotes = data.notes || {};
 
-    sortedNotes.forEach(([_, data], index) => {
-      data.displayIndex = index;
-      createNote(data);
-    });
+//     chrome.storage.sync.get(
+//       "noteCounter",
+//       (data) => (noteCounter = data.noteCounter)
+//     );
 
-    console.log("Loaded notes in storage.");
+//     sortedNotes = Object.entries(savedNotes).sort(
+//       ([, a], [, b]) => a.displayIndex - b.displayIndex
+//     );
 
-    chrome.storage.sync.get("firstLoad", (data) => {
-      let firstLoad = data.firstLoad;
-      if (firstLoad){
-        const data = {
-          noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
-          noteIndex: 0,
-          date: getDate(),
-          displayIndex: 0,
-          noteName: "First Note",
-        };
+//     sortedNotes.forEach(([_, data], index) => {
+//       data.displayIndex = index;
+//       createNote(data);
+//     });
+
+//     console.log("Loaded notes in storage.");
+
+//     chrome.storage.sync.get("isInstalled", (data) => {
+//       let isInstalled = data.isInstalled;
+//       if (!isInstalled){
+//         // const data = {
+//         //   noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
+//         //   noteIndex: 0,
+//         //   date: getDate(),
+//         //   displayIndex: 0,
+//         //   noteName: "First Note",
+//         // };
+//         // createNote(data);
+//         // saveLocalNote(data);
+
+//         chrome.storage.sync.set({ isInstalled: true }, () => {
+//           console.log("Completed first time loading.");
+//         });
+//       } else {
+//         checkNoteMessage(sortedNotes); // don't include first time
+//       }
+
+//       console.log("Done loading notes.");
+//       updateDragDropListeners();
+//     });
+//   });
+// }
+
+function loadNotes() {
+  chrome.storage.sync.get("isInstalled", (data) => {
+    let isInstalled = data.isInstalled;
+
+    // Check if it's the first time loading
+    if (!isInstalled) {
+      chrome.storage.sync.set({ isInstalled: true }, () => {
+        console.log("Completed first time loading.");
+      });
+      // Optionally, create the first note here, if needed
+      // const data = {
+      //   noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
+      //   noteIndex: 0,
+      //   date: getDate(),
+      //   displayIndex: 0,
+      //   noteName: "First Note",
+      // };
+      // createNote(data);
+      // saveLocalNote(data);
+    }
+
+    chrome.storage.sync.get("notes", (data) => {
+      const savedNotes = data.notes || {};
+      chrome.storage.sync.get("noteCounter", (data) => (noteCounter = data.noteCounter));
+      console.log(noteCounter)
+      console.log(savedNotes)
+      let sortedNotes = Object.entries(savedNotes).sort(
+        ([, a], [, b]) => a.displayIndex - b.displayIndex
+      );
+
+      sortedNotes.forEach(([_, data], index) => {
+        data.displayIndex = index;
         createNote(data);
-        saveLocalNote(data);
+      });
 
-        chrome.storage.sync.set({ firstLoad: false }, () => {
-          console.log("Completed first time loading.");
-        });
-      } else {
-        checkNoteMessage(savedNotes); // don't include first time
-      }
-
+      console.log(`Loaded notes in storage: ${sortedNotes}`);
+      // if (isInstalled) {
+        checkNoteMessage(sortedNotes); 
+      // }
       console.log("Done loading notes.");
       updateDragDropListeners();
     });

@@ -1,23 +1,24 @@
+import { getDate } from "./src/util.js";
+
 // first time initialisation
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({ notes: {} });
+  // chrome.storage.local.set({ notes: {} });
+  chrome.storage.sync.set({
+    notes: {
+      0: {
+        noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
+        noteIndex: 0,
+        date: getDate(),
+        displayIndex: 0,
+        noteName: "First Note",
+      },
+    },
+  });
   chrome.storage.sync.set({ noteCounter: 0 });
   chrome.storage.sync.set({ slashCommandsEnabled: true });
-  chrome.storage.sync.set({ firstLoad: true });
+  chrome.storage.sync.set({ isInstalled: false });
   console.log("Extension installed successfully.");
 });
-
-// chrome.storage.local.set({
-//   notes: {
-//     0: {
-//       date: "11/07/2024",
-//       displayIndex: 0,
-//       noteIndex: 3,
-//       noteName: "Hello, world!",
-//       noteText: "This is your first BlockNote... :)",
-//     },
-//   },
-// });
 
 chrome.action.onClicked.addListener(async (tab) => {
   console.log("Action clicked, creating iframe");
