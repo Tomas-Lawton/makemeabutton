@@ -1,6 +1,6 @@
 {
   "name": "BlockNotes",
-  "description": "Rapid note taking and retrieval with AI.",
+  "description": "BlockNotes: A bold, Neo-Brutalist note-taking extension for instant, synced, and fun note organization with style!",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": ["storage", "tabs", "scripting", "activeTab"],
