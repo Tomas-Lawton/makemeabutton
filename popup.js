@@ -81,11 +81,11 @@ document.addEventListener("DOMContentLoaded", function () {
     autoname.parentNode.insertBefore(containerDiv, autoname.nextSibling);
 
     saveButton.addEventListener("click", () => {
-      const oaiKey = inputField.value;
+      const AIKEY = inputField.value;
       chrome.storage.sync.get("settings", (data) => {
         const updatedSettings = {
           ...data.settings,
-          oai_key: oaiKey,
+          key: AIKEY,
         };
         chrome.storage.sync.set({ settings: updatedSettings });
         containerDiv.remove();

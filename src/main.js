@@ -88,45 +88,13 @@ function loadNotes() {
 
 function makeNote(noteText) {
   chrome.storage.sync.get(["settings"], (data) => {
-    const oaiKey = data.settings?.oai_key;
+    const AIKEY = data.settings?.key;
     const date = getDate();
     const noteData = { noteText, date, noteIndex: noteCounter };
-    console.log(noteData)
 
-    if (oaiKey) {
-      // Uncomment the following block to use OpenAI for note naming
-      
-      /*
-      // Set up and make the OpenAI API call
-      fetch("https://api.openai.com/v1/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${oaiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          prompt: `Suggest a concise and meaningful title for the following note content:\n"${noteText}"`,
-          max_tokens: 10,
-          temperature: 0.7
-        })
-      })
-      .then(response => response.json())
-      .then(responseData => {
-        noteData.noteName = responseData.choices[0].text.trim();
-      })
-      .catch(error => console.error("Error generating note name with OpenAI:", error))
-      .finally(() => {
-        // Create and save the note, regardless of whether API call succeeded
-        createNote(noteData);
-        saveLocalNote(noteData);
-        playPop();
-        updateDragDropListeners();
-      });
-      */
-
+    if (AIKEY) {
       // Use the Gemini API for note naming instead of OpenAI
-      fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${oaiKey}`, {
+      fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${AIKEY}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -140,8 +108,8 @@ function makeNote(noteText) {
                         IT IS VERY CRITICALLY IMPORTANT YOU ANSWER WITH ONLY ONE NAME. 
                         Do your best to capture what the note actually contains so it is easy to remember what it was about later. 
                         Maximum 5 words suggested name.
-                        If the note text is not understandable just combine a ranom color with a random animal and a random 2-digit number
-                        IT IS VERY CRITICALLY IMPORTANT YOU ANSWER WITH ONLY ONE NAME.`
+                        If the note text is not understandable just combine a random color with a random animal and a random 2-digit number
+                        IT IS VERY CRITICALLY IMPORTANT YOU ANSWER DIRECTLY WITH ONLY ONE NAME.`
                 }
               ]
             }
@@ -150,18 +118,18 @@ function makeNote(noteText) {
       })
       .then(response => response.json())
       .then(responseData => {
-        // console.log(responseData)
         noteData.noteName = responseData.candidates[0].content.parts[0].text;
       })
       .catch(error => console.error("Error generating note name with Gemini:", error))
       .finally(() => {
+        // Delayed, first create the note, then once the suggested name comes, we can overwrite the name and save the data.
         createNote(noteData);
         saveLocalNote(noteData);
         playPop();
         updateDragDropListeners();
       });
     } else {
-      // Create the note without a generated name if API key is missing
+      // Instant
       createNote(noteData);
       saveLocalNote(noteData);
       playPop();
