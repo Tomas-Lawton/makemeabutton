@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const inputField = document.createElement("input");
     inputField.type = "text";
-    inputField.placeholder = "Add Free Gemini Key";
+    inputField.placeholder = "Gemini API Key";
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "UPDATE";

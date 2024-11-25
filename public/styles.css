@@ -831,13 +831,13 @@ input::placeholder {
   font-style: normal;
 }
 
-.note-text {
+/* .note-text {
   font-family: "Reenie Beanie", cursive;
   font-weight: 400;
   font-style: normal;
   font-size: 1em;
   color: #333333;
-  padding: 0 1rem;
+  padding: 1rem;
   height: 100%;
   white-space: break-spaces;
   overflow: hidden;
@@ -847,7 +847,23 @@ input::placeholder {
   overflow: hidden;
   text-overflow: ellipsis;
   overflow: scroll;
-  margin-top: 1rem;
+} */
+
+.note-text {
+  font-family: "Reenie Beanie", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1em;
+  color: #333333;
+  padding: 1rem;
+  box-sizing: border-box; /* Ensures padding is included in height calculations */
+  height: calc(1.2em * 6 + 2rem); /* Calculate height: line-height * number of lines + padding */
+  white-space: break-spaces;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: scroll;
+  text-overflow: ellipsis;
 }
 
 .note-content input,

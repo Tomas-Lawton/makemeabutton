@@ -66,20 +66,23 @@ function loadNotes() {
 
     chrome.storage.sync.get("notes", (data) => {
       const savedNotes = data.notes || {};
-      console.log(savedNotes)
-      chrome.storage.sync.get("noteCounter", (data) => (noteCounter = data.noteCounter));
+      console.log(savedNotes);
+      chrome.storage.sync.get(
+        "noteCounter",
+        (data) => (noteCounter = data.noteCounter)
+      );
       let sortedNotes = Object.entries(savedNotes).sort(
         ([, a], [, b]) => a.displayIndex - b.displayIndex
       );
-      console.log(sortedNotes)
+      console.log(sortedNotes);
 
       sortedNotes.forEach(([_, data], index) => {
         data.displayIndex = index;
         createNote(data);
       });
 
-      console.log(sortedNotes)
-      checkNoteMessage(sortedNotes); 
+      console.log(sortedNotes);
+      checkNoteMessage(sortedNotes);
       console.log("Done loading notes.");
       updateDragDropListeners();
     });
@@ -91,54 +94,55 @@ function makeNote(noteText) {
     const AIKEY = data.settings?.key;
     const date = getDate();
     const noteData = { noteText, date, noteIndex: noteCounter };
+    const newNoteDOM = createNote(noteData);
+    playPop();
+    updateDragDropListeners();
 
-    if (AIKEY) {
-      // Use the Gemini API for note naming instead of OpenAI
-      fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${AIKEY}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Suggest a one concise and meaningful title for the following note content:\n"${noteText}. 
+    if (!AIKEY) {
+      saveLocalNote(noteData); // directly
+    } else {
+      // Use Gemini for note naming
+      fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${AIKEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `Suggest a one concise and meaningful title for the following note content:\n"${noteText}. 
                         IT IS VERY CRITICALLY IMPORTANT YOU ANSWER WITH ONLY ONE NAME. 
                         Do your best to capture what the note actually contains so it is easy to remember what it was about later. 
                         Maximum 5 words suggested name.
                         If the note text is not understandable just combine a random color with a random animal and a random 2-digit number
-                        IT IS VERY CRITICALLY IMPORTANT YOU ANSWER DIRECTLY WITH ONLY ONE NAME.`
-                }
-              ]
-            }
-          ]
+                        IT IS VERY CRITICALLY IMPORTANT YOU ANSWER DIRECTLY WITH ONLY ONE NAME.`,
+                  },
+                ],
+              },
+            ],
+          }),
+        }
+      )
+        .then((response) => response.json())
+        .then((responseData) => {
+          const suggestedName =
+            responseData.candidates[0].content.parts[0].text;
+          console.log(suggestedName)
+          const headingText = newNoteDOM.querySelector(".note-title")
+          headingText.textContent = suggestedName;
+          noteData.noteName = suggestedName;
+          saveLocalNote(noteData); // Finally save it
         })
-      })
-      .then(response => response.json())
-      .then(responseData => {
-        noteData.noteName = responseData.candidates[0].content.parts[0].text;
-      })
-      .catch(error => console.error("Error generating note name with Gemini:", error))
-      .finally(() => {
-        // Delayed, first create the note, then once the suggested name comes, we can overwrite the name and save the data.
-        createNote(noteData);
-        saveLocalNote(noteData);
-        playPop();
-        updateDragDropListeners();
-      });
-    } else {
-      // Instant
-      createNote(noteData);
-      saveLocalNote(noteData);
-      playPop();
-      updateDragDropListeners();
+        .catch((error) =>
+          console.error("Error generating note name with Gemini:", error)
+        );
     }
   });
 }
-
-
 
 pasteButton.addEventListener("click", async () => {
   try {
@@ -407,6 +411,8 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
   note.appendChild(actionContainer);
 
   notes.prepend(note); // Display in reverse order
+
+  return note
 }
 
 function loadShapePositions() {
@@ -429,7 +435,8 @@ function loadShapePositions() {
 
       // Calculate position to prevent overflow, considering rotation
       const shapeSize = width;
-      const rotatedSize = rotation === 90 || rotation === 270 ? shapeSize : shapeSize; // For 90 or 270, the size swaps, but it's the same here because it's square
+      const rotatedSize =
+        rotation === 90 || rotation === 270 ? shapeSize : shapeSize; // For 90 or 270, the size swaps, but it's the same here because it's square
 
       let rangeX = window.innerWidth - rotatedSize; // Account for width of shape and some margin
       let rangeY = window.innerHeight - rotatedSize - 140; // Account for height of shape and some margin
@@ -443,7 +450,6 @@ function loadShapePositions() {
     }
   });
 }
-
 
 window.addEventListener("resize", loadShapePositions);
 
