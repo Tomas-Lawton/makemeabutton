@@ -193,7 +193,7 @@ export function updateDisplayIndexes() {
     });
 
     chrome.storage.sync.set({ notes: savedNotes }, () => {
-      console.log("Notes saved:", savedNotes);
+      // console.log("Notes saved:", savedNotes);
     });
   });
 }

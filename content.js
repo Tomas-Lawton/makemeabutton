@@ -1,4 +1,4 @@
-console.log("Content script loaded");
+console.log("Loaded Blocknotes Extension.");
 
 let lastFocusedElement = null;
 let popupContainer = null;
@@ -23,13 +23,13 @@ document.addEventListener(
       target.tagName === "INPUT"
     ) {
       lastFocusedElement = target;
-      console.log("Set target:", lastFocusedElement);
+      // console.log("Set target:", lastFocusedElement);
     } else {
       // If the focused element is a container (e.g., a div), drill down to find a child text node
       const textElement = findTextElement(target);
       if (textElement) {
         lastFocusedElement = textElement;
-        console.log("Set target to text element:", lastFocusedElement);
+        // console.log("Set target to text element:", lastFocusedElement);
       }
     }
   },
@@ -94,13 +94,63 @@ function pasteValueToTarget(value) {
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+// chrome.storage.sync.get(["notes", "settings"], (data) => {
+//   const notes = data.notes || {};
+//   if (!data.settings.useSlashWithCtrl) {
+//     document.addEventListener("keyup", (event) => {
+//       if (event.key === "/") useExistingInputField(notes);
+//     });
+//   } else {
+//     let slashPressed = false;
+//     document.addEventListener("keydown", (event) => {
+//       if (event.key === "/") slashPressed = true;
+//       if (slashPressed && event.ctrlKey) {
+//         useExistingInputField(notes);
+//         slashPressed = false;
+//       }
+//     });
+//     document.addEventListener("keyup", (event) => {
+//       if (event.key === "/") slashPressed = false;
+//     });
+//   }
+// });
+
 chrome.storage.sync.get(["notes", "settings"], (data) => {
   const notes = data.notes || {};
-  if (data.settings.slashCommandsEnabled) {
+  let ctrlPressed = false,
+    slashPressed = false;
+
+  if (!data.settings.useSlashWithCtrl) {
     document.addEventListener("keyup", (event) => {
-      console.log("Creating popup");
       if (event.key === "/") useExistingInputField(notes);
     });
+  } else {
+    document.addEventListener("keydown", (event) => {
+      if (event.ctrlKey) ctrlPressed = true;
+      if (ctrlPressed && event.key === "/") {
+        slashPressed = true;
+        insertSlashToInput(); // simple version
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "Control") ctrlPressed = false;
+      if (event.key === "/" && slashPressed) {
+        useExistingInputField(notes);
+        slashPressed = false;
+      }
+    });
+
+    function insertSlashToInput() {
+      const inputField = document.activeElement;
+      if (inputField) {
+        if (inputField.tagName === "TEXTAREA" || inputField.tagName === "INPUT") {
+          inputField.value += "/";
+        } else if (inputField.isContentEditable) {
+          inputField.textContent += "/";
+        }
+      }
+    }
   }
 });
 
@@ -176,27 +226,6 @@ function useExistingInputField(notes) {
   document.body.appendChild(popupContainer);
 
   function showMatchingNotes() {
-    // const query = lastFocusedElement.value
-    //   .toLowerCase()
-    //   .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
-
-    // let query = "";
-    // if (lastFocusedElement) {
-    //   if (lastFocusedElement.value) {
-    //     query = lastFocusedElement.value
-    //       .toLowerCase()
-    //       .substring(lastFocusedElement.value.lastIndexOf("/") + 1);
-    //   } else if (lastFocusedElement.textContent) {
-    //     query = lastFocusedElement.textContent
-    //       .toLowerCase()
-    //       .substring(lastFocusedElement.textContent.lastIndexOf("/") + 1);
-    //   } else {
-    //     console.error("lastFocusedElement is undefined or not valid");
-    //   }
-    // } else {
-    //   console.error("lastFocusedElement is undefined or not valid");
-    // }
-
     let query = "";
     if (lastFocusedElement) {
       const text = lastFocusedElement.value || lastFocusedElement.textContent;
@@ -220,14 +249,14 @@ function useExistingInputField(notes) {
       })
       .map(([, note]) => note);
 
-    console.log(matchingNotes);
+    // console.log(matchingNotes);
     notesContainer.innerHTML = ""; // Clear
 
     // Show matching notes or a placeholder message if no results
     let notesToShow = matchingNotes.length ? matchingNotes : [];
     if (notesToShow.length === 0) {
       notesContainer.innerHTML = "";
-      console.log("none");
+      // console.log("none");
       const noResults = document.createElement("li");
       noResults.textContent = "No matching notes";
       Object.assign(noResults.style, {
@@ -314,10 +343,6 @@ function useExistingInputField(notes) {
       }
     } else if (event.key === "Enter") {
       event.preventDefault();
-      // const currentValue = lastFocusedElement.value;
-      // const query = currentValue
-      //   .slice(currentValue.indexOf("/") + 1)
-      //   .toLowerCase();
 
       const currentValue = lastFocusedElement
         ? lastFocusedElement.value || lastFocusedElement.textContent
@@ -330,11 +355,26 @@ function useExistingInputField(notes) {
         console.log("not found");
       }
 
+      // console.log(notes)
+      // console.log(note.noteName.toLowerCase())
+      // const selectedNote =
+      //   Object.values(notes).find((note) => {
+      //     const noteIndex = `note${note.noteIndex + 1}`;
+      //     const noteName = note.noteName && note.noteName.toLowerCase();
+      //     return noteName === query || noteIndex === query;
+      //   }) ||
+      //   (selectedIndex >= 0
+      //     ? Object.values(notes)[selectedIndex]
+      //     : Object.values(notes)[0]);
+
       const selectedNote =
         Object.values(notes).find((note) => {
           const noteIndex = `note${note.noteIndex + 1}`;
           const noteName = note.noteName && note.noteName.toLowerCase();
-          return noteName === query || noteIndex === query;
+          return (
+            (noteName && noteName.includes(query.toLowerCase())) ||
+            noteIndex === query
+          );
         }) ||
         (selectedIndex >= 0
           ? Object.values(notes)[selectedIndex]
@@ -348,14 +388,7 @@ function useExistingInputField(notes) {
         pasteValueToTarget(selectedNote.noteText);
         hidePopup();
       }
-    }
-    // else if (
-    //   event.key === "Escape" ||
-    //   (event.key === "Backspace" && lastFocusedElement.value.endsWith("/"))
-    // ) {
-    //   hidePopup();
-    // }
-    else if (
+    } else if (
       event.key === "Escape" ||
       (event.key === "Backspace" &&
         (lastFocusedElement.value || lastFocusedElement.textContent).endsWith(

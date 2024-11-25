@@ -7,20 +7,20 @@ const pasteButton = document.getElementById("instant-paste");
 const noteMessage = document.getElementById("note-message");
 const notes = document.getElementById("notes");
 
-let noteCounter = 0;
+let noteCounter = 0; // because of the default note.
 
 function deleteLocalNote(index) {
-  console.log("deleting, ", index);
+  // console.log("deleting, ", index);
 
   chrome.storage.sync.get("notes", (data) => {
     const savedNotes = data.notes || {};
-    console.log("deleted, ", index);
+    console.log("Deleted note: ", index);
     delete savedNotes[index];
     checkNoteMessage(savedNotes);
     updateDragDropListeners();
 
     chrome.storage.sync.set({ notes: savedNotes }, () => {
-      console.log("Notes saved:", savedNotes);
+      // console.log("Notes saved:", savedNotes);
     });
 
     const audio = new Audio("./public/audio/swish.mp3");
@@ -43,105 +43,43 @@ function saveLocalNote(noteData) {
     const key = noteCounter.toString();
     savedNotes[key] = noteData; // set key (index) to current count
     chrome.storage.sync.set({ notes: savedNotes }, () => {
-      console.log("Notes saved:", savedNotes);
+      // console.log("Notes saved:", savedNotes);
     });
     checkNoteMessage(savedNotes);
 
     noteCounter++; // increment the count
     chrome.storage.sync.set({ noteCounter: noteCounter }, () => {
-      console.log("Set counter:", noteCounter);
+      // console.log("Set counter:", noteCounter);
     });
   });
 }
-
-
-// function loadNotes() {  
-//   let sortedNotes = null;
-
-//   chrome.storage.sync.get("notes", (data) => {
-//     const savedNotes = data.notes || {};
-
-//     chrome.storage.sync.get(
-//       "noteCounter",
-//       (data) => (noteCounter = data.noteCounter)
-//     );
-
-//     sortedNotes = Object.entries(savedNotes).sort(
-//       ([, a], [, b]) => a.displayIndex - b.displayIndex
-//     );
-
-//     sortedNotes.forEach(([_, data], index) => {
-//       data.displayIndex = index;
-//       createNote(data);
-//     });
-
-//     console.log("Loaded notes in storage.");
-
-//     chrome.storage.sync.get("isInstalled", (data) => {
-//       let isInstalled = data.isInstalled;
-//       if (!isInstalled){
-//         // const data = {
-//         //   noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
-//         //   noteIndex: 0,
-//         //   date: getDate(),
-//         //   displayIndex: 0,
-//         //   noteName: "First Note",
-//         // };
-//         // createNote(data);
-//         // saveLocalNote(data);
-
-//         chrome.storage.sync.set({ isInstalled: true }, () => {
-//           console.log("Completed first time loading.");
-//         });
-//       } else {
-//         checkNoteMessage(sortedNotes); // don't include first time
-//       }
-
-//       console.log("Done loading notes.");
-//       updateDragDropListeners();
-//     });
-//   });
-// }
 
 function loadNotes() {
   chrome.storage.sync.get("isInstalled", (data) => {
     let isInstalled = data.isInstalled;
 
-    // Check if it's the first time loading
     if (!isInstalled) {
       chrome.storage.sync.set({ isInstalled: true }, () => {
-        console.log("Completed first time loading.");
+        console.log("You Installed Blocknotes. Cool!");
       });
-      // Optionally, create the first note here, if needed
-      // const data = {
-      //   noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
-      //   noteIndex: 0,
-      //   date: getDate(),
-      //   displayIndex: 0,
-      //   noteName: "First Note",
-      // };
-      // createNote(data);
-      // saveLocalNote(data);
     }
 
     chrome.storage.sync.get("notes", (data) => {
       const savedNotes = data.notes || {};
-      chrome.storage.sync.get("noteCounter", (data) => (noteCounter = data.noteCounter));
-      console.log(noteCounter)
       console.log(savedNotes)
+      chrome.storage.sync.get("noteCounter", (data) => (noteCounter = data.noteCounter));
       let sortedNotes = Object.entries(savedNotes).sort(
         ([, a], [, b]) => a.displayIndex - b.displayIndex
       );
+      console.log(sortedNotes)
 
       sortedNotes.forEach(([_, data], index) => {
         data.displayIndex = index;
         createNote(data);
       });
 
-      console.log(`Loaded notes in storage: ${sortedNotes}`);
-      // if (isInstalled) {
-        checkNoteMessage(sortedNotes); 
-      // }
+      console.log(sortedNotes)
+      checkNoteMessage(sortedNotes); 
       console.log("Done loading notes.");
       updateDragDropListeners();
     });
@@ -153,6 +91,7 @@ function makeNote(noteText) {
     const oaiKey = data.settings?.oai_key;
     const date = getDate();
     const noteData = { noteText, date, noteIndex: noteCounter };
+    console.log(noteData)
 
     if (oaiKey) {
       // Uncomment the following block to use OpenAI for note naming
@@ -211,7 +150,7 @@ function makeNote(noteText) {
       })
       .then(response => response.json())
       .then(responseData => {
-        console.log(responseData)
+        // console.log(responseData)
         noteData.noteName = responseData.candidates[0].content.parts[0].text;
       })
       .catch(error => console.error("Error generating note name with Gemini:", error))
@@ -260,7 +199,7 @@ input.addEventListener("keydown", (event) => {
 });
 
 function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
-  console.log("Creating note: ", noteText, date, noteIndex);
+  // console.log("Creating note: ", noteText, date, noteIndex);
 
   // NOTE CONTENT
   const noteContent = document.createElement("div");
@@ -424,7 +363,7 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
       };
 
       chrome.storage.sync.set({ notes: savedNotes }, () => {
-        console.log("Notes saved:", savedNotes);
+        // console.log("Notes saved:", savedNotes);
       });
     });
 

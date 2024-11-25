@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // get settings
   chrome.storage.sync.get("settings", (data) => {
-    slashCheckbox.checked = data.settings?.slashCommandsEnabled ?? true;
+    slashCheckbox.checked = data.settings?.useSlashWithCtrl ?? false;
   });
 
   slashCheckbox.addEventListener("change", () => {
@@ -46,11 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
     chrome.storage.sync.get("settings", (data) => {
       const updatedSettings = {
         ...data.settings,
-        slashCommandsEnabled: isEnabled,
+        useSlashWithCtrl: isEnabled,
       };
       chrome.storage.sync.set({ settings: updatedSettings });
     });
-    window.location.reload(); // required for the settings
   });
 
   infoButton.addEventListener("click", () => {
@@ -58,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   setKeyButton.addEventListener("click", () => {
-    console.log('setting key')
+    // console.log('setting key')
     // Check if container already exists, if so, remove it
     const existingContainer = document.querySelector(".oai-key-container");
     if (existingContainer) {
@@ -90,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         chrome.storage.sync.set({ settings: updatedSettings });
         containerDiv.remove();
-        console.log("Set OAI key");
+        console.log("Set Gemini API Key");
       });
     });
   });

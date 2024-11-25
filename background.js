@@ -6,7 +6,7 @@ chrome.runtime.onInstalled.addListener(() => {
     // default note on first install
     notes: {
       0: {
-        noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it.`,
+        noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it. Other ettings can be changed in the toolbar popup.`,
         noteIndex: 0,
         date: getDate(),
         displayIndex: 0,
@@ -15,7 +15,7 @@ chrome.runtime.onInstalled.addListener(() => {
     },
   });
   chrome.storage.sync.set({ noteCounter: 0 });
-  chrome.storage.sync.set({ settings: { slashCommandsEnabled: true, oai_key: '' } }); // Nested setting
+  chrome.storage.sync.set({ settings: { useSlashWithCtrl: false, oai_key: '' } }); // Nested setting
   chrome.storage.sync.set({ isInstalled: false });
   console.log("Extension installed successfully.");
 });
