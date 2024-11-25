@@ -172,9 +172,10 @@ function useExistingInputField(notes) {
   popupContainer = document.createElement("div");
 
   lastFocusedElement.addEventListener("input", showMatchingNotes);
-  lastFocusedElement.addEventListener("keydown", handleKeydown);
+  window.addEventListener("keydown", handleKeydown);
 
-  popupContainer.id = "notes-container";
+  // popupContainer.id = "notes-container";
+  popupContainer.classList.add("notes-container")
   Object.assign(popupContainer.style, {
     fontFamily: "'Lexend Mega', sans-serif",
     fontWeight: "400",
@@ -308,7 +309,7 @@ function useExistingInputField(notes) {
   function hidePopup() {
     if (popupContainer) {
       lastFocusedElement.removeEventListener("input", showMatchingNotes);
-      lastFocusedElement.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("keydown", handleKeydown);
       popupContainer.remove();
     }
   }
@@ -354,19 +355,6 @@ function useExistingInputField(notes) {
       } else {
         console.log("not found");
       }
-
-      // console.log(notes)
-      // console.log(note.noteName.toLowerCase())
-      // const selectedNote =
-      //   Object.values(notes).find((note) => {
-      //     const noteIndex = `note${note.noteIndex + 1}`;
-      //     const noteName = note.noteName && note.noteName.toLowerCase();
-      //     return noteName === query || noteIndex === query;
-      //   }) ||
-      //   (selectedIndex >= 0
-      //     ? Object.values(notes)[selectedIndex]
-      //     : Object.values(notes)[0]);
-
       const selectedNote =
         Object.values(notes).find((note) => {
           const noteIndex = `note${note.noteIndex + 1}`;
