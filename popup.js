@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         chrome.storage.sync.set({ settings: updatedSettings });
         containerDiv.remove();
-        console.log("Set Gemini API Key");
+        console.log("Set Gemini API Key. AIKEY: ",AIKEY || "NONE");
       });
     });
   });
@@ -97,7 +97,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } else {
       let li = document.createElement("li");
-      li.textContent = `Notes appear here. Type “/” followed by the name to insert it.`;
+      li.textContent = `Notes will appear here.`;
+      li.style.backgroundColor = "#fed703";
+      li.style.pointerEvents = "none"
       notesList.appendChild(li);
     }
   });
