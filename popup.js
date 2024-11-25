@@ -1,34 +1,5 @@
-const neoBrutalismColors = [
-  "#FF4F58", // Bold red
-  "#00A9A6", // Teal blue
-  "#FFBE00", // Bright yellow
-  "#00D2B3", // Bright cyan
-  "#E60000", // Vivid red
-  "#FFD500", // Vivid yellow
-  "#F56A79", // Pinkish red
-  "#35B7FF", // Bright blue
-  "#2A9D8F", // Muted teal
-  "#E9A2B9", // Muted pink
-  "#FF7F00", // Bright orange
-  "#FF9A8B", // Coral pink
-  "#D1FF00", // Neon lime
-  "#FFD700", // Gold
-  "#00FF7F", // Spring green
-  "#FF1493", // Deep pink
-  "#FF6EC7", // Hot pink
-  "#D9E000", // Bright chartreuse
-  "#00FFEF", // Cyan green
-  "#F76C6C", // Soft red
-];
-
-function getRandomMutedColor() {
-  // Pick a random color from the neoBrutalismColors array
-  const randomColor =
-    neoBrutalismColors[Math.floor(Math.random() * neoBrutalismColors.length)];
-  return randomColor;
-}
-
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('Loaded Blocknotes Extension Popup.')
   const notesList = document.getElementById("notes-list");
   const openButton = document.getElementById("home");
   const slashCheckbox = document.getElementById("check-5");
@@ -36,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const setKeyButton = document.getElementById("setting-naming");
   const autoname = document.getElementById("auto-name-setting")
 
-  // get settings
   chrome.storage.sync.get("settings", (data) => {
     slashCheckbox.checked = data.settings?.useSlashWithCtrl ?? false;
   });
@@ -57,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   setKeyButton.addEventListener("click", () => {
-    // console.log('setting key')
     // Check if container already exists, if so, remove it
     const existingContainer = document.querySelector(".oai-key-container");
     if (existingContainer) {
@@ -115,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
         icon.classList.add("note-icon");
 
         iconWrapper.appendChild(icon);
-        // li.style.backgroundColor = getRandomMutedColor();
         li.style.backgroundColor = "#fed703";
         li.appendChild(iconWrapper);
 
@@ -124,9 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
           note.noteName || `Note ${note.noteIndex + 1}`
         );
         li.appendChild(noteText);
-
         li.onclick = () => insertNoteIntoActiveTab(note.noteText);
-
         notesList.prepend(li);
       });
     } else {

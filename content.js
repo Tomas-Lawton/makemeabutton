@@ -1,8 +1,7 @@
-console.log("Loaded Blocknotes Extension.");
-
 let lastFocusedElement = null;
 let popupContainer = null;
 let selectedIndex = -1; // Track the selected index for arrow key navigation
+let ctrlPressed = false;
 
 // Load Google Fonts
 const link = document.createElement("link");
@@ -35,22 +34,6 @@ document.addEventListener(
   },
   true
 );
-
-// document.addEventListener("focus", (event) => {
-//   const target = event.target;
-//   if (target.isContentEditable || target.tagName === "TEXTAREA" || target.tagName === "INPUT") {
-//     lastFocusedElement = target;
-//     console.log("Set focus target:", lastFocusedElement);
-//   }
-// }, true);
-
-// document.addEventListener("input", (event) => {
-//   const target = event.target;
-//   if (target.isContentEditable) {
-//     lastFocusedElement = target;
-//     console.log("Set input target:", lastFocusedElement);
-//   }
-// });
 
 // Recursive function to find the lowest-level child that contains text input
 function findTextElement(element) {
@@ -96,69 +79,42 @@ function pasteValueToTarget(value) {
 
 // chrome.storage.sync.get(["notes", "settings"], (data) => {
 //   const notes = data.notes || {};
+//   let ctrlPressed = false,
+//     slashPressed = false;
+
 //   if (!data.settings.useSlashWithCtrl) {
 //     document.addEventListener("keyup", (event) => {
 //       if (event.key === "/") useExistingInputField(notes);
 //     });
 //   } else {
-//     let slashPressed = false;
 //     document.addEventListener("keydown", (event) => {
-//       if (event.key === "/") slashPressed = true;
-//       if (slashPressed && event.ctrlKey) {
+//       if (event.ctrlKey) ctrlPressed = true;
+//       if (ctrlPressed && event.key === "/") {
+//         slashPressed = true;
+//         insertSlashToInput(); // simple version
+//       }
+//     });
+
+//     document.addEventListener("keyup", (event) => {
+//       if (event.key === "Control") ctrlPressed = false;
+//       if (event.key === "/" && slashPressed) {
 //         useExistingInputField(notes);
 //         slashPressed = false;
 //       }
 //     });
-//     document.addEventListener("keyup", (event) => {
-//       if (event.key === "/") slashPressed = false;
-//     });
+
+//     function insertSlashToInput() {
+//       const inputField = document.activeElement;
+//       if (inputField) {
+//         if (inputField.tagName === "TEXTAREA" || inputField.tagName === "INPUT") {
+//           inputField.value += "/";
+//         } else if (inputField.isContentEditable) {
+//           inputField.textContent += "/";
+//         }
+//       }
+//     }
 //   }
 // });
-
-chrome.storage.sync.get(["notes", "settings"], (data) => {
-  const notes = data.notes || {};
-  let ctrlPressed = false,
-    slashPressed = false;
-
-  if (!data.settings.useSlashWithCtrl) {
-    document.addEventListener("keyup", (event) => {
-      if (event.key === "/") useExistingInputField(notes);
-    });
-  } else {
-    document.addEventListener("keydown", (event) => {
-      if (event.ctrlKey) ctrlPressed = true;
-      if (ctrlPressed && event.key === "/") {
-        slashPressed = true;
-        insertSlashToInput(); // simple version
-      }
-    });
-
-    document.addEventListener("keyup", (event) => {
-      if (event.key === "Control") ctrlPressed = false;
-      if (event.key === "/" && slashPressed) {
-        useExistingInputField(notes);
-        slashPressed = false;
-      }
-    });
-
-    function insertSlashToInput() {
-      const inputField = document.activeElement;
-      if (inputField) {
-        if (inputField.tagName === "TEXTAREA" || inputField.tagName === "INPUT") {
-          inputField.value += "/";
-        } else if (inputField.isContentEditable) {
-          inputField.textContent += "/";
-        }
-      }
-    }
-  }
-});
-
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.action === "pasteValue") {
-    pasteValueToTarget(request.value);
-  }
-});
 
 function useExistingInputField(notes) {
   if (!lastFocusedElement) {
@@ -175,7 +131,7 @@ function useExistingInputField(notes) {
   window.addEventListener("keydown", handleKeydown);
 
   // popupContainer.id = "notes-container";
-  popupContainer.classList.add("notes-container")
+  popupContainer.classList.add("notes-container");
   Object.assign(popupContainer.style, {
     fontFamily: "'Lexend Mega', sans-serif",
     fontWeight: "400",
@@ -389,3 +345,51 @@ function useExistingInputField(notes) {
 
   showMatchingNotes();
 }
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Control") {
+    ctrlPressed = true;
+  }
+
+  if (event.key === "/" || ctrlPressed) {
+    chrome.storage.sync.get(["settings", "notes"], (data) => {
+      const useSlashWithCtrl = data.settings?.useSlashWithCtrl || false;
+      const notes = data.notes || {};
+
+      if (useSlashWithCtrl) {
+        if (ctrlPressed && event.key === "/") {
+          insertSlashToInput();
+          useExistingInputField(notes);
+        }
+      } else if (event.key === "/") {
+        useExistingInputField(notes);
+      }
+    });
+  }
+});
+
+document.addEventListener("keyup", (event) => {
+  if (event.key === "Control") {
+    ctrlPressed = false;
+  }
+});
+
+function insertSlashToInput() {
+  const inputField = document.activeElement;
+  if (inputField) {
+    if (inputField.tagName === "TEXTAREA" || inputField.tagName === "INPUT") {
+      inputField.value += "/";
+    } else if (inputField.isContentEditable) {
+      inputField.textContent += "/";
+    }
+  }
+}
+
+// Always listen for paste from popup
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.action === "pasteValue") {
+    pasteValueToTarget(request.value);
+  }
+});
+
+console.log("Loaded Blocknotes Extension Script.");

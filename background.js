@@ -21,7 +21,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.action.onClicked.addListener(async (tab) => {
-  console.log("Action clicked, creating iframe");
+  console.log("Blocknote Extension Action.");
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: () => {
