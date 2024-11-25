@@ -396,15 +396,15 @@ function createNote({ noteText, date, noteIndex, displayIndex, noteName }) {
 
   // Append elements to note structure
   noteHeader.appendChild(noteHeading);
-  noteHeader.appendChild(dragHandle);
   noteHeader.appendChild(editBtn);
   noteHeader.appendChild(acceptBtn);
   noteHeader.appendChild(discardBtn);
   noteHeader.appendChild(deleteBtn);
-
+  
   actionContainer.appendChild(copyBtn);
   actionContainer.appendChild(dateElem);
-
+  
+  noteContent.appendChild(dragHandle);
   noteContent.appendChild(noteHeader);
   noteContent.appendChild(noteTextDiv);
   note.appendChild(noteContent);

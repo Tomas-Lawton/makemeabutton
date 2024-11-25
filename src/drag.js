@@ -204,7 +204,7 @@ function handleDragHandleVisibility() {
 
   dragHandles.forEach((handle) => {
     if (isVerticalOnly) {
-      handle.style.display = "block"; // Show drag handle for small screens
+      handle.style.display = "flex"; // Show drag handle for small screens
     } else {
       handle.style.display = "none"; // Hide drag handle for larger screens
     }
