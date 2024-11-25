@@ -6,11 +6,11 @@ chrome.runtime.onInstalled.addListener(() => {
     // default note on first install
     notes: {
       0: {
-        noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it. Other ettings can be changed in the toolbar popup.`,
+        noteText: `Wow, your first BlockNote! In a new tab type "/" followed by First Note to paste it. Sttings can be customised in the browser toolbar.`,
         noteIndex: 0,
         date: getDate(),
         displayIndex: 0,
-        noteName: "First Note",
+        noteName: "First BlockNote",
       },
     },
   });
