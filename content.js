@@ -311,20 +311,53 @@ function useExistingInputField(notes) {
       } else {
         console.log("not found");
       }
-      const selectedNote =
-        Object.values(notes).find((note) => {
-          const noteIndex = `note${note.noteIndex + 1}`;
-          const noteName = note.noteName && note.noteName.toLowerCase();
-          return (
-            (noteName && noteName.includes(query.toLowerCase())) ||
-            noteIndex === query
-          );
-        }) ||
-        (selectedIndex >= 0
-          ? Object.values(notes)[selectedIndex]
-          : Object.values(notes)[0]);
+
+      console.log("query: ", query);
+      // const selectedNote =
+      //   Object.values(notes).find((note) => {
+      //     const noteIndex = `note${note.noteIndex + 1}`;
+      //     const noteName = note.noteName && note.noteName.toLowerCase();
+      //     console.log(noteIndex)
+      //     console.log(noteName)
+      //     return (
+      //       (noteName && noteName.includes(query.toLowerCase())) ||
+      //       noteIndex === query
+      //     );
+      //   }) ||
+      //   (selectedIndex >= 0
+      //     ? Object.values(notes)[selectedIndex]
+      //     : Object.values(notes)[0]);
+
+      // const selectedNote =
+      //   Object.values(notes).find((note) => {
+      //     const noteIndex = note.noteIndex + 1
+      //     const noteName = note.noteName?.toLowerCase();
+      //     console.log({ noteIndex, noteName }); // Log for debugging
+      //     const queryMatch = noteName?.includes(query.toLowerCase())
+      //     console.log(queryMatch)
+      //     return queryMatch || noteIndex.toString() === query;
+      //   })
+
+      //   console.log(selectedNote)
+
+      //   (notes[selectedIndex])
+
+      const selectedNote = 
+      selectedIndex !== undefined && notes[selectedIndex] 
+        ? notes[selectedIndex] 
+        : Object.values(notes).find((note) => {
+            const noteIndex = note.noteIndex + 1; // Adjusted index
+            const noteName = note.noteName?.toLowerCase();
+            console.log({ noteIndex, noteName }); // Log for debugging
+            const queryMatch = noteName?.includes(query.toLowerCase());
+            console.log(queryMatch);
+            return queryMatch || noteIndex.toString() === query;
+          });
+    
+    console.log(selectedNote);
 
       if (selectedNote) {
+        console.log(selectedNote);
         lastFocusedElement.value = currentValue.slice(
           0,
           currentValue.indexOf("/")
