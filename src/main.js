@@ -7,7 +7,7 @@ const pasteButton = document.getElementById("instant-paste");
 const noteMessage = document.getElementById("note-message");
 const notes = document.getElementById("notes");
 
-let noteCounter = 0; // because of the default note.
+let noteCounter = null; // because of the default note.
 
 function deleteLocalNote(index) {
   // console.log("deleting, ", index);
@@ -39,9 +39,10 @@ function checkNoteMessage(savedNotes) {
 function saveLocalNote(noteData) {
   chrome.storage.sync.get("notes", (data) => {
     const savedNotes = data.notes || {};
-
     const key = noteCounter.toString();
     savedNotes[key] = noteData; // set key (index) to current count
+    // console.log("Saving note key: ", key)
+    // console.log("Saving note data: ", noteData)
     chrome.storage.sync.set({ notes: savedNotes }, () => {
       // console.log("Notes saved:", savedNotes);
     });
@@ -66,7 +67,7 @@ function loadNotes() {
 
     chrome.storage.sync.get("notes", (data) => {
       const savedNotes = data.notes || {};
-      console.log(savedNotes);
+      console.log("Loaded Saved Notes: ", savedNotes);
       chrome.storage.sync.get(
         "noteCounter",
         (data) => (noteCounter = data.noteCounter)
@@ -74,14 +75,14 @@ function loadNotes() {
       let sortedNotes = Object.entries(savedNotes).sort(
         ([, a], [, b]) => a.displayIndex - b.displayIndex
       );
-      console.log(sortedNotes);
+      // console.log(sortedNotes);
 
       sortedNotes.forEach(([_, data], index) => {
         data.displayIndex = index;
         createNote(data);
       });
 
-      console.log(sortedNotes);
+      // console.log(sortedNotes);
       checkNoteMessage(sortedNotes);
       console.log("Done loading notes.");
       updateDragDropListeners();
@@ -131,7 +132,7 @@ function makeNote(noteText) {
         .then((responseData) => {
           const suggestedName =
             responseData.candidates[0].content.parts[0].text;
-          console.log(suggestedName)
+          // console.log(suggestedName)
           const headingText = newNoteDOM.querySelector(".note-title")
           headingText.textContent = suggestedName;
           noteData.noteName = suggestedName;

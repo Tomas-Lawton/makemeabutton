@@ -14,7 +14,7 @@ chrome.runtime.onInstalled.addListener(() => {
       },
     },
   });
-  chrome.storage.sync.set({ noteCounter: 0 });
+  chrome.storage.sync.set({ noteCounter: 1 });
   chrome.storage.sync.set({ settings: { useSlashWithCtrl: false, key: '' } }); // Nested setting
   chrome.storage.sync.set({ isInstalled: false });
   console.log("Extension installed successfully.");

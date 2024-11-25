@@ -312,7 +312,7 @@ function useExistingInputField(notes) {
         console.log("not found");
       }
 
-      console.log("query: ", query);
+      // console.log("query: ", query);
       // const selectedNote =
       //   Object.values(notes).find((note) => {
       //     const noteIndex = `note${note.noteIndex + 1}`;
@@ -348,16 +348,12 @@ function useExistingInputField(notes) {
         : Object.values(notes).find((note) => {
             const noteIndex = note.noteIndex + 1; // Adjusted index
             const noteName = note.noteName?.toLowerCase();
-            console.log({ noteIndex, noteName }); // Log for debugging
             const queryMatch = noteName?.includes(query.toLowerCase());
-            console.log(queryMatch);
             return queryMatch || noteIndex.toString() === query;
           });
     
-    console.log(selectedNote);
 
       if (selectedNote) {
-        console.log(selectedNote);
         lastFocusedElement.value = currentValue.slice(
           0,
           currentValue.indexOf("/")
