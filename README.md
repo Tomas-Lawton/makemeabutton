@@ -5,7 +5,7 @@ _A note-taking app for people who don’t waste time._
 ![BlockNotes Hero Image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*6rmKNqX0fTZRPdhfNQ22Uw.png)
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Live-brightgreen)](https://chrome.google.com/webstore/detail/blocknotes/your-extension-id)
-[![Privacy Policy](https://img.shields.io/badge/Chrome%20Web%20Store-Live-brightgreen)](https://medium.com/@tomaslawton/privacy-policy-for-blocknotes-6ec02d1e787b)
+[![Privacy Policy](https://img.shields.io/badge/Privacy%20Policy-Live-brightgreen)](https://medium.com/@tomaslawton/privacy-policy-for-blocknotes-6ec02d1e787b)
 
 ---
 
