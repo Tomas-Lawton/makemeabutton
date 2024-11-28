@@ -53,6 +53,10 @@ ul {
   background-color: red;
 } */
 
+html {
+  zoom: 89%;
+}
+
 body {
   font-family: "Lexend Mega", sans-serif;
   font-optical-sizing: auto;

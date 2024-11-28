@@ -3,7 +3,7 @@
   "description": "BlockNotes: A bold, Neo-Brutalist note-taking extension for instant, synced, and fun note organization with style!",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["storage", "tabs", "scripting", "activeTab"],
+  "permissions": ["storage", "scripting", "activeTab"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
