@@ -62,7 +62,28 @@ BlockNotes is designed to be **intuitive**, **fast**, and **bold**—perfect for
 
 ---
 
-### **Ready for Powerful, Bold Note-Taking?**  
+# Setting Up BlockNotes Extension
+
+## 1. Install BlockNotes
+1. Visit the [Chrome Web Store](#).
+2. Click **"Add to Chrome"** and confirm.
+
+## 2. Pin to Toolbar
+1. Click the **puzzle piece icon** (Extensions) in your browser.
+2. Find **BlockNotes** and click the **pin icon** to add it to your toolbar.
+
+## 3. Add a Free Gemini Pro API Key
+1. Click the BlockNotes icon in your toolbar.
+2. In the popup, go to **"Gemini Pro"**.
+3. Click **"Get Free API Key"**, then paste it into the provided field.
+
+## Using BlockNotes
+- **Add Notes Instantly**: Press **"/"** in any input field, type your note, and hit **Enter**.
+- **Organize Notes**: Use **drag-and-drop** to rearrange as needed.
+
+---
+
+## **Ready for Powerful, Bold Note-Taking?**  
 BlockNotes is here to help you get things done quickly, boldly, and with intuitive power. Take control of your notes and get organized, instantly.  
 
 [**→ Get BlockNotes on the Chrome Web Store**](https://chromewebstore.google.com/detail/blocknotes/ebgmaljihmfbplmknjehheecopadefea)
