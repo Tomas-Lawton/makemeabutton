@@ -74,8 +74,8 @@ BlockNotes is designed to be **intuitive**, **fast**, and **bold**—perfect for
 
 ## 3. Add a Free Gemini Pro API Key
 1. Click the BlockNotes icon in your toolbar.
-2. In the popup, go to **"Gemini Pro"**.
-3. Click **"Get Free API Key"**, then paste it into the provided field.
+2. In the popup, click on **"INFO"**.
+3. After you get the free Gemini API key click **"SET"**, then paste it into the provided field.
 
 ## Using BlockNotes
 - **Add Notes Instantly**: Press **"/"** in any input field, type your note, and hit **Enter**.
