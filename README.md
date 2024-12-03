@@ -4,7 +4,7 @@ _A note-taking app for people who don’t waste time._
 
 ![BlockNotes Hero Image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*6rmKNqX0fTZRPdhfNQ22Uw.png)
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Live-brightgreen)](https://chrome.google.com/webstore/detail/blocknotes/your-extension-id)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Live-brightgreen)](https://chromewebstore.google.com/detail/blocknotes/ebgmaljihmfbplmknjehheecopadefea)
 [![Privacy Policy](https://img.shields.io/badge/Privacy%20Policy-Live-brightgreen)](https://medium.com/@tomaslawton/privacy-policy-for-blocknotes-6ec02d1e787b)
 
 ---
@@ -65,4 +65,4 @@ BlockNotes is designed to be **intuitive**, **fast**, and **bold**—perfect for
 ### **Ready for Powerful, Bold Note-Taking?**  
 BlockNotes is here to help you get things done quickly, boldly, and with intuitive power. Take control of your notes and get organized, instantly.  
 
-[**→ Get BlockNotes on the Chrome Web Store**](https://chrome.google.com/webstore/detail/blocknotes/your-extension-id)
+[**→ Get BlockNotes on the Chrome Web Store**](https://chromewebstore.google.com/detail/blocknotes/ebgmaljihmfbplmknjehheecopadefea)
